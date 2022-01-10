@@ -1,1 +1,11 @@
-node_modules
+# Node modules
+node_modules/
+
+# Lerna debug log
+lerna-debug.log
+
+# Npm debug log
+npm-debug.log
+
+# Build directories
+packages/*/build

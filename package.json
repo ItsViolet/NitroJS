@@ -1,22 +1,12 @@
 {
   "name": "root",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/skylixgh/nitrojs.git"
-  },
-  "author": "Skylix",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/skylixgh/nitrojs/issues"
-  },
-  "homepage": "https://github.com/skylixgh/nitrojs#readme",
+  "private": true,
   "devDependencies": {
     "lerna": "^4.0.0"
+  },
+  "dependencies": {
+    "@types/node": "^17.0.8",
+    "save-dev": "^0.0.1-security",
+    "typescript": "^4.5.4"
   }
 }
