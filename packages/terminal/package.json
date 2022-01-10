@@ -1,6 +1,26 @@
 {
-    "name": "nitrojs-terminal",
-    "version": "0.0.0",
-    "description": "",
-    "main": ""
+  "name": "terminal",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "XFaon <xfaonae@protonmail.com>",
+  "homepage": "https://github.com/skylixgh/nitrojs/tree/main/packages/terminal#readme",
+  "license": "MIT",
+  "main": "lib/main.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skylixgh/nitrojs.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/skylixgh/nitrojs/issues"
+  }
 }

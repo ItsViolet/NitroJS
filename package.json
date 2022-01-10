@@ -1,42 +1,22 @@
 {
-  "name": "@skylixgh/nitrojs",
+  "name": "root",
   "version": "0.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skylixgh/nitrojs.git"
+  },
+  "author": "Skylix",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/skylixgh/nitrojs/issues"
+  },
+  "homepage": "https://github.com/skylixgh/nitrojs#readme",
   "devDependencies": {
-    "prettier": "^2.5.1",
-    "turbo": "latest"
-  },
-  "turbo": {
-    "pipeline": {
-      "build": {
-        "dependsOn": [
-          "^build"
-        ],
-        "outputs": [
-          "dist/**",
-          ".next/**"
-        ]
-      },
-      "lint": {
-        "outputs": []
-      },
-      "dev": {
-        "cache": false
-      }
-    }
-  },
-  "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=14.0.0"
+    "lerna": "^4.0.0"
   }
 }
