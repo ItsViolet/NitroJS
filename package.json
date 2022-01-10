@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "author": "Skylix",
   "devDependencies": {
     "lerna": "^4.0.0"
   },

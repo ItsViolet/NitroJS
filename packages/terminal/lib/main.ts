@@ -1,7 +1,3 @@
-'use strict';
-
-module.exports = terminal;
-
-function terminal() {
-    console.log("Text")
+export function text() {
+    console.log("Test method");
 }

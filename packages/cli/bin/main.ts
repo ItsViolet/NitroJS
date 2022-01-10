@@ -1,7 +1,4 @@
-'use strict';
+import * as terminal from "@skylixgh/nitrojs-terminal/lib/main";
 
-module.exports = cli;
-
-function cli() {
-    // TODO
-}
+terminal.text();
+terminal.text();

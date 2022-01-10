@@ -6,7 +6,7 @@
   "homepage": "https://github.com/skylixgh/nitrojs#readme",
   "license": "MIT",
   "bin": {
-    "nitrojs": "./build/main.js"
+    "nitrojs": "./bin/main.js"
   },
   "directories": {
     "lib": "lib",
@@ -20,7 +20,8 @@
     "url": "git+https://github.com/skylixgh/nitrojs.git"
   },
   "scripts": {
-    "tsc": "tsc"
+    "build": "tsc",
+    "clean": "tsc --build --clean"
   },
   "bugs": {
     "url": "https://github.com/skylixgh/nitrojs/issues"

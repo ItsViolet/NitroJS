@@ -2,10 +2,10 @@
   "name": "@skylixgh/nitrojs-terminal",
   "version": "1.0.0-dev",
   "description": "> TODO: description",
-  "author": "XFaon <xfaonae@protonmail.com>",
+  "author": "Skylix",
   "homepage": "https://github.com/skylixgh/nitrojs#readme",
   "license": "MIT",
-  "main": "build/main.js",
+  "main": "lib/main.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -18,7 +18,8 @@
     "url": "git+https://github.com/skylixgh/nitrojs.git"
   },
   "scripts": {
-    "tsc": "tsc"
+    "build": "tsc",
+    "clean": "tsc --build --clean"
   },
   "bugs": {
     "url": "https://github.com/skylixgh/nitrojs/issues"
