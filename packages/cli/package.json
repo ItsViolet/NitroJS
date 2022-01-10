@@ -6,7 +6,7 @@
     "homepage": "https://github.com/skylixgh/nitrojs#readme",
     "license": "MIT",
     "bin": {
-        "nitrojs": "./bin/main"
+        "nitrojs": "./bin/main.js"
     },
     "directories": {
         "lib": "lib",

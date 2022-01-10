@@ -31,22 +31,44 @@ function logFormatted(text: string, hexColor: string) {
     console.log(` ${chalk.hex(hexColor)("•")} ${text}`);
 }
 
+/**
+ * Log an info message into the terminal
+ * @param text The text to log
+ */
 export function log(text: string) {
     logFormatted(text, "#555555");
 }
 
+/**
+ * Log a success message into the terminal
+ * @param text Text to log
+ */
 export function success(text: string) {
     logFormatted(text, "#50ffab");
 }
 
+/**
+ *  Log a warning message into the terminal
+ * @param text Text to log
+ */
 export function warning(text: string){
     logFormatted(text, "#FFAB00");
 }
 
+/**
+ * Log an error message into the terminal
+ * @param text The text to log
+ */
 export function error(text: string) {
     logFormatted(text, "#FF5555");
 }
 
+/**
+ * Stop a running animation
+ * @param animationState The state of your animation
+ * @param newAnimationMessage The new text for the animation
+ * @returns Nothing
+ */
 export function stopAnimation(animationState: State, newAnimationMessage?: string) {
     if (!animationRunning || animationFullStopped) {
         return;
@@ -80,6 +102,11 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
     animationFullStopped = true;
 }
 
+/**
+ * Update the text of a currently running animation
+ * @param newAnimationMessage The new text for the animation
+ * @returns Nothing
+ */
 export function updateAnimation(newAnimationMessage: string) {
     if (!animationRunning || animationFullStopped) {
         return;
@@ -89,6 +116,10 @@ export function updateAnimation(newAnimationMessage: string) {
     animationRenderFunction();
 }
 
+/**
+ * Create an animated terminal message
+ * @param text Text to write the animations message
+ */
 export function animate(text: string) {
     (() => {
         animationText = text;
@@ -128,3 +159,13 @@ export function animate(text: string) {
         animationLoop = setInterval(animationRenderFunction, animationInterval);    
     })();
 }
+
+export default {
+    log,
+    success,
+    warning,
+    error,
+    animate,
+    updateAnimation,
+    stopAnimation
+};
