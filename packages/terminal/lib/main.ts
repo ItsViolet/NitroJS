@@ -3,8 +3,18 @@ import chalk from "chalk";
 let animationLoop: NodeJS.Timer;
 let animationRunning = false;
 let animationFrame = 0;
+let animationText = "";
+let animationEndHex = "#555";
+let animationFullStopped = true;
 const animationInterval = 100;
 const animationFrames = [ "|", "/", "-", "\\" ];
+
+export enum State {
+    info,
+    success,
+    warning,
+    error
+}
 
 /**
  * Create and print a formatted message in the terminal
@@ -13,7 +23,7 @@ const animationFrames = [ "|", "/", "-", "\\" ];
  * @returns Nothing
  */
 function logFormatted(text: string, hexColor: string) {
-    if (animationRunning) {
+    if (animationRunning || !animationFullStopped) {
         return;
     }
 
@@ -25,7 +35,7 @@ export function log(text: string) {
 }
 
 export function success(text: string) {
-    logFormatted(text, "#50ffab")
+    logFormatted(text, "#50ffab");
 }
 
 export function warning(text: string){
@@ -33,24 +43,72 @@ export function warning(text: string){
 }
 
 export function error(text: string) {
-    logFormatted(text, "#FF5555")
+    logFormatted(text, "#FF5555");
 }
 
-export function stopAnimation() {
-    clearInterval(animationLoop);
+export function stopAnimation(animationState: State, newAnimationMessage?: string) {
+    if (newAnimationMessage) animationText = newAnimationMessage;
     animationRunning = false;
+
+    switch (animationState) {
+        case State.info:
+            animationEndHex = "#555555";
+            break;
+
+        case State.warning:
+            animationEndHex = "#FFAB00";
+            break;
+
+        case State.success:
+            animationEndHex = "#50FFAB";
+            break;
+
+        case State.error: 
+            animationEndHex = "#FF5555";
+            break;
+    }
+
+    process.stdout.write(`\r ${chalk.hex(animationEndHex)("•")} ${animationText}`);
+    clearInterval(animationLoop);
+
+    process.stdout.write("\n");
+    animationFullStopped = true;
 }
 
 export function animate(text: string) {
-    animationRunning = true;
+    (() => {
+        animationText = text;
+        animationRunning = true;
+        animationFullStopped = false;
+    
+        animationLoop = setInterval(() => {
+            animationFrame++;
+            let writableText = animationText;
+            
+            if (animationFrame == animationFrames.length) {
+                animationFrame = 0;
+            }
 
-    animationLoop = setInterval(() => {
-        animationFrame++;
-        
-        if (animationFrame == animationFrames.length) {
-            animationFrame = 0;
-        }
+            const prefixLength = 3;
+            const textLength = writableText.length;
+            const totalOutputLength = prefixLength + textLength;
 
-        process.stdout.write(`\r ${animationFrames[animationFrame]}`);
-    }, animationInterval);
+            if (totalOutputLength > process.stdout.columns) {
+                let chopOffLength = totalOutputLength + 3 - process.stdout.columns;
+                if (chopOffLength < 0) chopOffLength = 0;
+
+                writableText = writableText.slice(0, -chopOffLength) + "...";
+            } else {
+                let trailLength = process.stdout.columns - totalOutputLength;
+                writableText += " ".repeat(trailLength);
+            }
+    
+            if (animationRunning) {
+                process.stdout.write(`\r ${animationFrames[animationFrame]} ${writableText}`);
+                return;
+            }
+    
+            process.stdout.write(`\r ${chalk.hex(animationEndHex)("•")} ${writableText}`);
+        }, animationInterval);    
+    })();
 }
