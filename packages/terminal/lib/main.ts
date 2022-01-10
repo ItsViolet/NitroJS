@@ -105,7 +105,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
 /**
  * Update the text of a currently running animation
  * @param newAnimationMessage The new text for the animation
- * @returns Nothing
+ * @returns Nothing 
  */
 export function updateAnimation(newAnimationMessage: string) {
     if (!animationRunning || animationFullStopped) {
