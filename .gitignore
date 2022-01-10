@@ -6,3 +6,6 @@ lerna-debug.log
 
 # Npm debug log
 npm-debug.log
+
+# Lock files
+packages/*/package-lock.json

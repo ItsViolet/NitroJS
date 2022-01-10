@@ -1,32 +1,32 @@
 {
-  "name": "@skylixgh/nitrojs-cli",
-  "version": "1.0.0-dev",
-  "description": "> TODO: description",
-  "author": "Skylix",
-  "homepage": "https://github.com/skylixgh/nitrojs#readme",
-  "license": "MIT",
-  "bin": {
-    "nitrojs": "./bin/main.js"
-  },
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/skylixgh/nitrojs.git"
-  },
-  "scripts": {
-    "build": "tsc",
-    "clean": "tsc --build --clean"
-  },
-  "bugs": {
-    "url": "https://github.com/skylixgh/nitrojs/issues"
-  },
-  "dependencies": {
-    "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
-  }
+    "name": "@skylixgh/nitrojs-cli",
+    "version": "1.0.0-dev",
+    "description": "> TODO: description",
+    "author": "Skylix",
+    "homepage": "https://github.com/skylixgh/nitrojs#readme",
+    "license": "MIT",
+    "bin": {
+        "nitrojs": "./bin/main"
+    },
+    "directories": {
+        "lib": "lib",
+        "test": "__tests__"
+    },
+    "files": [
+        "lib"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/skylixgh/nitrojs.git"
+    },
+    "scripts": {
+        "build": "tsc",
+        "clean": "tsc --build --clean"
+    },
+    "bugs": {
+        "url": "https://github.com/skylixgh/nitrojs/issues"
+    },
+    "dependencies": {
+        "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
+    }
 }
