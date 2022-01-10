@@ -6,6 +6,7 @@ let animationFrame = 0;
 let animationText = "";
 let animationEndHex = "#555";
 let animationFullStopped = true;
+let animationRenderFunction: () => void;
 const animationInterval = 100;
 const animationFrames = [ "|", "/", "-", "\\" ];
 
@@ -47,6 +48,10 @@ export function error(text: string) {
 }
 
 export function stopAnimation(animationState: State, newAnimationMessage?: string) {
+    if (!animationRunning || animationFullStopped) {
+        return;
+    }
+    
     if (newAnimationMessage) animationText = newAnimationMessage;
     animationRunning = false;
 
@@ -68,11 +73,20 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
             break;
     }
 
-    process.stdout.write(`\r ${chalk.hex(animationEndHex)("•")} ${animationText}`);
+    if (animationRenderFunction) animationRenderFunction();
     clearInterval(animationLoop);
 
     process.stdout.write("\n");
     animationFullStopped = true;
+}
+
+export function updateAnimation(newAnimationMessage: string) {
+    if (!animationRunning || animationFullStopped) {
+        return;
+    }
+    
+    animationText = newAnimationMessage;
+    animationRenderFunction();
 }
 
 export function animate(text: string) {
@@ -81,7 +95,7 @@ export function animate(text: string) {
         animationRunning = true;
         animationFullStopped = false;
     
-        animationLoop = setInterval(() => {
+        animationRenderFunction = () => {
             animationFrame++;
             let writableText = animationText;
             
@@ -109,6 +123,8 @@ export function animate(text: string) {
             }
     
             process.stdout.write(`\r ${chalk.hex(animationEndHex)("•")} ${writableText}`);
-        }, animationInterval);    
+        }
+
+        animationLoop = setInterval(animationRenderFunction, animationInterval);    
     })();
 }
