@@ -47,10 +47,10 @@ export function animate(text: string) {
     animationLoop = setInterval(() => {
         animationFrame++;
         
-        if (animationFrame > animationFrames.length) {
+        if (animationFrame == animationFrames.length) {
             animationFrame = 0;
         }
 
         process.stdout.write(`\r ${animationFrames[animationFrame]}`);
-    });
+    }, animationInterval);
 }
