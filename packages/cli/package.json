@@ -1,6 +1,6 @@
 {
   "name": "@skylixgh/nitrojs-cli",
-  "version": "0.0.0",
+  "version": "1.0.0-dev",
   "description": "> TODO: description",
   "author": "XFaon <xfaonae@protonmail.com>",
   "homepage": "https://github.com/skylixgh/nitrojs#readme",
@@ -26,6 +26,6 @@
     "url": "https://github.com/skylixgh/nitrojs/issues"
   },
   "dependencies": {
-    "@skylixgh/nitrojs-terminal": "^0.0.0"
+    "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
   }
 }
