@@ -190,7 +190,7 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
         if (currently) {
             renderedYN = `${chalk.underline("Yes")} / ${chalk.hex("#999999")("No")}`
         } else {
-            renderedYN = `${chalk.hex("#999999")("Yex")} / ${chalk.underline("No")}`
+            renderedYN = `${chalk.hex("#999999")("Yes")} / ${chalk.underline("No")}`
         }
 
         process.stdout.write(`\r ${chalk.hex("#999999")("?")} ${question}: ${renderedYN}`);
