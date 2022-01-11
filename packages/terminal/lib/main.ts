@@ -230,7 +230,6 @@ const terminal = {
     animate,
     updateAnimation,
     stopAnimation,
-    askQNA,
     askString,
     askYN
 };
