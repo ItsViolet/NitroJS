@@ -4,6 +4,12 @@ import readline from "readline";
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
 
+process.stdin.on("keypress", (str, key) => {
+    if (key.name == "c" && key.ctrl) {
+        process.exit();
+    }
+});
+
 let animationLoop: NodeJS.Timer;
 let animationRunning = false;
 let animationFrame = 0;
@@ -168,27 +174,44 @@ export function animate(text: string) {
 /**
  * Ask an interactive yes or no question
  * @param question The question to ask
+ * @param defaultValue The default value
  * @param callBack A call back event for when the question is answered
  */
-export function askQNA(question: string, callBack: (answer: boolean) => void) {
+export function askQNA(question: string, defaultValue: boolean, callBack: (answer: boolean) => void) {
     if (!animationFullStopped || qnaRunning) {
         return;
     }
 
+    let currently = defaultValue;
+
+    let renderFromCurrently = () => {
+        process.stdout.write(`\r ${chalk.hex("#555555")("?")} ${question}: ${currently ? "Yes" : "No "}`);
+    }
+
+    renderFromCurrently();
+
     const keyEventHandler = (str: any, key: any) => {
-        if (key.ctrl && key.name == "c") {
-            process.exit();
+        if (key.name == "return") {
+            process.stdin.removeListener("keypress", keyEventHandler);
+            process.stdout.write("\n");
+
+            qnaRunning = false;
+            callBack(currently);
+            return;
         }
 
-        if (key.name == "right") {
-
-        } else if (key.name == "left") {
-            
+        if (key.name == "right" || key.name == "left") {
+            if (currently) {
+                currently = false;
+            } else {
+                currently = true;
+            }
         }
+
+        renderFromCurrently();
     }
 
     process.stdin.on("keypress", keyEventHandler);
-    // process.stdin.removeListener("keypress", keyEventHandler);
 }
 
 const terminal = {
