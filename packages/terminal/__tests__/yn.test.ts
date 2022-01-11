@@ -8,6 +8,8 @@ askQNA("Are you a programmer?", true, (isDev) => {
             terminal.log("  A programmer " + isDev);
             terminal.log("  13 or older " + over13);
             terminal.log("  Going to school " + toSchool);
+
+            process.exit();
         });
     });
 });

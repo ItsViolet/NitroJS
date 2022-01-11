@@ -208,7 +208,7 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
             return;
         }
 
-        if (key.name == "right" || key.name == "left") {
+        if (key.name == "right" || key.name == "left" || key.name == "space") {
             if (currently) {
                 currently = false;
             } else {
