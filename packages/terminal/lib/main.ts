@@ -16,7 +16,7 @@ let animationFrame = 0;
 let animationText = "";
 let animationEndHex = "#999999";
 let animationFullStopped = true;
-let qnaRunning = false;
+let questionRunning = false;
 let animationRenderFunction: () => void;
 const animationInterval = 100;
 const animationFrames = [ "|", "/", "-", "\\" ];
@@ -35,7 +35,7 @@ export enum State {
  * @returns Nothing
  */
 function logFormatted(text: string, hexColor: string) {
-    if (!animationFullStopped || qnaRunning) {
+    if (!animationFullStopped || questionRunning) {
         return;
     }
 
@@ -119,7 +119,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
  * @returns Nothing 
  */
 export function updateAnimation(newAnimationMessage: string) {
-    if (!animationRunning || animationFullStopped || !qnaRunning) {
+    if (!animationRunning || animationFullStopped || !questionRunning) {
         return;
     }
     
@@ -179,7 +179,7 @@ export function animate(text: string) {
  * @returns Nothing
  */
 export function askQNA(question: string, defaultValue: boolean, callBack: (answer: boolean) => void) {
-    if (!animationFullStopped || qnaRunning) {
+    if (!animationFullStopped || questionRunning) {
         return;
     }
 
@@ -204,7 +204,7 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
             process.stdin.removeListener("keypress", keyEventHandler);
             process.stdout.write("\n");
 
-            qnaRunning = false;
+            questionRunning = false;
             callBack(currently);
             return;
         }
@@ -227,6 +227,10 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
     process.stdin.on("keypress", keyEventHandler);
 }
 
+export function askString(question: string, defaultAnswer: string, callBack: (answer: string) => void) {
+
+}
+
 const terminal = {
     log,
     success,
@@ -234,7 +238,9 @@ const terminal = {
     error,
     animate,
     updateAnimation,
-    stopAnimation
+    stopAnimation,
+    askQNA,
+    askString
 };
 
 export default terminal;
