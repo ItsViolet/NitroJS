@@ -227,8 +227,17 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
     process.stdin.on("keypress", keyEventHandler);
 }
 
+/**
+ * Ask a question that can receive a string answer
+ * @param question The question to ask
+ * @param defaultAnswer The default question answer
+ * @param callBack The answer call back
+ * @returns Nothing
+ */
 export function askString(question: string, defaultAnswer: string, callBack: (answer: string) => void) {
-
+    if (!animationFullStopped || questionRunning) {
+        return;
+    }
 }
 
 const terminal = {
