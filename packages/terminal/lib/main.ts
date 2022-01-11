@@ -14,7 +14,7 @@ let animationLoop: NodeJS.Timer;
 let animationRunning = false;
 let animationFrame = 0;
 let animationText = "";
-let animationEndHex = "#555";
+let animationEndHex = "#999999";
 let animationFullStopped = true;
 let qnaRunning = false;
 let animationRenderFunction: () => void;
@@ -47,7 +47,7 @@ function logFormatted(text: string, hexColor: string) {
  * @param text The text to log
  */
 export function log(text: string) {
-    logFormatted(text, "#555555");
+    logFormatted(text, "#999999");
 }
 
 /**
@@ -90,7 +90,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
 
     switch (animationState) {
         case State.info:
-            animationEndHex = "#555555";
+            animationEndHex = "#999999";
             break;
 
         case State.warning:
@@ -185,7 +185,15 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
     let currently = defaultValue;
 
     let renderFromCurrently = () => {
-        process.stdout.write(`\r ${chalk.hex("#555555")("?")} ${question}: ${currently ? "Yes" : "No "}`);
+        let renderedYN = "";
+
+        if (currently) {
+            renderedYN = `${chalk.underline("Yes")} / ${chalk.hex("#999999")("No")}`
+        } else {
+            renderedYN = `${chalk.hex("#999999")("Yex")} / ${chalk.underline("No")}`
+        }
+
+        process.stdout.write(`\r ${chalk.hex("#999999")("?")} ${question}: ${renderedYN}`);
     }
 
     renderFromCurrently();
