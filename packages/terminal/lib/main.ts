@@ -1,4 +1,8 @@
 import chalk from "chalk";
+import readline from "readline";
+
+readline.emitKeypressEvents(process.stdin);
+process.stdin.setRawMode(true);
 
 let animationLoop: NodeJS.Timer;
 let animationRunning = false;
@@ -6,6 +10,7 @@ let animationFrame = 0;
 let animationText = "";
 let animationEndHex = "#555";
 let animationFullStopped = true;
+let qnaRunning = false;
 let animationRenderFunction: () => void;
 const animationInterval = 100;
 const animationFrames = [ "|", "/", "-", "\\" ];
@@ -24,7 +29,7 @@ export enum State {
  * @returns Nothing
  */
 function logFormatted(text: string, hexColor: string) {
-    if (animationRunning || !animationFullStopped) {
+    if (!animationFullStopped || qnaRunning) {
         return;
     }
 
@@ -108,7 +113,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
  * @returns Nothing 
  */
 export function updateAnimation(newAnimationMessage: string) {
-    if (!animationRunning || animationFullStopped) {
+    if (!animationRunning || animationFullStopped || !qnaRunning) {
         return;
     }
     
@@ -160,7 +165,33 @@ export function animate(text: string) {
     })();
 }
 
-export default {
+/**
+ * Ask an interactive yes or no question
+ * @param question The question to ask
+ * @param callBack A call back event for when the question is answered
+ */
+export function askQNA(question: string, callBack: (answer: boolean) => void) {
+    if (!animationFullStopped || qnaRunning) {
+        return;
+    }
+
+    const keyEventHandler = (str: any, key: any) => {
+        if (key.ctrl && key.name == "c") {
+            process.exit();
+        }
+
+        if (key.name == "right") {
+
+        } else if (key.name == "left") {
+            
+        }
+    }
+
+    process.stdin.on("keypress", keyEventHandler);
+    // process.stdin.removeListener("keypress", keyEventHandler);
+}
+
+const terminal = {
     log,
     success,
     warning,
@@ -169,3 +200,5 @@ export default {
     updateAnimation,
     stopAnimation
 };
+
+export default terminal;

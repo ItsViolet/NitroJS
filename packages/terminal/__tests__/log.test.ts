@@ -1,5 +1,5 @@
 // import { log, success, warning, error, State } from "..";
-import terminal from './../lib/main';
+import terminal from '../lib/main';
 
 terminal.log("Hello, world");
 terminal.success("Hello, world");
