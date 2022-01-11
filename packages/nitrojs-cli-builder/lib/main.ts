@@ -7,7 +7,7 @@ export enum FlagType {
     arrayString,
     arrayNumber,
     arrayBoolean
-} 
+}
 
 interface YargsArgvOutput {
     /**
@@ -18,7 +18,7 @@ interface YargsArgvOutput {
     /**
      * All flags and values
      */
-    [ index: string ]: any;
+    [index: string]: any;
 
     /**
      * Bin
@@ -28,10 +28,10 @@ interface YargsArgvOutput {
 
 export interface Command {
     flags: {
-        [ index: string ]: {
-            type: FlagType
-        }
-    }
+        [index: string]: {
+            type: FlagType;
+        };
+    };
 }
 
 interface BinItem {
@@ -42,9 +42,7 @@ interface BinItem {
 
 const commandBins = [] as Command[];
 
-export function registerNew(trigger: BinItem["trigger"], command: Partial<Command> = {}, handle: BinItem["handle"]) {
-    
-}
+export function registerNew(trigger: BinItem["trigger"], command: Partial<Command> = {}, handle: BinItem["handle"]) {}
 
 const cliBuilder = {};
 

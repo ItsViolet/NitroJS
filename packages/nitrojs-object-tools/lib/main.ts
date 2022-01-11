@@ -1,5 +1,10 @@
+import { terminal } from "@skylixgh/nitrojs-terminal";
+
+/**
+ * Better data type for dynamic objects with no restricted types
+ */
 export type ObjectType = {
-    [ index: string ]: any | ObjectType;
+    [index: string]: any | ObjectType;
 };
 
 /**
@@ -18,7 +23,7 @@ export function mergeObject<BaseType>(baseObject: BaseType, partialObject: BaseT
 
 export function mergeObject(baseObject: any = {}, partialObject: any = {}): any {
     const recursiveResult = {} as any;
-    
+
     for (const objectKey in { ...baseObject }) {
         if (partialObject.hasOwnProperty(objectKey)) {
             if (typeof partialObject[objectKey] == "object" && !Array.isArray(partialObject[objectKey])) {
@@ -32,6 +37,14 @@ export function mergeObject(baseObject: any = {}, partialObject: any = {}): any 
     }
 
     return recursiveResult;
+}
+
+/**
+ * Dump an object for debugging purposes
+ * @param dumpObject The object to dump for debugging
+ */
+export function dump(dumpObject: ObjectType) {
+    terminal;
 }
 
 const objectTools = {
