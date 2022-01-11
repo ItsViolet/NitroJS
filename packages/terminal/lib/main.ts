@@ -214,6 +214,10 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
             } else {
                 currently = true;
             }
+        } else if (key.name == "y") {
+            currently = true;
+        } else if (key.name == "n") {
+            currently = false;
         }
 
         renderFromCurrently();
