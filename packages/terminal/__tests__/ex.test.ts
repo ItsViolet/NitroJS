@@ -1,4 +1,4 @@
-import terminal from './../lib/main';
+import terminal from "./../lib/main";
 
 terminal.log("Welcome, let's get started");
 

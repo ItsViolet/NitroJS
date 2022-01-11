@@ -10,7 +10,7 @@ let animationFullStopped = true;
 let questionRunning = false;
 let animationRenderFunction: () => void;
 const animationInterval = 100;
-const animationFrames = [ "|", "/", "-", "\\" ];
+const animationFrames = ["|", "/", "-", "\\"];
 
 export enum State {
     info,
@@ -53,7 +53,7 @@ export function success(text: string) {
  *  Log a warning message into the terminal
  * @param text Text to log
  */
-export function warning(text: string){
+export function warning(text: string) {
     logFormatted(text, "#FFAB00");
 }
 
@@ -75,7 +75,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
     if (!animationRunning || animationFullStopped) {
         return;
     }
-    
+
     if (newAnimationMessage) animationText = newAnimationMessage;
     animationRunning = false;
 
@@ -92,7 +92,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
             animationEndHex = "#50FFAB";
             break;
 
-        case State.error: 
+        case State.error:
             animationEndHex = "#FF5555";
             break;
     }
@@ -107,13 +107,13 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
 /**
  * Update the text of a currently running animation
  * @param newAnimationMessage The new text for the animation
- * @returns Nothing 
+ * @returns Nothing
  */
 export function updateAnimation(newAnimationMessage: string) {
     if (!animationRunning || animationFullStopped || !questionRunning) {
         return;
     }
-    
+
     animationText = newAnimationMessage;
     animationRenderFunction();
 }
@@ -127,11 +127,11 @@ export function animate(text: string) {
         animationText = text;
         animationRunning = true;
         animationFullStopped = false;
-    
+
         animationRenderFunction = () => {
             animationFrame++;
             let writableText = animationText;
-            
+
             if (animationFrame == animationFrames.length) {
                 animationFrame = 0;
             }
@@ -149,16 +149,16 @@ export function animate(text: string) {
                 let trailLength = process.stdout.columns - totalOutputLength;
                 writableText += " ".repeat(trailLength);
             }
-    
+
             if (animationRunning) {
                 process.stdout.write(`\r ${animationFrames[animationFrame]} ${writableText}`);
                 return;
             }
-    
-            process.stdout.write(`\r ${chalk.hex(animationEndHex)("•")} ${writableText}`);
-        }
 
-        animationLoop = setInterval(animationRenderFunction, animationInterval);    
+            process.stdout.write(`\r ${chalk.hex(animationEndHex)("•")} ${writableText}`);
+        };
+
+        animationLoop = setInterval(animationRenderFunction, animationInterval);
     })();
 }
 
@@ -169,13 +169,18 @@ export function animate(text: string) {
  * @param callBack The answer callback
  */
 export function askYN(question: string, defaultAnswer: boolean, callBack: (answer: boolean) => void) {
-    askString(question + " (Y/n)", defaultAnswer ? "Y" : "n", (answer) => {
-        callBack(answer.toLocaleLowerCase() == "y");
-    }, (answer) => {
-        if (answer.toLowerCase() != "y" && answer.toLowerCase() != "n") {
-            return `Please specify "Y" or "n"`;
+    askString(
+        question + " (Y/n)",
+        defaultAnswer ? "Y" : "n",
+        (answer) => {
+            callBack(answer.toLocaleLowerCase() == "y");
+        },
+        (answer) => {
+            if (answer.toLowerCase() != "y" && answer.toLowerCase() != "n") {
+                return `Please specify "Y" or "n"`;
+            }
         }
-    });
+    );
 }
 
 /**
@@ -186,38 +191,46 @@ export function askYN(question: string, defaultAnswer: boolean, callBack: (answe
  * @param validator The input validation call back, return a string to render an error
  * @returns Nothing
  */
-export function askString(question: string, defaultAnswer: string | null, callBack: (answer: string) => void, validator?: (answer: string) => string | void) {
+export function askString(
+    question: string,
+    defaultAnswer: string | null,
+    callBack: (answer: string) => void,
+    validator?: (answer: string) => string | void
+) {
     if (!animationFullStopped || questionRunning) {
         return;
     }
 
     questionRunning = true;
-    
+
     const ask = () => {
         const rl = readline.createInterface({
             output: process.stdout,
             input: process.stdin
         });
 
-        rl.question(` ${chalk.hex("#999999")(">")} ${question}${defaultAnswer ? chalk.hex("#999999")(" [ " + defaultAnswer.toUpperCase() + " ]") : ""}: `, (answer) => {
-            const validated = validator ? validator(answer) : null;
+        rl.question(
+            ` ${chalk.hex("#999999")(">")} ${question}${defaultAnswer ? chalk.hex("#999999")(" [ " + defaultAnswer.toUpperCase() + " ]") : ""}: `,
+            (answer) => {
+                const validated = validator ? validator(answer) : null;
 
-            if (validated) {
-                questionRunning = false;
-                error(validated);
-                questionRunning = true;
+                if (validated) {
+                    questionRunning = false;
+                    error(validated);
+                    questionRunning = true;
+                    rl.close();
+
+                    ask();
+                    return;
+                }
+
                 rl.close();
+                questionRunning = false;
 
-                ask();
-                return;
+                callBack(answer.length > 0 ? answer : defaultAnswer ?? "");
             }
-
-            rl.close();
-            questionRunning = false;
-
-            callBack(answer.length > 0 ? answer : defaultAnswer ?? "");
-        });
-    }
+        );
+    };
 
     ask();
 }

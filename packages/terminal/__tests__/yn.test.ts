@@ -1,5 +1,4 @@
-import terminal, { askQNA } from './../lib/main';
-
+import terminal, { askQNA } from "./../lib/main";
 
 askQNA("Are you a programmer?", true, (isDev) => {
     askQNA("Are you 13 or older", true, (over13) => {
