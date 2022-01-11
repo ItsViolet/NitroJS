@@ -176,6 +176,7 @@ export function animate(text: string) {
  * @param question The question to ask
  * @param defaultValue The default value
  * @param callBack A call back event for when the question is answered
+ * @returns Nothing
  */
 export function askQNA(question: string, defaultValue: boolean, callBack: (answer: boolean) => void) {
     if (!animationFullStopped || qnaRunning) {
