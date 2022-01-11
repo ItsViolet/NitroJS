@@ -190,21 +190,11 @@ export function animate(text: string) {
 }
 
 /**
- * Ask an interactive yes or no question
- * @param question The question to ask
- * @param defaultValue The default value
- * @param callBack A call back event for when the question is answered
- * @returns Nothing
+ * Ask a yes or no question
+ * @param question The question
+ * @param defaultAnswer The default answer
+ * @param callBack The answer callback
  */
-export function askQNA(question: string, defaultValue: boolean, callBack: (answer: boolean) => void) {
-    if (!animationFullStopped || questionRunning) {
-        return;
-    }
-
-    questionRunning = true;
-    // TODO: Implement new
-}
-
 export function askYN(question: string, defaultAnswer: boolean, callBack: (answer: boolean) => void) {
     askString(question + " (Y/n)", defaultAnswer ? "Y" : "n", (answer) => {
         callBack(answer.toLocaleLowerCase() == "y");
