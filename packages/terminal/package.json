@@ -25,6 +25,7 @@
         "url": "https://github.com/skylixgh/nitrojs/issues"
     },
     "dependencies": {
-        "chalk": "4.1.2"
+        "chalk": "4.1.2",
+        "enquirer": "^2.3.6"
     }
 }

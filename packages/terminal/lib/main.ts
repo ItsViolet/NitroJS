@@ -1,15 +1,6 @@
 import chalk from "chalk";
 import readline from "readline";
 
-readline.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
-
-process.stdin.on("keypress", (str, key) => {
-    if (key.name == "c" && key.ctrl) {
-        process.exit();
-    }
-});
-
 let animationLoop: NodeJS.Timer;
 let animationRunning = false;
 let animationFrame = 0;
@@ -20,6 +11,33 @@ let questionRunning = false;
 let animationRenderFunction: () => void;
 const animationInterval = 100;
 const animationFrames = [ "|", "/", "-", "\\" ];
+
+export interface KeyPressKey {
+    /**
+     * The key sequence
+     */
+    sequence: string;
+
+    /**
+     * The key name
+     */
+    name: string;
+
+    /**
+     * If the ctrl key was pressed
+     */
+    ctrl: boolean;
+
+    /**
+     * Meta
+     */
+    meta: boolean;
+
+    /**
+     * If the shift key was pressed
+     */
+    shift: boolean;
+}
 
 export enum State {
     info,
@@ -183,48 +201,18 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
         return;
     }
 
-    let currently = defaultValue;
+    questionRunning = true;
+    // TODO: Implement new
+}
 
-    let renderFromCurrently = () => {
-        let renderedYN = "";
-
-        if (currently) {
-            renderedYN = `${chalk.underline("Yes")} / ${chalk.hex("#999999")("No")}`
-        } else {
-            renderedYN = `${chalk.hex("#999999")("Yes")} / ${chalk.underline("No")}`
+export function askYN(question: string, defaultAnswer: boolean, callBack: (answer: boolean) => void) {
+    askString(question + " (Y/n)", defaultAnswer ? "Y" : "n", (answer) => {
+        callBack(answer.toLocaleLowerCase() == "y");
+    }, (answer) => {
+        if (answer.toLowerCase() != "y" && answer.toLowerCase() != "n") {
+            return `Please specify "Y" or "n"`;
         }
-
-        process.stdout.write(`\r ${chalk.hex("#999999")("?")} ${question}: ${renderedYN}`);
-    }
-
-    renderFromCurrently();
-
-    const keyEventHandler = (str: any, key: any) => {
-        if (key.name == "return") {
-            process.stdin.removeListener("keypress", keyEventHandler);
-            process.stdout.write("\n");
-
-            questionRunning = false;
-            callBack(currently);
-            return;
-        }
-
-        if (key.name == "right" || key.name == "left" || key.name == "space") {
-            if (currently) {
-                currently = false;
-            } else {
-                currently = true;
-            }
-        } else if (key.name == "y") {
-            currently = true;
-        } else if (key.name == "n") {
-            currently = false;
-        }
-
-        renderFromCurrently();
-    }
-
-    process.stdin.on("keypress", keyEventHandler);
+    });
 }
 
 /**
@@ -232,12 +220,43 @@ export function askQNA(question: string, defaultValue: boolean, callBack: (answe
  * @param question The question to ask
  * @param defaultAnswer The default question answer
  * @param callBack The answer call back
+ * @param validator The input validation call back, return a string to render an error
  * @returns Nothing
  */
-export function askString(question: string, defaultAnswer: string, callBack: (answer: string) => void) {
+export function askString(question: string, defaultAnswer: string | null, callBack: (answer: string) => void, validator?: (answer: string) => string | void) {
     if (!animationFullStopped || questionRunning) {
         return;
     }
+
+    questionRunning = true;
+    
+    const ask = () => {
+        const rl = readline.createInterface({
+            output: process.stdout,
+            input: process.stdin
+        });
+
+        rl.question(` ${chalk.hex("#999999")(">")} ${question}${defaultAnswer ? chalk.hex("#999999")(" [ " + defaultAnswer.toUpperCase() + " ]") : ""}: `, (answer) => {
+            const validated = validator ? validator(answer) : null;
+
+            if (validated) {
+                questionRunning = false;
+                error(validated);
+                questionRunning = true;
+                rl.close();
+
+                ask();
+                return;
+            }
+
+            rl.close();
+            questionRunning = false;
+
+            callBack(answer.length > 0 ? answer : defaultAnswer ?? "");
+        });
+    }
+
+    ask();
 }
 
 const terminal = {
@@ -249,7 +268,8 @@ const terminal = {
     updateAnimation,
     stopAnimation,
     askQNA,
-    askString
+    askString,
+    askYN
 };
 
 export default terminal;
