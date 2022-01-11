@@ -1,5 +1,5 @@
 {
-    "name": "@skylixgh/cli-builder",
+    "name": "@skylixgh/nitrojs-cli-builder",
     "version": "1.0.0-dev",
     "description": "> TODO: description",
     "author": "Skylix",
@@ -25,5 +25,9 @@
     },
     "bugs": {
         "url": "https://github.com/SkylixGH/NitroJS/issues"
+    },
+    "dependencies": {
+        "ts-node": "^10.4.0",
+        "yargs": "^17.3.1"
     }
 }

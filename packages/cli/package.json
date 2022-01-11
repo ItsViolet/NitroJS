@@ -27,6 +27,7 @@
         "url": "https://github.com/skylixgh/nitrojs/issues"
     },
     "dependencies": {
-        "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
+        "@skylixgh/nitrojs-terminal": "^1.0.0-dev",
+        "ts-node": "^10.4.0"
     }
 }
