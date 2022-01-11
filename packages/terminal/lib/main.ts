@@ -12,33 +12,6 @@ let animationRenderFunction: () => void;
 const animationInterval = 100;
 const animationFrames = [ "|", "/", "-", "\\" ];
 
-export interface KeyPressKey {
-    /**
-     * The key sequence
-     */
-    sequence: string;
-
-    /**
-     * The key name
-     */
-    name: string;
-
-    /**
-     * If the ctrl key was pressed
-     */
-    ctrl: boolean;
-
-    /**
-     * Meta
-     */
-    meta: boolean;
-
-    /**
-     * If the shift key was pressed
-     */
-    shift: boolean;
-}
-
 export enum State {
     info,
     success,
