@@ -1,6 +1,8 @@
 import cliBuilder, { FlagType } from "@skylixgh/nitrojs-cli-builder";
 import terminal, { State as AnimationState } from "@skylixgh/nitrojs-terminal";
 
+Error.stackTraceLimit = Infinity;
+
 export default function dev() {
     cliBuilder.registerNew("dev", {
         flags: {
@@ -12,18 +14,17 @@ export default function dev() {
         terminal.animate("Loading your configuration");
 
         let ticks = 0;
-        const max = 500;
+        const max = Infinity;
 
-        let loop = setInterval(() => {
+        while (true) {
             ticks++;
 
             if (ticks == max) {
-                clearInterval(loop);
                 terminal.stopAnimation(AnimationState.success, "Finished loading your configuration (500)");
                 return;
             }
 
-            terminal.updateAnimation(`Loading your configuration (${ticks})`)
-        }, 10);
+            terminal.updateAnimation(`Loading your configuration (${ticks})`);
+        }
     });
 }
