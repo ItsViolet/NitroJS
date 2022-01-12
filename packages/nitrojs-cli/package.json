@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@skylixgh/nitrojs-cli-builder": "^1.0.0-dev",
+        "@skylixgh/nitrojs-config-tools": "^1.0.0-dev",
         "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
     }
 }

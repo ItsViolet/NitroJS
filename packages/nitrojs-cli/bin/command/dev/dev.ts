@@ -1,5 +1,6 @@
 import cliBuilder, { FlagType } from "@skylixgh/nitrojs-cli-builder";
 import terminal, { State as AnimationState } from "@skylixgh/nitrojs-terminal";
+import { dump } from './../../../../nitrojs-object-tools/lib/main';
 
 Error.stackTraceLimit = Infinity;
 
@@ -11,20 +12,7 @@ export default function dev() {
             }
         }
     }, (args, flags) => {
-        terminal.animate("Loading your configuration");
-
-        let ticks = 0;
-        const max = Infinity;
-
-        while (true) {
-            ticks++;
-
-            if (ticks == max) {
-                terminal.stopAnimation(AnimationState.success, "Finished loading your configuration (500)");
-                return;
-            }
-
-            terminal.updateAnimation(`Loading your configuration (${ticks})`);
-        }
+        const configObj = {};
+        console.log(configObj);
     });
 }

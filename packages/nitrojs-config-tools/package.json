@@ -1,0 +1,32 @@
+{
+  "name": "@skylixgh/nitrojs-config-tools",
+  "version": "1.0.0-dev",
+  "description": "> TODO: description",
+  "author": "Skylix",
+  "homepage": "https://github.com/SkylixGH/NitroJS#readme",
+  "license": "MIT",
+  "main": "lib/main",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SkylixGH/NitroJS.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/SkylixGH/NitroJS/issues"
+  },
+  "dependencies": {
+    "@skylixgh/nitrojs-object-tools": "^1.0.0-dev"
+  }
+}

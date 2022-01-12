@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import readline from "readline";
 
-let animationLoop: NodeJS.Timer;
+let animationLoop: NodeJS.Timer | number;
 let animationRunning = false;
 let animationFrame = 0;
 let animationText = "";
@@ -107,8 +107,8 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
             break;
     }
 
-    if (animationRenderFunction) animationRenderFunction();
-    clearInterval(animationLoop);
+    if (animationRenderFunction) animationRenderFunction(true);
+    clearInterval(animationLoop as number);
 
     process.stdout.write("\n");
     animationFullStopped = true;
@@ -133,7 +133,7 @@ export function updateAnimation(newAnimationMessage: string) {
  * @param text Text to write the animations message
  */
 export function animate(text: string) {
-    (() => {
+    (async () => {
         animationText = text;
         animationRunning = true;
         animationFullStopped = false;
