@@ -1,5 +1,6 @@
 import terminal from "@skylixgh/nitrojs-terminal";
 import cliHighlight from "cli-highlight";
+import mergeDeep from "merge-deep";
 
 /**
  * Better data type for dynamic objects with no restricted types
@@ -22,22 +23,8 @@ export function mergeObject<BaseType, PartialType>(baseObject: BaseType, partial
  */
 export function mergeObject<BaseType>(baseObject: BaseType, partialObject: BaseType): BaseType;
 
-export function mergeObject(baseObject: any = {}, partialObject: any = {}): any {
-    const recursiveResult = {} as any;
-
-    for (const objectKey in { ...baseObject }) {
-        if (partialObject.hasOwnProperty(objectKey)) {
-            if (typeof partialObject[objectKey] == "object" && !Array.isArray(partialObject[objectKey])) {
-                recursiveResult[objectKey] = mergeObject(baseObject[objectKey], partialObject[objectKey]);
-            } else {
-                recursiveResult[objectKey] = partialObject[objectKey];
-            }
-        } else {
-            recursiveResult[objectKey] = baseObject[objectKey];
-        }
-    }
-
-    return recursiveResult;
+export function mergeObject(baseObject: any, partialObject: any): any {
+    return mergeDeep({...baseObject}, {...partialObject});
 }
 
 /**

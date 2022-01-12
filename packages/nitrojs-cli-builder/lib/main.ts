@@ -1,6 +1,7 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers"
 import objectTools, { ObjectType } from '@skylixgh/nitrojs-object-tools';
+import terminal from "@skylixgh/nitrojs-terminal";
 
 export enum FlagType {
     /**
@@ -31,7 +32,12 @@ export enum FlagType {
     /**
      * A boolean array data type
      */
-    arrayBoolean
+    arrayBoolean,
+
+    /**
+     * An object data type
+     */
+    object
 }
 
 interface YargsArgvOutput {
@@ -169,28 +175,91 @@ function filterFlags(parsed: YargsArgvOutput): ObjectType {
 }
 
 /**
+ * Get the process argv
+ * @returns The process argv
+ */
+export function getArgv(): [string, string, ...[string]] {
+    return process.argv as any;
+}
+
+interface ErrorFlag {
+    /**
+     * The expected flag type
+     */
+    expected: FlagType;
+
+    /**
+     * The received flag type
+     */
+    received: FlagType;
+}
+
+/**
+ * Type check process on all flags
+ * @param flags The flags
+ * @param commandObject The bin item
+ * @returns The error types
+ */
+function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): ErrorFlag[] {
+    let errorFlags = [] as ErrorFlag[];
+    
+    for (const commandFlagName in commandFlags) {
+        let arrayExpected = false;
+        const commandFlag = commandFlags[commandFlagName];
+        console.log(commandObject)
+        const expectedType = commandObject.command.flags[commandFlagName].type;
+
+        if (expectedType == FlagType.arrayBoolean || expectedType == FlagType.arrayNumber || expectedType == FlagType.arrayString) {
+            arrayExpected = true;
+        }
+
+        console.log(arrayExpected);
+    }
+
+    return errorFlags;
+}
+
+/**
  * Execute the command app
  * @param argv Program arguments
  */
-export function execute(argv: typeof process.argv) {
+export function execute(argv: [string, string, ...[string]]) {
     const args = hideBin(argv);
-    const parsed = yargs.help(false).parse(args) as YargsArgvOutput;
+    const parsed = yargs.help(false).version(false).parse(args) as YargsArgvOutput;
     const flags = filterFlags(parsed);
-
-    console.log(parsed);
-    console.log(getCommandBin(parsed._[0]));
 
     if (parsed._[0]) {
         const commandBin = getCommandBin(parsed._[0]);
+
+        if (commandBin) {
+            const errorFlags = typeCheckAllFlags(flags, commandBin);
+            console.log(errorFlags);
+
+            return;
+        }
+
+        terminal.error(`Unknown command: "${parsed._[0]}"`);
         return;
     }
 
-    if (flags.version) {
-        
+    if (Object.keys(flags).length >= 1) {
+        if (flags.version) {
+            terminal.log(`${programName} - ${programVersion}`);
+            return;
+        }
+
+        if (flags.version) {
+
+            return;
+        }
+
+        terminal.error(`Unexpected flags: "${Object.keys(flags).join(", ")}"`);
         return;
     }
 
     // TODO: Render help page
+    terminal.log(`${programName} - ${programVersion}`);
+    terminal.log("Help page has not been implemented");
 }
 
 const cliBuilder = {
@@ -198,7 +267,8 @@ const cliBuilder = {
     execute,
     setVersion,
     setAuthor,
-    setName
+    setName,
+    getArgv
 };
 
 export default cliBuilder;
