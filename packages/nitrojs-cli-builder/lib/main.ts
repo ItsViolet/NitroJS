@@ -194,15 +194,33 @@ interface ErrorFlag {
     flag: string;
 }
 
+export interface ArrayErrorFlag {
+    /**
+     * The expected data type
+     */
+    expected: FlagType;
+
+    /**
+     * The flag name
+     */
+    flag: string;
+
+    /**
+     * The array element where the type error happened
+     */
+    index: number;
+}
+
 /**
  * Type check process on all flags
  * @param flags The flags
  * @param commandObject The bin item
  * @returns The error types
  */
-function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { errors: ErrorFlag[], trueValues: ObjectType } {
+function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { errors: ErrorFlag[], trueValues: ObjectType, arrayErrors: ArrayErrorFlag[] } {
     let errorFlags = [] as ErrorFlag[];
     let trueValues: ObjectType = {};
+    let arrayErrorFlags = [] as ArrayErrorFlag[];
     
     for (const commandFlagName in commandFlags) {
         let arrayExpected = false;
@@ -213,31 +231,92 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { 
             arrayExpected = true;
         }
 
+        const pushFlagError = () => {
+            errorFlags.push({
+                expected: expectedType,
+                flag: commandFlagName
+            });
+        }
+
         if (!arrayExpected) {
-            const flagValue = commandFlag + "";
+            if (Array.isArray(commandFlag)) {
+                pushFlagError();
+            } else {
+                const flagValue = commandFlag + "";
 
-            if (expectedType == FlagType.string) {
-                trueValues[commandFlagName] = flagValue;
-            }
-
-            if (expectedType == FlagType.boolean) {
-                if (flagValue.toLocaleLowerCase() == "true") {
-                    trueValues[commandFlagName] = true;
-                } else if (flagValue.toLocaleLowerCase() == "false") {
-                    trueValues[commandFlagName] = false;
-                } else {
-                    errorFlags.push({
-                        expected: expectedType,
-                        flag: commandFlagName
-                    });
+                if (expectedType == FlagType.string) {
+                    trueValues[commandFlagName] = flagValue;
                 }
+
+                if (expectedType == FlagType.boolean) {
+                    if (flagValue.toLocaleLowerCase() == "true") {
+                        trueValues[commandFlagName] = true;
+                    } else if (flagValue.toLocaleLowerCase() == "false") {
+                        trueValues[commandFlagName] = false;
+                    } else {
+                        pushFlagError();
+                    }
+                }
+
+                if (expectedType == FlagType.number) {
+                    if (!isNaN(flagValue as any)) {
+                        trueValues[commandFlagName] = +flagValue;
+                    } else {
+                        pushFlagError();
+                    }
+                }
+
+
+            }
+        } else if (arrayExpected) {
+            if (Array.isArray(commandFlag)) {
+                commandFlag.forEach((arrayItem, index) => {
+                    const arrayStringItem = arrayItem + "";
+                    
+                    if (!trueValues[commandFlagName]) {
+                        trueValues[commandFlagName] = [] as string[];
+                    }
+                    
+                    if (expectedType == FlagType.arrayString) {
+                        trueValues[commandFlagName].push(arrayStringItem);
+                    }
+
+                    if (expectedType == FlagType.arrayBoolean) {
+                        if (arrayStringItem.toLowerCase() == "true") {
+                            trueValues[commandFlagName].push(true);
+                        } else if (arrayStringItem.toLowerCase() == "false") {
+                            trueValues[commandFlagName].push(false);
+                        } else {
+                            arrayErrorFlags.push({
+                                flag: commandFlagName,
+                                expected: FlagType.boolean,
+                                index
+                            });
+                        }
+                    }
+
+                    if (expectedType == FlagType.arrayNumber) {
+                        if (!isNaN(commandFlag as any)) {
+                            trueValues[commandFlagName].push(+commandFlag);
+                        } else {
+                            arrayErrorFlags.push({
+                                expected: FlagType.number,
+                                flag: commandFlagName,
+                                index
+                            });
+                        }
+                    }
+                });
+            } else {
+                pushFlagError();
             }
         }
     }
 
     return {
         errors: errorFlags,
-        trueValues: trueValues
+        trueValues: trueValues,
+        arrayErrors: arrayErrorFlags
     };
 }
 
@@ -254,8 +333,8 @@ export function execute(argv: [string, string, ...[string]]) {
         const commandBin = getCommandBin(parsed._[0]);
 
         if (commandBin) {
-            const errorFlags = typeCheckAllFlags(flags, commandBin);
-            console.log(errorFlags);
+            const typeData = typeCheckAllFlags(flags, commandBin);
+            console.log(typeData);
 
             return;
         }

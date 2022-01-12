@@ -5,7 +5,7 @@ import pkg from "../package.json";
 cliBuilder.registerNew("hello", {
     flags: {
         name: {
-            type: FlagType.boolean
+            type: FlagType.arrayBoolean
         }
     }
 }, (args, flags) => {
