@@ -1,7 +1,6 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers"
 import objectTools, { ObjectType } from '@skylixgh/nitrojs-object-tools';
-import { dump } from './../../nitrojs-object-tools/lib/main';
 
 export enum FlagType {
     /**
@@ -94,6 +93,9 @@ interface BinItem {
 }
 
 const commandBins = [] as BinItem[];
+let programVersion = "0.0.0";
+let programName = "CLI Program";
+let programAuthor = "Unknown";
 
 /**
  * Register a new command
@@ -112,6 +114,30 @@ export function registerNew(trigger: BinItem["trigger"], command: Partial<Comman
 }
 
 /**
+ * Set the program version
+ * @param version The program version
+ */
+export function setVersion(version: string) {
+    programVersion = version;
+}
+
+/**
+ * Set the program author
+ * @param author The program author
+ */
+export function setAuthor(author: string) {
+    programAuthor = author;
+}
+
+/**
+ * Set the program name
+ * @param name The program name
+ */
+export function setName(name: string) {
+    programName = name;
+}
+
+/**
  * Get a command with its trigger
  * @param trigger The command's trigger
  * @returns The command, undefined if the command was not found
@@ -127,19 +153,52 @@ function getCommandBin(trigger: string): BinItem | undefined {
 }
 
 /**
+ * Filter the object so that only the flags are left
+ * @param parsed The yargs parsed output
+ */
+function filterFlags(parsed: YargsArgvOutput): ObjectType {
+    const resultObj = {} as ObjectType;
+
+    for (const flagName in parsed) {
+        if (flagName != "_" && flagName != "$0") {
+            resultObj[flagName] = parsed[flagName];
+        }
+    }
+
+    return resultObj;
+}
+
+/**
  * Execute the command app
  * @param argv Program arguments
  */
 export function execute(argv: typeof process.argv) {
     const args = hideBin(argv);
     const parsed = yargs.help(false).parse(args) as YargsArgvOutput;
+    const flags = filterFlags(parsed);
 
+    console.log(parsed);
     console.log(getCommandBin(parsed._[0]));
+
+    if (parsed._[0]) {
+        const commandBin = getCommandBin(parsed._[0]);
+        return;
+    }
+
+    if (flags.version) {
+        
+        return;
+    }
+
+    // TODO: Render help page
 }
 
 const cliBuilder = {
     registerNew,
-    execute
+    execute,
+    setVersion,
+    setAuthor,
+    setName
 };
 
 export default cliBuilder;

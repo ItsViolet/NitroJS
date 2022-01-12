@@ -1,4 +1,4 @@
-import cliBuilder, { FlagType } from "../lib/main";
+import cliBuilder, { FlagType } from "..";
 import objectTools from '@skylixgh/nitrojs-object-tools';
 
 cliBuilder.registerNew("hello", {
@@ -12,4 +12,5 @@ cliBuilder.registerNew("hello", {
     objectTools.dump(flags);
 });
 
-cliBuilder.execute([ "", "", "hello", "world", "--cute", "true" ]);
+cliBuilder.execute(process.argv);
+
