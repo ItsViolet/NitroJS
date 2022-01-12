@@ -44,7 +44,7 @@ export function mergeObject(baseObject: any = {}, partialObject: any = {}): any 
  * Dump an object for debugging purposes
  * @param dumpObject The object to dump for debugging
  */
-export function dump(dumpObject: ObjectType | Array<any>) {
+export function dump(dumpObject: ObjectType | any[]) {
     terminal.log(terminal.hexColorize("Debug: ", "#999999") + "Dumping object bellow");
 
     console.log(cliHighlight(

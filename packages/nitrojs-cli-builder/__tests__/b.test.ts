@@ -12,4 +12,4 @@ cliBuilder.registerNew("hello", {
     objectTools.dump(flags);
 });
 
-cliBuilder.execute();
+cliBuilder.execute([ "", "", "hello", "world", "--cute", "true" ]);

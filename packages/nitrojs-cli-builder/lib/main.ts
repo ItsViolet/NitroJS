@@ -1,6 +1,7 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers"
-import objectTools from '@skylixgh/nitrojs-object-tools';
+import objectTools, { ObjectType } from '@skylixgh/nitrojs-object-tools';
+import { dump } from './../../nitrojs-object-tools/lib/main';
 
 export enum FlagType {
     /**
@@ -76,9 +77,20 @@ export interface Command {
 }
 
 interface BinItem {
+    /**
+     * Command options
+     */
     command: Command;
+
+    /**
+     * Command trigger
+     */
     trigger: string;
-    handle: (args: string, flags: any) => void;
+
+    /**
+     * Command trigger
+     */
+    handle: (args: string[], flags: ObjectType) => void;
 }
 
 const commandBins = [] as BinItem[];
@@ -100,10 +112,29 @@ export function registerNew(trigger: BinItem["trigger"], command: Partial<Comman
 }
 
 /**
+ * Get a command with its trigger
+ * @param trigger The command's trigger
+ * @returns The command, undefined if the command was not found
+ */
+function getCommandBin(trigger: string): BinItem | undefined {
+    const results = commandBins.find(item => item.trigger == trigger);
+
+    if (results) {
+        return results;
+    }
+
+    return;
+}
+
+/**
  * Execute the command app
+ * @param argv Program arguments
  */
 export function execute(argv: typeof process.argv) {
     const args = hideBin(argv);
+    const parsed = yargs.help(false).parse(args) as YargsArgvOutput;
+
+    console.log(getCommandBin(parsed._[0]));
 }
 
 const cliBuilder = {
