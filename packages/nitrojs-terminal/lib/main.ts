@@ -8,7 +8,7 @@ let animationText = "";
 let animationEndHex = "#999999";
 let animationFullStopped = true;
 let questionRunning = false;
-let animationRenderFunction: () => void;
+let animationRenderFunction: (updateFrame: boolean) => void;
 const animationInterval = 100;
 const animationFrames = ["|", "/", "-", "\\"];
 
@@ -125,7 +125,7 @@ export function updateAnimation(newAnimationMessage: string) {
     }
 
     animationText = newAnimationMessage;
-    animationRenderFunction();
+    animationRenderFunction(false);
 }
 
 /**
@@ -138,8 +138,8 @@ export function animate(text: string) {
         animationRunning = true;
         animationFullStopped = false;
 
-        animationRenderFunction = () => {
-            animationFrame++;
+        animationRenderFunction = (updateFrame = true) => {
+            if (updateFrame) animationFrame++;
             let writableText = animationText;
 
             if (animationFrame == animationFrames.length) {

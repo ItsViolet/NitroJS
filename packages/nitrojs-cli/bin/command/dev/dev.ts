@@ -12,17 +12,18 @@ export default function dev() {
         terminal.animate("Loading your configuration");
 
         let ticks = 0;
-        const max = 5;
+        const max = 500;
 
-        setInterval(() => {
+        let loop = setInterval(() => {
             ticks++;
 
             if (ticks == max) {
-                terminal.stopAnimation(AnimationState.success, "Finished loading your configuration");
+                clearInterval(loop);
+                terminal.stopAnimation(AnimationState.success, "Finished loading your configuration (500)");
                 return;
             }
 
             terminal.updateAnimation(`Loading your configuration (${ticks})`)
-        }, 1000);
+        }, 10);
     });
 }
