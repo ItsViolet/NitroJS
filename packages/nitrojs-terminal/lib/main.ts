@@ -120,7 +120,7 @@ export function stopAnimation(animationState: State, newAnimationMessage?: strin
  * @returns Nothing
  */
 export function updateAnimation(newAnimationMessage: string) {
-    if (!animationRunning || animationFullStopped || !questionRunning) {
+    if (!animationRunning || animationFullStopped || questionRunning) {
         return;
     }
 
