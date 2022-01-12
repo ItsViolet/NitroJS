@@ -9,3 +9,4 @@ npm-debug.log
 
 # Lock files
 packages/*/package-lock.json
+package-lock.json

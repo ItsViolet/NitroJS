@@ -213,7 +213,9 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): Er
             arrayExpected = true;
         }
 
-        console.log(arrayExpected);
+        if (!arrayExpected) {
+            
+        }
     }
 
     return errorFlags;
@@ -245,11 +247,6 @@ export function execute(argv: [string, string, ...[string]]) {
     if (Object.keys(flags).length >= 1) {
         if (flags.version) {
             terminal.log(`${programName} - ${programVersion}`);
-            return;
-        }
-
-        if (flags.version) {
-
             return;
         }
 
