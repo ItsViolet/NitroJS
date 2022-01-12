@@ -28,6 +28,21 @@ export function mergeObject(baseObject: any, partialObject: any): any {
 }
 
 /**
+ * Parse a JSON string into an object
+ * @param json The JSON data as a string
+ * @returns A promise containing the new parsed JSON object
+ */
+export function jsonParse<JsonDataType>(json: string): Promise<JsonDataType> {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(JSON.parse(json));
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+/**
  * Dump an object for debugging purposes
  * @param dumpObject The object to dump for debugging
  */
@@ -47,7 +62,8 @@ export function dump(dumpObject: ObjectType | any[]) {
 
 const objectTools = {
     mergeObject,
-    dump
+    dump,
+    jsonParse
 };
 
 export default objectTools;

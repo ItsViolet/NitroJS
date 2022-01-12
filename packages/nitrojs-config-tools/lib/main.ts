@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs-extra";
+import objectTools from '@skylixgh/nitrojs-object-tools';
 
 export enum Errors {
     /**
@@ -21,7 +22,12 @@ export enum Errors {
     /**
      * The file path provided was a directory instead
      */
-    filePathWasDirectory
+    filePathWasDirectory,
+
+    /**
+     * A default export was not provided or provided correctly
+     */
+    incorrectExportOrNone
 }
 
 /**
@@ -58,8 +64,42 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
             return;
         }
 
-        if (configPath.endsWith(".ts")) {
-            const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ]);
+        if (configPath.endsWith(allowedToEndWith.ts)) {
+            const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
+
+            readerProcess.stdout.on("data", (data: Buffer) => {
+                objectTools.jsonParse<any>(data.toString()).then((jsonData) => {
+                    if (!jsonData.hasOwnProperty("default")) {
+                        reject(Errors.incorrectExportOrNone);
+                        return;
+                    }
+
+                    resolve(objectTools.mergeObject(defaultBaseConfig, jsonData.default));
+                });
+            });
+
+            readerProcess.stderr.on("data", (data: Buffer) => {
+                readerProcess.kill();
+                reject(Errors.fileContainsErrors);
+            });
+        } else if (configPath.endsWith(allowedToEndWith.js)) {
+            const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
+
+            readerProcess.stdout.on("data", (data: Buffer) => {
+                objectTools.jsonParse<any>(data.toString()).then((jsonData) => {
+                    if (Object.keys(jsonData).length == 0) {
+                        reject(Errors.incorrectExportOrNone);
+                        return;
+                    }
+
+                    resolve(objectTools.mergeObject(defaultBaseConfig, jsonData));
+                });
+            });
+
+            readerProcess.stderr.on("data", (data: Buffer) => {
+                readerProcess.kill();
+                reject(Errors.fileContainsErrors);
+            });
         }
     });
 }

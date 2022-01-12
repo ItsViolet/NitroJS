@@ -1,6 +1,4 @@
 import cliBuilder, { FlagType } from "@skylixgh/nitrojs-cli-builder";
-import terminal, { State as AnimationState } from "@skylixgh/nitrojs-terminal";
-import { dump } from './../../../../nitrojs-object-tools/lib/main';
 import configTools from './../../../../nitrojs-config-tools/lib/main';
 import path from "path";
 
@@ -14,7 +12,7 @@ export default function dev() {
             }
         }
     }, async (args, flags) => {
-        const configObj = await configTools.read(path.join(__dirname, "./test.config.ts"), {});
+        const configObj = await configTools.read(path.join(__dirname, "./js.config.js"), {});
         console.log(configObj);
     });
 }
