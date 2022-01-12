@@ -72,11 +72,6 @@ export interface Command {
              * If the flag should be required
              */
             required?: boolean;
-
-            /**
-             * The default flag value
-             */
-            default?: any;
         };
     };
 }
