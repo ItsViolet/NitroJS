@@ -321,6 +321,22 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { 
 }
 
 /**
+ * Find out what flags are missing and invalid
+ * @param flags All user input flags
+ * @param commandBin The command binary object
+ * @returns The invalid and missing flag names
+ */
+function runParamChecking(flags: ObjectType, commandBin: BinItem): { invalidFlags: string[], missingFlags: string[] } {
+    const missingFlags = [] as string[];
+    const invalidFlags = [] as string[];
+
+    return {
+        missingFlags,
+        invalidFlags
+    };
+}
+
+/**
  * Execute the command app
  * @param argv Program arguments
  */
@@ -333,9 +349,19 @@ export function execute(argv: [string, string, ...[string]]) {
         const commandBin = getCommandBin(parsed._[0]);
 
         if (commandBin) {
-            const typeData = typeCheckAllFlags(flags, commandBin);
-            console.log(typeData);
+            const paramErrors = runParamChecking(flags, commandBin);
+            
+            if (paramErrors.invalidFlags.length == 0 && paramErrors.missingFlags.length == 0) {
 
+                return;
+            }
+
+            if (paramErrors.invalidFlags.length > 0) 
+                terminal.error(`Invalid flags: ${paramErrors.invalidFlags.join(", ")}`);
+
+            if (paramErrors.missingFlags.length > 0) {
+                terminal.error(`Missing flags: ${paramErrors.missingFlags.join(", ")}`);
+            }
             return;
         }
 

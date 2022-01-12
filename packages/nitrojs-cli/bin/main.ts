@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 
-console.log(process.argv);
-import * as terminal from "@skylixgh/nitrojs-terminal/lib/main";
+import cliBuilder from "@skylixgh/nitrojs-cli-builder";
+import pkg from "../package.json";
+import dev from './command/dev/dev';
 
-terminal.log("Hello, world");
+cliBuilder.setVersion(pkg.version);
+cliBuilder.setAuthor(pkg.author);
+cliBuilder.setName("NitroJS CLI");
+
+dev();
+
+cliBuilder.execute(cliBuilder.getArgv());

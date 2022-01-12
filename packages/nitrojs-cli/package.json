@@ -27,6 +27,7 @@
         "url": "https://github.com/skylixgh/nitrojs/issues"
     },
     "dependencies": {
+        "@skylixgh/nitrojs-cli-builder": "^1.0.0-dev",
         "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
     }
 }
