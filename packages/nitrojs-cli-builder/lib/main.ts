@@ -379,6 +379,10 @@ export function execute(argv: [string, string, ...[string]]) {
                         terminal.error(`Type error in array flag: ${terminal.hexColorize(`--${arrayError.flag}`, "#999999")} expected a ${arrayError.expected} on index ${arrayError.index} of array`)
                     });
                 }
+
+                if (typeData.arrayErrors.length == 0 && typeData.errors.length == 0) {
+                    commandBin.handle(parsed._, flags);
+                }
                 return;
             }
 
