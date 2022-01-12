@@ -189,9 +189,9 @@ interface ErrorFlag {
     expected: FlagType;
 
     /**
-     * The received flag type
+     * The flag name
      */
-    received: FlagType;
+    flag: string;
 }
 
 /**
@@ -200,13 +200,13 @@ interface ErrorFlag {
  * @param commandObject The bin item
  * @returns The error types
  */
-function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): ErrorFlag[] {
+function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { errors: ErrorFlag[], trueValues: ObjectType } {
     let errorFlags = [] as ErrorFlag[];
+    let trueValues: ObjectType = {};
     
     for (const commandFlagName in commandFlags) {
         let arrayExpected = false;
         const commandFlag = commandFlags[commandFlagName];
-        console.log(commandObject)
         const expectedType = commandObject.command.flags[commandFlagName].type;
 
         if (expectedType == FlagType.arrayBoolean || expectedType == FlagType.arrayNumber || expectedType == FlagType.arrayString) {
@@ -214,11 +214,31 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): Er
         }
 
         if (!arrayExpected) {
-            
+            const flagValue = commandFlag + "";
+
+            if (expectedType == FlagType.string) {
+                trueValues[commandFlagName] = flagValue;
+            }
+
+            if (expectedType == FlagType.boolean) {
+                if (flagValue.toLocaleLowerCase() == "true") {
+                    trueValues[commandFlagName] = true;
+                } else if (flagValue.toLocaleLowerCase() == "false") {
+                    trueValues[commandFlagName] = false;
+                } else {
+                    errorFlags.push({
+                        expected: expectedType,
+                        flag: commandFlagName
+                    });
+                }
+            }
         }
     }
 
-    return errorFlags;
+    return {
+        errors: errorFlags,
+        trueValues: trueValues
+    };
 }
 
 /**
