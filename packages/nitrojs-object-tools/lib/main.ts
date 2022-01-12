@@ -1,4 +1,5 @@
-import { terminal } from "@skylixgh/nitrojs-terminal";
+import terminal from "@skylixgh/nitrojs-terminal";
+import cliHighlight from "cli-highlight";
 
 /**
  * Better data type for dynamic objects with no restricted types
@@ -43,12 +44,23 @@ export function mergeObject(baseObject: any = {}, partialObject: any = {}): any 
  * Dump an object for debugging purposes
  * @param dumpObject The object to dump for debugging
  */
-export function dump(dumpObject: ObjectType) {
-    terminal;
+export function dump(dumpObject: ObjectType | Array<any>) {
+    terminal.log(terminal.hexColorize("Debug: ", "#999999") + "Dumping object bellow");
+
+    console.log(cliHighlight(
+        JSON.stringify(dumpObject, null, 2),
+        {
+            language: "json",
+            ignoreIllegals: true
+        }
+    ));
+
+    terminal.log(terminal.hexColorize("Debug: ", "#999999") + "An object was dumped above");
 }
 
 const objectTools = {
-    mergeObject
+    mergeObject,
+    dump
 };
 
 export default objectTools;

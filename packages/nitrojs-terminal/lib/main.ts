@@ -20,6 +20,16 @@ export enum State {
 }
 
 /**
+ * Colorize some text with hex
+ * @param text The text to colorize
+ * @param hexColor The hex color for the text
+ * @returns The colorized text
+ */
+export function hexColorize(text: string, hexColor: string): string {
+    return chalk.hex(hexColor)(text);
+}
+
+/**
  * Create and print a formatted message in the terminal
  * @param text Text message
  * @param hexColor Hex color for prefix bullet
@@ -244,7 +254,8 @@ const terminal = {
     updateAnimation,
     stopAnimation,
     askString,
-    askYN
+    askYN,
+    hexColorize
 };
 
 export default terminal;
