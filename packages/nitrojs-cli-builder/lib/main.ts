@@ -71,7 +71,7 @@ export interface Command {
             /**
              * If the flag should be required
              */
-            require?: boolean;
+            required?: boolean;
 
             /**
              * The default flag value
@@ -329,6 +329,20 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { 
 function runParamChecking(flags: ObjectType, commandBin: BinItem): { invalidFlags: string[], missingFlags: string[] } {
     const missingFlags = [] as string[];
     const invalidFlags = [] as string[];
+    const flagKeys = Object.keys(flags);
+    const commandFlagKeys = Object.keys(commandBin.command.flags);
+
+    flagKeys.forEach(flagName => {
+        if (!commandBin.command.flags.hasOwnProperty(flagName)) {
+            invalidFlags.push(flagName)
+        }
+    });
+
+    commandFlagKeys.forEach(commandFlagName => {
+        if (commandBin.command.flags[commandFlagName].required && !flags.hasOwnProperty(commandFlagName)) {
+            missingFlags.push(commandFlagName);
+        }
+    });
 
     return {
         missingFlags,
@@ -352,16 +366,27 @@ export function execute(argv: [string, string, ...[string]]) {
             const paramErrors = runParamChecking(flags, commandBin);
             
             if (paramErrors.invalidFlags.length == 0 && paramErrors.missingFlags.length == 0) {
+                const typeData = typeCheckAllFlags(flags, commandBin);
 
+                if (typeData.errors.length > 0) {
+                    typeData.errors.forEach(typeError => {
+                        terminal.error(`Type error in flag: ${terminal.hexColorize(`--${typeError.flag}`, "#999999")} expected a(n) ${Object.keys(FlagType).find(key => FlagType[key as any] == typeError.expected)}`);
+                    });
+                }
+
+                if (typeData.arrayErrors) {
+                    typeData.arrayErrors.forEach(arrayError => {
+                        terminal.error(`Type error in array flag: ${terminal.hexColorize(`--${arrayError.flag}`, "#999999")} expected a ${arrayError.expected} on index ${arrayError.index} of array`)
+                    });
+                }
                 return;
             }
 
             if (paramErrors.invalidFlags.length > 0) 
                 terminal.error(`Invalid flags: ${paramErrors.invalidFlags.join(", ")}`);
 
-            if (paramErrors.missingFlags.length > 0) {
+            if (paramErrors.missingFlags.length > 0)
                 terminal.error(`Missing flags: ${paramErrors.missingFlags.join(", ")}`);
-            }
             return;
         }
 

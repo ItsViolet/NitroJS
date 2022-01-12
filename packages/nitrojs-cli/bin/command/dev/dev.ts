@@ -4,7 +4,11 @@ export default function dev() {
     cliBuilder.registerNew("dev", {
         flags: {
             uwu: {
-                type: FlagType.boolean
+                type: FlagType.boolean,
+                required: true
+            },
+            kittens: {
+                type: FlagType.arrayBoolean
             }
         }
     }, (args, flags) => {
