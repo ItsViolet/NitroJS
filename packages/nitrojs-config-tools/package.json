@@ -27,6 +27,11 @@
     "url": "https://github.com/SkylixGH/NitroJS/issues"
   },
   "dependencies": {
-    "@skylixgh/nitrojs-object-tools": "^1.0.0-dev"
+    "@skylixgh/nitrojs-object-tools": "^1.0.0-dev",
+    "fs-extra": "^10.0.0",
+    "ts-node": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13"
   }
 }
