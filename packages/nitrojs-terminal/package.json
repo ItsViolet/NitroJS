@@ -30,5 +30,8 @@
     "dependencies": {
         "chalk": "4.1.2"
     },
-    "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e"
+    "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e",
+    "devDependencies": {
+        "typescript": "^4.5.4"
+    }
 }

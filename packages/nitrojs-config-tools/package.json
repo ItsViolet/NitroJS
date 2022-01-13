@@ -21,7 +21,8 @@
         "url": "git+https://github.com/SkylixGH/NitroJS.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 1"
+        "build": "tsc",
+        "clean": "tsc --build --clean"
     },
     "bugs": {
         "url": "https://github.com/SkylixGH/NitroJS/issues"
@@ -36,7 +37,8 @@
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.13",
-        "@types/yaml": "^1.9.7"
+        "@types/yaml": "^1.9.7",
+        "typescript": "^4.5.4"
     },
     "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e"
 }

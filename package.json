@@ -6,7 +6,8 @@
         "lerna": "^4.0.0"
     },
     "scripts": {
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "release": "lerna run build && lerna publish && lerna run clean"
     },
     "dependencies": {
         "@types/node": "^17.0.8",
