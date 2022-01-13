@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs-extra";
-import objectTools from '@skylixgh/nitrojs-object-tools';
+import objectTools, { DeepPartial } from '@skylixgh/nitrojs-object-tools';
 import commentJSON from "comment-json";
 import YAML from "yaml";
 
@@ -64,9 +64,9 @@ export interface Settings {
  * @param configPath 
  * @returns Promise containing the config
  */
-export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: Partial<Settings> = {}): Promise<ConfigDataType> {
+export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: DeepPartial<Settings> = {}): Promise<ConfigDataType> {
     return new Promise((resolve, reject) => {
-        const options = objectTools.mergeObject<Settings, Partial<Settings>>({
+        const options = objectTools.mergeObject<Settings>({
             supportedTypes: {
                 yaml: true,
                 json: true,

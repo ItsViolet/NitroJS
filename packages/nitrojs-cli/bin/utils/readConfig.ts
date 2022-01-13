@@ -10,6 +10,11 @@ import ConfigType from "../interfaces/ConfigType";
 export default function readConfig(configPath = "nitrojs.config.ts", callBack: (config: ConfigType) => void) {
     configTools.read<ConfigType>(path.join(process.cwd(), configPath), {
         type: ConfigAppType.desktop
+    }, {
+        supportedTypes: {
+            yaml: false,
+            json: false
+        }
     }).then(config => {
         callBack(config);
     });

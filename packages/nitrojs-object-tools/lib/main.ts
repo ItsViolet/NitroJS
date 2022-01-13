@@ -21,7 +21,7 @@ export function mergeObject<BaseType, PartialType>(baseObject: BaseType, partial
  * @param baseObject The base object
  * @param partialObject The object with certain or all properties missing
  */
-export function mergeObject<BaseType>(baseObject: BaseType, partialObject: BaseType): BaseType;
+export function mergeObject<BaseType>(baseObject: BaseType, partialObject: DeepPartial<BaseType>): BaseType;
 
 export function mergeObject(baseObject: any, partialObject: any): any {
     return mergeDeep({...baseObject}, {...partialObject});
@@ -59,6 +59,10 @@ export function dump(dumpObject: ObjectType | any[]) {
 
     terminal.log(terminal.hexColorize("Debug: ", "#999999") + "An object was dumped above");
 }
+
+export type DeepPartial<T> = {
+    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
 
 const objectTools = {
     mergeObject,
