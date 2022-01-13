@@ -33,7 +33,7 @@
         "@types/yargs": "^17.0.8",
         "yargs": "^17.3.1"
     },
-    "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e",
+    "gitHead": "702c95e2aa948ee1ddb415176e7d1a1cf3c68b53",
     "devDependencies": {
         "typescript": "^4.5.4"
     }
