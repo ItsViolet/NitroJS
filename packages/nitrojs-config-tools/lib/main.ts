@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import path from "path";
 import fs from "fs-extra";
 import objectTools from '@skylixgh/nitrojs-object-tools';
+import commentJSON from "comment-json";
 
 export enum Errors {
     /**
@@ -99,6 +100,15 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
             readerProcess.stderr.on("data", (data: Buffer) => {
                 readerProcess.kill();
                 reject(Errors.fileContainsErrors);
+            });
+        } else if (configPath.endsWith(allowedToEndWith.json)) {
+            fs.readFile(configPath).then((jsonString) => {
+                try {
+                    const parsedJSON = commentJSON.parse(jsonString.toString());
+                    resolve(parsedJSON);
+                } catch (error) {
+                    reject(Errors.fileContainsErrors);
+                }
             });
         }
     });

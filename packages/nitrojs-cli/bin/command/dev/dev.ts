@@ -12,7 +12,7 @@ export default function dev() {
             }
         }
     }, async (args, flags) => {
-        const configObj = await configTools.read(path.join(__dirname, "./js.config.js"), {});
+        const configObj = await configTools.read(path.join(process.cwd(), flags.config ?? "./typescript.config.ts"), {});
         console.log(configObj);
     });
 }

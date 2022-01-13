@@ -6,7 +6,8 @@
     "homepage": "https://github.com/skylixgh/nitrojs#readme",
     "license": "MIT",
     "bin": {
-        "nitrojs": "./bin/main.js"
+        "nitrojs": "./bin/main.js",
+        "nitrojs-dev": "./bin/tsMain.js"
     },
     "directories": {
         "lib": "lib",
@@ -29,6 +30,7 @@
     "dependencies": {
         "@skylixgh/nitrojs-cli-builder": "^1.0.0-dev",
         "@skylixgh/nitrojs-config-tools": "^1.0.0-dev",
-        "@skylixgh/nitrojs-terminal": "^1.0.0-dev"
+        "@skylixgh/nitrojs-terminal": "^1.0.0-dev",
+        "ts-node": "^10.4.0"
     }
 }
