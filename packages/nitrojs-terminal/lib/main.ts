@@ -140,8 +140,8 @@ export function animate(text: string) {
 
         animationRenderFunction = (updateFrame = true) => {
             if (updateFrame) animationFrame++;
+            
             let writableText = animationText;
-
             if (animationFrame == animationFrames.length) {
                 animationFrame = 0;
             }
