@@ -32,13 +32,49 @@ export enum Errors {
     incorrectExportOrNone
 }
 
+export interface Settings {
+    /**
+     * All supported config types
+     */
+    supportedTypes: {
+        /**
+         * YAML configuration
+         */
+        yaml: boolean;
+
+        /**
+         * JSON configuration
+         */
+        json: boolean;
+
+        /**
+         * JavaScript configuration
+         */
+        js: boolean;
+
+        /**
+         * TypeScript configuration
+         */
+        ts: boolean;
+    }
+}
+
 /**
  * Read a configuration file
  * @param configPath 
  * @returns Promise containing the config
  */
-export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType): Promise<ConfigDataType> {
+export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: Settings = {}): Promise<ConfigDataType> {
     return new Promise((resolve, reject) => {
+        settings = objectTools.mergeObject<Settings, Partial<Settings>>({
+            supportedTypes: {
+                yaml: true,
+                json: true,
+                ts: true,
+                js: true
+            }
+        }, settings);
+        
         if (!fs.existsSync(configPath)) {
             reject(Errors.invalidFilePath);
             return;
@@ -49,25 +85,14 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
             js: ".js",
             json: ".json",
             yaml: [ ".yml", ".yaml" ]
-        }
-
-        if (
-            !configPath.endsWith(allowedToEndWith.ts) 
-            && !configPath.endsWith(allowedToEndWith.js) 
-            && !configPath.endsWith(allowedToEndWith.json) 
-            && !configPath.endsWith(allowedToEndWith.yaml[0])
-            && !configPath.endsWith(allowedToEndWith.yaml[1])
-        ) {
-            reject(Errors.unsupportedFileType);
-            return;
-        }
+        };
 
         if (fs.lstatSync(configPath).isDirectory()) {
             reject(Errors.filePathWasDirectory);
             return;
         }
 
-        if (configPath.endsWith(allowedToEndWith.ts)) {
+        if (configPath.endsWith(allowedToEndWith.ts) && settings.supportedTypes.ts) {
             const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
 
             readerProcess.stdout.on("data", (data: Buffer) => {
@@ -85,7 +110,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                 readerProcess.kill();
                 reject(Errors.fileContainsErrors);
             });
-        } else if (configPath.endsWith(allowedToEndWith.js)) {
+        } else if (configPath.endsWith(allowedToEndWith.js) && settings.supportedTypes.js) {
             const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
 
             readerProcess.stdout.on("data", (data: Buffer) => {
@@ -103,7 +128,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                 readerProcess.kill();
                 reject(Errors.fileContainsErrors);
             });
-        } else if (configPath.endsWith(allowedToEndWith.json)) {
+        } else if (configPath.endsWith(allowedToEndWith.json) && settings.supportedTypes.json) {
             fs.readFile(configPath).then((jsonString) => {
                 try {
                     const parsedJSON = commentJSON.parse(jsonString.toString());
@@ -112,7 +137,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                     reject(Errors.fileContainsErrors);
                 }
             });
-        } else if (configPath.endsWith(allowedToEndWith.yaml[0]) || configPath.endsWith(allowedToEndWith.yaml[1])) {
+        } else if ((configPath.endsWith(allowedToEndWith.yaml[0]) || configPath.endsWith(allowedToEndWith.yaml[1])) && settings.supportedTypes.yaml) {
             fs.readFile(configPath).then((yamlString) => {
                 try {
                     const yamlData = YAML.parse(yamlString.toString());
@@ -121,6 +146,8 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                     reject(Errors.fileContainsErrors);
                 }
             });
+        } else {
+            reject(Errors.unsupportedFileType);
         }
     });
 }

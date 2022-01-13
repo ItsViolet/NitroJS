@@ -5,6 +5,7 @@
     "author": "Skylix",
     "homepage": "https://github.com/skylixgh/nitrojs#readme",
     "license": "MIT",
+    "main": "lib/main",
     "bin": {
         "nitrojs": "./bin/main.js",
         "nitrojs-dev": "./bin/tsMain.js"
