@@ -2,6 +2,11 @@
     "packages": [
         "packages/*"
     ],
-    "version": "0.1.0",
-    "author": "Skylix"
+    "version": "1.0.0-dev",
+    "author": "Skylix",
+    "command": {
+        "publish": {
+            "registry": "https://registry.npmjs.com"
+        }
+    }
 }
