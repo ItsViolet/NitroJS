@@ -1,6 +1,6 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers"
-import objectTools, { ObjectType } from '@skylixgh/nitrojs-object-tools';
+import objectTools, { DeepPartial, ObjectType } from '@skylixgh/nitrojs-object-tools';
 import terminal from "@skylixgh/nitrojs-terminal";
 
 export enum FlagType {
@@ -104,10 +104,10 @@ let programAuthor = "Unknown";
  * @param command The command options
  * @param handle The command handler
  */
-export function registerNew(trigger: BinItem["trigger"], command: Partial<Command> = {}, handle: BinItem["handle"]) {
+export function registerNew(trigger: BinItem["trigger"], command: DeepPartial<Command> = {}, handle: BinItem["handle"]) {
     commandBins.push({
         trigger,
-        command: objectTools.mergeObject<Command, Partial<Command>>({
+        command: objectTools.mergeObject<Command>({
             flags: {}
         }, command),
         handle
@@ -365,13 +365,13 @@ export function execute(argv: [string, string, ...[string]]) {
 
                 if (typeData.errors.length > 0) {
                     typeData.errors.forEach(typeError => {
-                        terminal.error(`Type error in flag: ${terminal.hexColorize(`--${typeError.flag}`, "#999999")} expected a(n) ${Object.keys(FlagType).find(key => FlagType[key as any] == typeError.expected)}`);
+                        terminal.error(`Type error in flag: ${terminal.hexColorize(`--${typeError.flag}`, "#999999")} expected a(n) ${Object.keys(FlagType).find(key => FlagType[key as any] == typeError.expected as any)}`);
                     });
                 }
 
                 if (typeData.arrayErrors) {
                     typeData.arrayErrors.forEach(arrayError => {
-                        terminal.error(`Type error in array flag: ${terminal.hexColorize(`--${arrayError.flag}`, "#999999")} expected a ${arrayError.expected} on index ${arrayError.index} of array`)
+                        terminal.error(`Type error in array flag: ${terminal.hexColorize(`--${arrayError.flag}`, "#999999")} expected a ${Object.keys(FlagType).find(key => FlagType[key as any] == arrayError.expected as any)} on index ${arrayError.index} of array`)
                     });
                 }
 
