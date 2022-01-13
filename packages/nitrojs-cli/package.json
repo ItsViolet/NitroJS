@@ -38,7 +38,7 @@
         "@skylixgh/nitrojs-terminal": "^1.0.0-dev.1",
         "ts-node": "^10.4.0"
     },
-    "gitHead": "702c95e2aa948ee1ddb415176e7d1a1cf3c68b53",
+    "gitHead": "f44e925096c0ae13c759f2c579004fb48a6cb148",
     "devDependencies": {
         "typescript": "^4.5.4"
     }
