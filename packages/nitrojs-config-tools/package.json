@@ -37,5 +37,6 @@
     "devDependencies": {
         "@types/fs-extra": "^9.0.13",
         "@types/yaml": "^1.9.7"
-    }
+    },
+    "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e"
 }

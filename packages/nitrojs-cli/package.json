@@ -25,6 +25,9 @@
         "build": "tsc",
         "clean": "tsc --build --clean"
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "bugs": {
         "url": "https://github.com/skylixgh/nitrojs/issues"
     },
@@ -34,5 +37,6 @@
         "@skylixgh/nitrojs-config-tools": "^1.0.0-dev.0",
         "@skylixgh/nitrojs-terminal": "^1.0.0-dev.0",
         "ts-node": "^10.4.0"
-    }
+    },
+    "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e"
 }
