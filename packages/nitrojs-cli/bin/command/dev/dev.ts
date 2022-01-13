@@ -14,6 +14,6 @@ export default function dev() {
     }, async (args, flags) => {
         readConfig(flags.config, (config) => {
             console.log(config);
-        })
+        });
     });
 }

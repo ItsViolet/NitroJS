@@ -13,17 +13,37 @@ export type ObjectType = {
  * Merge two object together to create configurations
  * @param baseObject The base object
  * @param partialObject The object with certain or all properties missing
+ * @param allowExtendingBase Should the partial object be allowed to extend the base
  */
-export function mergeObject<BaseType, PartialType>(baseObject: BaseType, partialObject: PartialType): BaseType;
+export function mergeObject<BaseType, PartialType>(baseObject: BaseType, partialObject: PartialType, allowExtendingBase?: boolean): BaseType;
 
 /**
  * Merge two object together to create configurations
  * @param baseObject The base object
  * @param partialObject The object with certain or all properties missing
+ * @param allowExtendingBase Should the partial object be allowed to extend the base
  */
-export function mergeObject<BaseType>(baseObject: BaseType, partialObject: DeepPartial<BaseType>): BaseType;
+export function mergeObject<BaseType>(baseObject: BaseType, partialObject: DeepPartial<BaseType>, allowExtendingBase?: boolean): BaseType;
 
-export function mergeObject(baseObject: any, partialObject: any): any {
+export function mergeObject(baseObject: any, partialObject: any, allowExtendingBase = false): any {
+    if (allowExtendingBase) {
+        const recursiveResult = {} as any;
+
+        for (const objectKey in { ...baseObject }) {
+            if (partialObject.hasOwnProperty(objectKey)) {
+                if (typeof partialObject[objectKey] == "object" && !Array.isArray(partialObject[objectKey])) {
+                    recursiveResult[objectKey] = mergeObject(baseObject[objectKey], partialObject[objectKey]);
+                } else {
+                    recursiveResult[objectKey] = partialObject[objectKey];
+                }
+            } else {
+                recursiveResult[objectKey] = baseObject[objectKey];
+            }
+        }
+
+        return recursiveResult;
+    }
+
     return mergeDeep({...baseObject}, {...partialObject});
 }
 
