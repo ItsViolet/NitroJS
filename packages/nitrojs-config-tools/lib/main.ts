@@ -48,14 +48,15 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
             ts: ".ts",
             js: ".js",
             json: ".json",
-            yaml: ".yml"
+            yaml: [ ".yml", ".yaml" ]
         }
 
         if (
             !configPath.endsWith(allowedToEndWith.ts) 
             && !configPath.endsWith(allowedToEndWith.js) 
             && !configPath.endsWith(allowedToEndWith.json) 
-            && !configPath.endsWith(allowedToEndWith.yaml)
+            && !configPath.endsWith(allowedToEndWith.yaml[0])
+            && !configPath.endsWith(allowedToEndWith.yaml[1])
         ) {
             reject(Errors.unsupportedFileType);
             return;
@@ -111,7 +112,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                     reject(Errors.fileContainsErrors);
                 }
             });
-        } else if (configPath.endsWith(allowedToEndWith.yaml)) {
+        } else if (configPath.endsWith(allowedToEndWith.yaml[0]) || configPath.endsWith(allowedToEndWith.yaml[1])) {
             fs.readFile(configPath).then((yamlString) => {
                 try {
                     const yamlData = YAML.parse(yamlString.toString());
