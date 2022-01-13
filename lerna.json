@@ -3,5 +3,10 @@
         "packages/*"
     ],
     "version": "1.0.0-dev",
-    "author": "Skylix"
+    "author": "Skylix",
+    "command": {
+        "publish": {
+            "registry": "registry.npmjs.com"
+        }
+    }
 }
