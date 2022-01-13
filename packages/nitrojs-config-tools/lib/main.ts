@@ -66,7 +66,7 @@ export interface Settings {
  */
 export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: Partial<Settings> = {}): Promise<ConfigDataType> {
     return new Promise((resolve, reject) => {
-        settings = objectTools.mergeObject<Settings, Partial<Settings>>({
+        const options = objectTools.mergeObject<Settings, Partial<Settings>>({
             supportedTypes: {
                 yaml: true,
                 json: true,
@@ -92,7 +92,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
             return;
         }
 
-        if (configPath.endsWith(allowedToEndWith.ts) && settings.supportedTypes.ts) {
+        if (configPath.endsWith(allowedToEndWith.ts) && options.supportedTypes.ts) {
             const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
 
             readerProcess.stdout.on("data", (data: Buffer) => {
@@ -110,7 +110,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                 readerProcess.kill();
                 reject(Errors.fileContainsErrors);
             });
-        } else if (configPath.endsWith(allowedToEndWith.js) && settings.supportedTypes.js) {
+        } else if (configPath.endsWith(allowedToEndWith.js) && options.supportedTypes.js) {
             const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
 
             readerProcess.stdout.on("data", (data: Buffer) => {
@@ -128,7 +128,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                 readerProcess.kill();
                 reject(Errors.fileContainsErrors);
             });
-        } else if (configPath.endsWith(allowedToEndWith.json) && settings.supportedTypes.json) {
+        } else if (configPath.endsWith(allowedToEndWith.json) && options.supportedTypes.json) {
             fs.readFile(configPath).then((jsonString) => {
                 try {
                     const parsedJSON = commentJSON.parse(jsonString.toString());
@@ -137,7 +137,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                     reject(Errors.fileContainsErrors);
                 }
             });
-        } else if ((configPath.endsWith(allowedToEndWith.yaml[0]) || configPath.endsWith(allowedToEndWith.yaml[1])) && settings.supportedTypes.yaml) {
+        } else if ((configPath.endsWith(allowedToEndWith.yaml[0]) || configPath.endsWith(allowedToEndWith.yaml[1])) && options.supportedTypes.yaml) {
             fs.readFile(configPath).then((yamlString) => {
                 try {
                     const yamlData = YAML.parse(yamlString.toString());
