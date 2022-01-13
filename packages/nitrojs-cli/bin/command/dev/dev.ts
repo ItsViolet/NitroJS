@@ -1,6 +1,6 @@
 import cliBuilder, { FlagType } from "@skylixgh/nitrojs-cli-builder";
-import configTools from './../../../../nitrojs-config-tools/lib/main';
-import path from "path";
+import terminal from "@skylixgh/nitrojs-terminal";
+import readConfig from "../../utils/readConfig";
 
 Error.stackTraceLimit = Infinity;
 
@@ -12,7 +12,8 @@ export default function dev() {
             }
         }
     }, async (args, flags) => {
-        const configObj = await configTools.read(path.join(process.cwd(), flags.config ?? "./typescript.config.ts"), {});
-        console.log(configObj);
+        readConfig(flags.config, (config) => {
+            console.log(config);
+        })
     });
 }
