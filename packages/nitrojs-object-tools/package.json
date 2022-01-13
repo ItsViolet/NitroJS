@@ -24,7 +24,7 @@
 		"url": "https://github.com/SkylixGH/NitroJS/issues"
 	},
 	"dependencies": {
-		"@skylixgh/nitrojs-terminal": "^1.0.0-dev",
+		"@skylixgh/nitrojs-terminal": "1.0.0-dev",
 		"cli-highlight": "^2.1.11",
 		"merge-deep": "^3.0.3"
 	},
