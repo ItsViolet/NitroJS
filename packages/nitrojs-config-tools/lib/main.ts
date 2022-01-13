@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs-extra";
-import objectTools, { DeepPartial } from '@skylixgh/nitrojs-object-tools';
+import objectTools, { DeepPartial } from "@skylixgh/nitrojs-object-tools";
 import commentJSON from "comment-json";
 import YAML from "yaml";
 
@@ -56,25 +56,32 @@ export interface Settings {
          * TypeScript configuration
          */
         ts: boolean;
-    }
+    };
 }
 
 /**
  * Read a configuration file
- * @param configPath 
+ * @param configPath
  * @returns Promise containing the config
  */
-export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: DeepPartial<Settings> = {}): Promise<ConfigDataType> {
+export function read<ConfigDataType>(
+    configPath: string,
+    defaultBaseConfig: ConfigDataType,
+    settings: DeepPartial<Settings> = {}
+): Promise<ConfigDataType> {
     return new Promise((resolve, reject) => {
-        const options = objectTools.mergeObject<Settings>({
-            supportedTypes: {
-                yaml: true,
-                json: true,
-                ts: true,
-                js: true
-            }
-        }, settings);
-        
+        const options = objectTools.mergeObject<Settings>(
+            {
+                supportedTypes: {
+                    yaml: true,
+                    json: true,
+                    ts: true,
+                    js: true
+                }
+            },
+            settings
+        );
+
         if (!fs.existsSync(configPath)) {
             reject(Errors.invalidFilePath);
             return;
@@ -84,7 +91,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
             ts: ".ts",
             js: ".js",
             json: ".json",
-            yaml: [ ".yml", ".yaml" ]
+            yaml: [".yml", ".yaml"]
         };
 
         if (fs.lstatSync(configPath).isDirectory()) {
@@ -93,7 +100,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
         }
 
         if (configPath.endsWith(allowedToEndWith.ts) && options.supportedTypes.ts) {
-            const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
+            const readerProcess = spawn("node", [path.join(__dirname, "./services/readTSBasedConfig.js"), configPath]);
 
             readerProcess.stdout.on("data", (data: Buffer) => {
                 objectTools.jsonParse<any>(data.toString()).then((jsonData) => {
@@ -111,7 +118,7 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                 reject(Errors.fileContainsErrors);
             });
         } else if (configPath.endsWith(allowedToEndWith.js) && options.supportedTypes.js) {
-            const readerProcess = spawn("node", [ path.join(__dirname, "./services/readTSBasedConfig.js"), configPath ],);
+            const readerProcess = spawn("node", [path.join(__dirname, "./services/readTSBasedConfig.js"), configPath]);
 
             readerProcess.stdout.on("data", (data: Buffer) => {
                 objectTools.jsonParse<any>(data.toString()).then((jsonData) => {
@@ -154,6 +161,6 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
 
 const configTools = {
     read
-}
+};
 
 export default configTools;

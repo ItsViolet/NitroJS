@@ -1,6 +1,6 @@
 import yargs from "yargs";
-import { hideBin } from "yargs/helpers"
-import objectTools, { DeepPartial, ObjectType } from '@skylixgh/nitrojs-object-tools';
+import { hideBin } from "yargs/helpers";
+import objectTools, { DeepPartial, ObjectType } from "@skylixgh/nitrojs-object-tools";
 import terminal from "@skylixgh/nitrojs-terminal";
 
 export enum FlagType {
@@ -107,9 +107,13 @@ let programAuthor = "Unknown";
 export function registerNew(trigger: BinItem["trigger"], command: DeepPartial<Command> = {}, handle: BinItem["handle"]) {
     commandBins.push({
         trigger,
-        command: objectTools.mergeObject<Command>({
-            flags: {}
-        }, command, true),
+        command: objectTools.mergeObject<Command>(
+            {
+                flags: {}
+            },
+            command,
+            true
+        ),
         handle
     });
 }
@@ -144,7 +148,7 @@ export function setName(name: string) {
  * @returns The command, undefined if the command was not found
  */
 function getCommandBin(trigger: string): BinItem | undefined {
-    const results = commandBins.find(item => item.trigger == trigger);
+    const results = commandBins.find((item) => item.trigger == trigger);
 
     if (results) {
         return results;
@@ -212,11 +216,14 @@ export interface ArrayErrorFlag {
  * @param commandObject The bin item
  * @returns The error types
  */
-function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { errors: ErrorFlag[], trueValues: ObjectType, arrayErrors: ArrayErrorFlag[] } {
+function typeCheckAllFlags(
+    commandFlags: ObjectType,
+    commandObject: BinItem
+): { errors: ErrorFlag[]; trueValues: ObjectType; arrayErrors: ArrayErrorFlag[] } {
     let errorFlags = [] as ErrorFlag[];
     let trueValues: ObjectType = {};
     let arrayErrorFlags = [] as ArrayErrorFlag[];
-    
+
     for (const commandFlagName in commandFlags) {
         let arrayExpected = false;
         const commandFlag = commandFlags[commandFlagName];
@@ -231,7 +238,7 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { 
                 expected: expectedType,
                 flag: commandFlagName
             });
-        }
+        };
 
         if (!arrayExpected) {
             if (Array.isArray(commandFlag)) {
@@ -260,18 +267,16 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { 
                         pushFlagError();
                     }
                 }
-
-
             }
         } else if (arrayExpected) {
             if (Array.isArray(commandFlag)) {
                 commandFlag.forEach((arrayItem, index) => {
                     const arrayStringItem = arrayItem + "";
-                    
+
                     if (!trueValues[commandFlagName]) {
                         trueValues[commandFlagName] = [] as string[];
                     }
-                    
+
                     if (expectedType == FlagType.arrayString) {
                         trueValues[commandFlagName].push(arrayStringItem);
                     }
@@ -321,19 +326,19 @@ function typeCheckAllFlags(commandFlags: ObjectType, commandObject: BinItem): { 
  * @param commandBin The command binary object
  * @returns The invalid and missing flag names
  */
-function runParamChecking(flags: ObjectType, commandBin: BinItem): { invalidFlags: string[], missingFlags: string[] } {
+function runParamChecking(flags: ObjectType, commandBin: BinItem): { invalidFlags: string[]; missingFlags: string[] } {
     const missingFlags = [] as string[];
     const invalidFlags = [] as string[];
     const flagKeys = Object.keys(flags);
     const commandFlagKeys = Object.keys(commandBin.command.flags);
 
-    flagKeys.forEach(flagName => {
+    flagKeys.forEach((flagName) => {
         if (!commandBin.command.flags.hasOwnProperty(flagName)) {
-            invalidFlags.push(flagName)
+            invalidFlags.push(flagName);
         }
     });
 
-    commandFlagKeys.forEach(commandFlagName => {
+    commandFlagKeys.forEach((commandFlagName) => {
         if (commandBin.command.flags[commandFlagName].required && !flags.hasOwnProperty(commandFlagName)) {
             missingFlags.push(commandFlagName);
         }
@@ -359,19 +364,27 @@ export function execute(argv: [string, string, ...[string]]) {
 
         if (commandBin) {
             const paramErrors = runParamChecking(flags, commandBin);
-            
+
             if (paramErrors.invalidFlags.length == 0 && paramErrors.missingFlags.length == 0) {
                 const typeData = typeCheckAllFlags(flags, commandBin);
 
                 if (typeData.errors.length > 0) {
-                    typeData.errors.forEach(typeError => {
-                        terminal.error(`Type error in flag: ${terminal.hexColorize(`--${typeError.flag}`, "#999999")} expected a(n) ${Object.keys(FlagType).find(key => FlagType[key as any] == typeError.expected as any)}`);
+                    typeData.errors.forEach((typeError) => {
+                        terminal.error(
+                            `Type error in flag: ${terminal.hexColorize(`--${typeError.flag}`, "#999999")} expected a(n) ${Object.keys(FlagType).find(
+                                (key) => FlagType[key as any] == (typeError.expected as any)
+                            )}`
+                        );
                     });
                 }
 
                 if (typeData.arrayErrors) {
-                    typeData.arrayErrors.forEach(arrayError => {
-                        terminal.error(`Type error in array flag: ${terminal.hexColorize(`--${arrayError.flag}`, "#999999")} expected a ${Object.keys(FlagType).find(key => FlagType[key as any] == arrayError.expected as any)} on index ${arrayError.index} of array`)
+                    typeData.arrayErrors.forEach((arrayError) => {
+                        terminal.error(
+                            `Type error in array flag: ${terminal.hexColorize(`--${arrayError.flag}`, "#999999")} expected a ${Object.keys(
+                                FlagType
+                            ).find((key) => FlagType[key as any] == (arrayError.expected as any))} on index ${arrayError.index} of array`
+                        );
                     });
                 }
 
@@ -381,11 +394,9 @@ export function execute(argv: [string, string, ...[string]]) {
                 return;
             }
 
-            if (paramErrors.invalidFlags.length > 0) 
-                terminal.error(`Invalid flags: ${paramErrors.invalidFlags.join(", ")}`);
+            if (paramErrors.invalidFlags.length > 0) terminal.error(`Invalid flags: ${paramErrors.invalidFlags.join(", ")}`);
 
-            if (paramErrors.missingFlags.length > 0)
-                terminal.error(`Missing flags: ${paramErrors.missingFlags.join(", ")}`);
+            if (paramErrors.missingFlags.length > 0) terminal.error(`Missing flags: ${paramErrors.missingFlags.join(", ")}`);
             return;
         }
 

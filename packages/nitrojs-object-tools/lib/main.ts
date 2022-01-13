@@ -44,7 +44,7 @@ export function mergeObject(baseObject: any, partialObject: any, allowExtendingB
         return recursiveResult;
     }
 
-    return mergeDeep({...baseObject}, {...partialObject});
+    return mergeDeep({ ...baseObject }, { ...partialObject });
 }
 
 /**
@@ -69,13 +69,12 @@ export function jsonParse<JsonDataType>(json: string): Promise<JsonDataType> {
 export function dump(dumpObject: ObjectType | any[]) {
     terminal.log(terminal.hexColorize("Debug: ", "#999999") + "Dumping object bellow");
 
-    console.log(cliHighlight(
-        JSON.stringify(dumpObject, null, 2),
-        {
+    console.log(
+        cliHighlight(JSON.stringify(dumpObject, null, 2), {
             language: "json",
             ignoreIllegals: true
-        }
-    ));
+        })
+    );
 
     terminal.log(terminal.hexColorize("Debug: ", "#999999") + "An object was dumped above");
 }

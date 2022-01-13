@@ -10,7 +10,4 @@ export function defineConfig(config: Partial<ConfigType>) {
     return config;
 }
 
-export { 
-    ConfigType as UserConfig,
-    ConfigAppType as UserConfigType
-};
+export { ConfigType as UserConfig, ConfigAppType as UserConfigType };
