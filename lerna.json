@@ -6,7 +6,7 @@
     "author": "Skylix",
     "command": {
         "publish": {
-            "registry": "registry.npmjs.com"
+            "registry": "https://registry.npmjs.com"
         }
     }
 }
