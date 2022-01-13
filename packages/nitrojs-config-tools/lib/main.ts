@@ -64,7 +64,7 @@ export interface Settings {
  * @param configPath 
  * @returns Promise containing the config
  */
-export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: Settings = {}): Promise<ConfigDataType> {
+export function read<ConfigDataType>(configPath: string, defaultBaseConfig: ConfigDataType, settings: Partial<Settings> = {}): Promise<ConfigDataType> {
     return new Promise((resolve, reject) => {
         settings = objectTools.mergeObject<Settings, Partial<Settings>>({
             supportedTypes: {
