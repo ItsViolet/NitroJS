@@ -1,6 +1,6 @@
 {
     "name": "@skylixgh/nitrojs-cli",
-    "version": "1.0.0-dev",
+    "version": "1.0.0-dev.1",
     "description": "> TODO: description",
     "author": "Skylix",
     "homepage": "https://github.com/skylixgh/nitrojs#readme",
@@ -33,9 +33,9 @@
     },
     "dependencies": {
         "@pobedit/package-name-parser": "^1.0.0",
-        "@skylixgh/nitrojs-cli-builder": "^1.0.0-dev",
-        "@skylixgh/nitrojs-config-tools": "^1.0.0-dev",
-        "@skylixgh/nitrojs-terminal": "^1.0.0-dev",
+        "@skylixgh/nitrojs-cli-builder": "^1.0.0-dev.1",
+        "@skylixgh/nitrojs-config-tools": "^1.0.0-dev.1",
+        "@skylixgh/nitrojs-terminal": "^1.0.0-dev.1",
         "ts-node": "^10.4.0"
     },
     "gitHead": "d4716b83c3dd4461c2fcdf68315f72941faeb23e",
