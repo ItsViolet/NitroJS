@@ -1,1 +1,7 @@
+# Node module
 node_modules/
+
+# Build maps and data
+!*.js
+!*.map
+!*.d.ts
