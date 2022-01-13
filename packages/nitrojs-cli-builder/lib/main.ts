@@ -109,7 +109,7 @@ export function registerNew(trigger: BinItem["trigger"], command: DeepPartial<Co
         trigger,
         command: objectTools.mergeObject<Command>({
             flags: {}
-        }, command),
+        }, command, true),
         handle
     });
 }
