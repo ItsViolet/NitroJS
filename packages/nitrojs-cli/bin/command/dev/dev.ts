@@ -1,5 +1,4 @@
 import cliBuilder, { FlagType } from "@skylixgh/nitrojs-cli-builder";
-import terminal from "@skylixgh/nitrojs-terminal";
 import readConfig from "../../utils/readConfig";
 
 Error.stackTraceLimit = Infinity;

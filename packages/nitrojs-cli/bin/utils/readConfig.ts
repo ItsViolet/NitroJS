@@ -37,7 +37,7 @@ export default function readConfig(configPath = "nitrojs.config.ts", callBack: (
                 break;
             
             case ConfigToolsErrors.invalidFilePath:
-                terminal.stopAnimation(TerminalState.error, "Failed to load the configuration because the file path provided is invalid");
+                terminal.stopAnimation(TerminalState.error, "Failed to load the configuration because the file path provided is invalid or the file doesn't exist in the current directory");
                 break;
 
             case ConfigToolsErrors.unsupportedFileType:

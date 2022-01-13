@@ -220,9 +220,9 @@ export function askString(
         });
 
         rl.question(
-            ` ${chalk.hex("#999999")(">")} ${question}${defaultAnswer ? chalk.hex("#999999")(" [ " + defaultAnswer.toUpperCase() + " ]") : ""}: `,
+            ` ${chalk.hex("#999999")(">")} ${question}${defaultAnswer ? chalk.hex("#999999")(" [ " + defaultAnswer + " ]") : ""}: `,
             (answer) => {
-                const validated = validator ? validator(answer) : null;
+                const validated = validator ? validator(answer.length > 0 ? answer : defaultAnswer ?? "") : null;
 
                 if (validated) {
                     questionRunning = false;
