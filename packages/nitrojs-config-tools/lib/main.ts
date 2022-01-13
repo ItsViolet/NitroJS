@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs-extra";
 import objectTools from '@skylixgh/nitrojs-object-tools';
 import commentJSON from "comment-json";
+import YAML from "yaml";
 
 export enum Errors {
     /**
@@ -106,6 +107,15 @@ export function read<ConfigDataType>(configPath: string, defaultBaseConfig: Conf
                 try {
                     const parsedJSON = commentJSON.parse(jsonString.toString());
                     resolve(parsedJSON);
+                } catch (error) {
+                    reject(Errors.fileContainsErrors);
+                }
+            });
+        } else if (configPath.endsWith(allowedToEndWith.yaml)) {
+            fs.readFile(configPath).then((yamlString) => {
+                try {
+                    const yamlData = YAML.parse(yamlString.toString());
+                    resolve(yamlData);
                 } catch (error) {
                     reject(Errors.fileContainsErrors);
                 }
