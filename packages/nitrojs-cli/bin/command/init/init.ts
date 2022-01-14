@@ -48,7 +48,7 @@ export default function init() {
                                                 terminal.stopAnimation(TerminalState.success, "Successfully fetch dependency information for NitroJS");
 
                                                 const nitroJSTags = (JSON.parse(fullOut) as any[]).sort((first, second) => semver.compare(second.name, first.name));
-                                                
+
                                                 projectPackageFile.dependencies = {
                                                     "@skylixgh/nitrojs-cli": nitroJSTags[0].name.replace("v", ""),
                                                     "@skylixgh/nitrojs-electron-back": nitroJSTags[0].name.replace("v", "")

@@ -41,6 +41,7 @@
     },
     "gitHead": "f44e925096c0ae13c759f2c579004fb48a6cb148",
     "devDependencies": {
+        "@types/semver": "^7.3.9",
         "typescript": "^4.5.4"
     }
 }
