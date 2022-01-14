@@ -38,7 +38,7 @@ export default function init() {
                         terminal.askString("Project Version", "1.0.0-dev", (packageVersion) => {
                             terminal.askString("Project Description", null, (packageDescription) => {
                                 terminal.askString("Project Author", "Unknown", (packageAuthor) => {
-                                    terminal.askYN("Use NitroJS JS UI System", true, (packageUseNitroUI) => {
+                                    terminal.askString("What type of project is this (Node/Desktop/Mobile/Webq)", "node", (packageProjectType) => {
                                         const projectPackageFile = {
                                             name: packageName,
                                             version: packageVersion,
@@ -100,18 +100,56 @@ export default function init() {
                                                     "@skylixgh/nitrojs-electron-back": nitroJSTags[0].name.replace("v", "")
                                                 };
 
-                                                if (packageUseNitroUI) {
+                                                if (packageProjectType == "desktop" || packageProjectType == "web") {
                                                     projectPackageFile.dependencies = {
                                                         ...projectPackageFile.dependencies,
-                                                        "@skylixgh/nitrojs-uix": nitroJSTags[0].name.replace("v", "")
+                                                        "@skylixgh/nitrojs-web-pc-uix": nitroJSTags[0].name.replace("v", "")
                                                     }
                                                 }
 
-                                                placePackageInProject();
+                                                if (packageProjectType == "node") {
+                                                    terminal.askYN("Use TypeScript", true, (installTypeScript) => {
+                                                        terminal.animate("Fetching dependency information for TypeScript");
+
+                                                        let tsTagsRaw = "";
+
+                                                        https.request({
+                                                            hostname: "api.github.com",
+                                                            path: "/repos/microsoft/typescript/tags",
+                                                            method: "GET",
+                                                            headers: {
+                                                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+                                                            }
+                                                        }, (requestTS) => {
+                                                            requestTS.on("data", (chunk) => {
+                                                                tsTagsRaw += chunk.toString();
+                                                            });
+
+                                                            requestTS.on("close", () => {
+                                                                const tsTags = (JSON.parse(tsTagsRaw) as any[]).sort((first, second) => semver.compare(second.name.replace("v", ""), first.name.replace("v", "")));
+                                                                
+                                                                projectPackageFile.dependencies = {
+                                                                    ...projectPackageFile.dependencies,
+                                                                    "typescript": tsTags[0].name.replace("v", "")
+                                                                };
+
+                                                                placePackageInProject();
+                                                            });
+                                                        }).on("error", () => {
+                                                            terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for TypeScript");
+                                                        }).end();
+                                                    });
+                                                }
                                             });
                                         }).on("error", (error) => {
                                             terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for NitroJS UI");
                                         }).end();
+                                    }, (answer) => {
+                                        const lowerAnswer = answer.toLowerCase();
+
+                                        if (lowerAnswer != "node" && lowerAnswer != "desktop" && lowerAnswer != "mobile" && lowerAnswer != "web") {
+                                            return "Please provide a valid project type";
+                                        }
                                     });
                                 });
                             });
