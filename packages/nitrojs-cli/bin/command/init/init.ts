@@ -126,7 +126,7 @@ export default function init() {
                                                             });
 
                                                             requestTS.on("close", () => {
-                                                                const tsTags = (JSON.parse(tsTagsRaw) as any[]).sort((first, second) => semver.compare(second.name.replace("v", ""), first.name.replace("v", "")));
+                                                                const tsTags = (JSON.parse(tsTagsRaw) as any[]);
                                                                 
                                                                 projectPackageFile.dependencies = {
                                                                     ...projectPackageFile.dependencies,
