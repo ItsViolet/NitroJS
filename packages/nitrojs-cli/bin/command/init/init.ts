@@ -48,10 +48,22 @@ export default function init() {
                                             dependencies: {}
                                         };
 
-                                        const placePackageInProject = () => {
-                                            fs.writeFile(path.join(initToPath, "package.json"), JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
+                                        const initFinished = () => {
+                                            terminal.success("Successfully initialized new NitroJS project!");
+                                            terminal.log("Get Started:");
+                                            terminal.log(`  Run "npm install" to install all dependencies`);
+                                            terminal.log(`  Run "npx nitrojs dev" to start your project in development`);
+                                        }
 
+                                        const placePackageInProject = () => {
+                                            terminal.animate("Generating package file");
+
+                                            fs.writeFile(path.join(initToPath, "package.json"), JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
+                                                terminal.stopAnimation(TerminalState.success, "Package file has been generated successfully");
+
+                                                initFinished();
                                             }).catch(error => {
+                                                terminal.stopAnimation(TerminalState.error, "Failed to generate package file");
                                                 terminal.error("Failed to initialize project");
 
                                                 error.split("\n").forEach((line: string) => {
