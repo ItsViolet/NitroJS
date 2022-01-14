@@ -28,6 +28,10 @@ export default function init() {
                                             dependencies: {}
                                         };
 
+                                        const placePackageInProject = () => {
+                                            
+                                        };
+
                                         terminal.animate("Fetching NitroJS dependency information");
 
                                         https.request({
@@ -61,10 +65,9 @@ export default function init() {
                                                     }
                                                 }
 
-                                                console.log(projectPackageFile);
+                                                placePackageInProject();
                                             });
                                         }).on("error", (error) => {
-                                            console.log(error)
                                             terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for NitroJS UI");
                                         }).end();
                                     });
