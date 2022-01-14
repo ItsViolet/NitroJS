@@ -39,80 +39,84 @@ export default function init() {
                             terminal.askString("Project Description", null, (packageDescription) => {
                                 terminal.askString("Project Author", "Unknown", (packageAuthor) => {
                                     terminal.askString("What type of project is this (Node/Desktop/Mobile/Webq)", "node", (packageProjectType) => {
-                                        const projectPackageFile = {
-                                            name: packageName,
-                                            version: packageVersion,
-                                            author: packageAuthor,
-                                            description: packageDescription,
-                                            productName: packageDisplayName,
-                                            dependencies: {}
-                                        };
+                                        terminal.askYN("Use TypeScript", true, (installTS) => {
+                                            const projectPackageFile = {
+                                                name: packageName,
+                                                version: packageVersion,
+                                                author: packageAuthor,
+                                                description: packageDescription,
+                                                productName: packageDisplayName,
+                                                dependencies: {}
+                                            };
 
-                                        const initFinished = () => {
-                                            terminal.success("Successfully initialized new NitroJS project!");
-                                            terminal.log("Get Started:");
-                                            terminal.log(`  Run "npm install" to install all dependencies`);
-                                            terminal.log(`  Run "npx nitrojs dev" to start your project in development`);
-                                        }
+                                            const initFinished = () => {
+                                                terminal.success("Successfully initialized new NitroJS project!");
+                                                terminal.log("Get Started:");
+                                                terminal.log(`  Run "npm install" to install all dependencies`);
+                                                terminal.log(`  Run "npx nitrojs dev" to start your project in development`);
+                                            }
 
-                                        const placePackageInProject = () => {
-                                            terminal.animate("Generating package file");
+                                            const placePackageInProject = () => {
+                                                terminal.animate("Generating package file");
 
-                                            fs.writeFile(path.join(initToPath, "package.json"), JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
-                                                terminal.stopAnimation(TerminalState.success, "Package file has been generated successfully");
+                                                fs.writeFile(path.join(initToPath, "package.json"), JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
+                                                    terminal.stopAnimation(TerminalState.success, "Package file has been generated successfully");
 
-                                                initFinished();
-                                            }).catch(error => {
-                                                terminal.stopAnimation(TerminalState.error, "Failed to generate package file");
-                                                terminal.error("Failed to initialize project");
+                                                    initFinished();
+                                                }).catch(error => {
+                                                    terminal.stopAnimation(TerminalState.error, "Failed to generate package file");
+                                                    terminal.error("Failed to initialize project");
 
-                                                error.split("\n").forEach((line: string) => {
-                                                    terminal.error("  " + line);
+                                                    error.message.split("\n").forEach((line: string) => {
+                                                        terminal.error("  " + line);
+                                                    });
+
+                                                    terminal.error("Error has been printed above");
+                                                });
+                                            };
+
+                                            terminal.animate("Fetching NitroJS dependency information");
+
+                                            https.request({
+                                                hostname: "api.github.com",
+                                                path: "/repos/skylixgh/nitrojs/tags",
+                                                method: "GET",
+                                                headers: {
+                                                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+                                                }
+                                            }, (request) => {
+                                                let fullOut = "";
+
+                                                request.on("data", (chunk) => {
+                                                    fullOut += chunk.toString();
                                                 });
 
-                                                terminal.error("Error has been printed above");
-                                            });
-                                        };
+                                                request.on("close", () => {
+                                                    terminal.stopAnimation(TerminalState.success, "Successfully fetch dependency information for NitroJS");
 
-                                        terminal.animate("Fetching NitroJS dependency information");
+                                                    const nitroJSTags = (JSON.parse(fullOut) as any[]).sort((first, second) => semver.compare(second.name, first.name));
 
-                                        https.request({
-                                            hostname: "api.github.com",
-                                            path: "/repos/skylixgh/nitrojs/tags",
-                                            method: "GET",
-                                            headers: {
-                                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-                                            }
-                                        }, (request) => {
-                                            let fullOut = "";
-
-                                            request.on("data", (chunk) => {
-                                                fullOut += chunk.toString();
-                                            });
-
-                                            request.on("close", () => {
-                                                terminal.stopAnimation(TerminalState.success, "Successfully fetch dependency information for NitroJS");
-
-                                                const nitroJSTags = (JSON.parse(fullOut) as any[]).sort((first, second) => semver.compare(second.name, first.name));
-
-                                                projectPackageFile.dependencies = {
-                                                    "@skylixgh/nitrojs-cli": nitroJSTags[0].name.replace("v", ""),
-                                                    "@skylixgh/nitrojs-electron-back": nitroJSTags[0].name.replace("v", "")
-                                                };
-
-                                                if (packageProjectType == "desktop" || packageProjectType == "web") {
                                                     projectPackageFile.dependencies = {
-                                                        ...projectPackageFile.dependencies,
-                                                        "@skylixgh/nitrojs-web-pc-uix": nitroJSTags[0].name.replace("v", "")
+                                                        "@skylixgh/nitrojs-cli": nitroJSTags[0].name.replace("v", ""),
+                                                        "@skylixgh/nitrojs-electron-back": nitroJSTags[0].name.replace("v", "")
+                                                    };
+
+                                                    if (packageProjectType == "desktop" || packageProjectType == "web") {
+                                                        projectPackageFile.dependencies = {
+                                                            ...projectPackageFile.dependencies,
+                                                            "@skylixgh/nitrojs-web-pc-uix": nitroJSTags[0].name.replace("v", "")
+                                                        }
                                                     }
-                                                }
 
-                                                if (packageProjectType == "node") {
-                                                    terminal.askYN("Use TypeScript", true, (installTypeScript) => {
-                                                        terminal.animate("Fetching dependency information for TypeScript");
+                                                    terminal.animate("Fetching dependency information for TypeScript");
 
-                                                        let tsTagsRaw = "";
+                                                    const afterTSTasks = () => {
+                                                        placePackageInProject();
+                                                    }
 
+                                                    let tsTagsRaw = "";
+
+                                                    if (installTS) {
                                                         https.request({
                                                             hostname: "api.github.com",
                                                             path: "/repos/microsoft/typescript/tags",
@@ -124,7 +128,7 @@ export default function init() {
                                                             requestTS.on("data", (chunk) => {
                                                                 tsTagsRaw += chunk.toString();
                                                             });
-
+    
                                                             requestTS.on("close", () => {
                                                                 const tsTags = (JSON.parse(tsTagsRaw) as any[]);
                                                                 
@@ -132,18 +136,19 @@ export default function init() {
                                                                     ...projectPackageFile.dependencies,
                                                                     "typescript": tsTags[0].name.replace("v", "")
                                                                 };
-
-                                                                placePackageInProject();
+    
+                                                                terminal.stopAnimation(TerminalState.success, "Successfully fetched dependency information for TypeScript");
+                                                                afterTSTasks();
                                                             });
                                                         }).on("error", () => {
                                                             terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for TypeScript");
                                                         }).end();
-                                                    });
-                                                }
-                                            });
-                                        }).on("error", (error) => {
-                                            terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for NitroJS UI");
-                                        }).end();
+                                                    }
+                                                });
+                                            }).on("error", (error) => {
+                                                terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for NitroJS UI");
+                                            }).end();
+                                        });
                                     }, (answer) => {
                                         const lowerAnswer = answer.toLowerCase();
 
