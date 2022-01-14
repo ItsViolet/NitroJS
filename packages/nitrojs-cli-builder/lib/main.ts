@@ -389,7 +389,7 @@ export function execute(argv: [string, string, ...[string]]) {
                 }
 
                 if (typeData.arrayErrors.length == 0 && typeData.errors.length == 0) {
-                    commandBin.handle(parsed._, flags);
+                    commandBin.handle(parsed._.splice(1), flags);
                 }
                 return;
             }

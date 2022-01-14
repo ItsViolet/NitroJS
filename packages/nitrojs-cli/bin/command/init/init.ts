@@ -3,10 +3,30 @@ import terminal, { State as TerminalState } from "@skylixgh/nitrojs-terminal";
 import { parse as packageNameParse } from "@pobedit/package-name-parser";
 import https from "https";
 import dns from "dns";
-import semver from "semver"
+import semver from "semver";
+import fs from "fs-extra";
+import path from "path";
 
 export default function init() {
     cliBuilder.registerNew("init", {}, (args, flags) => {
+        let initToPath = process.cwd();
+
+        if (args.length == 1) {
+            initToPath = path.join(process.cwd(), args[0]);
+
+            if (!fs.existsSync(initToPath)) {
+                terminal.error("The path provided was invalid");
+                return;
+            }
+
+            if (!fs.lstatSync(initToPath).isDirectory()) {
+                terminal.error("The path expected is a directory but received a path to a file instead");
+                return;
+            }
+        } else if (args.length > 1 ) {
+            terminal.error(`0-1 arguments were expected, received ${args.length} instead`);
+        }
+
         const logical = () => {
             terminal.log("Initialize a new project");
 
