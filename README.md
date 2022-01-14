@@ -11,5 +11,4 @@
   <a href="https://www.npmjs.com/search?q=%40skylixgh%2Fnitro-*" target="_blank">Npm Package</a>
 </div>
 
-<br />
 <h1 align="center">N i t r o J S</h1>
