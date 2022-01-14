@@ -1,0 +1,12 @@
+{
+    "name": "unnamed",
+    "version": "1.0.0-dev",
+    "author": "Unknown",
+    "description": "",
+    "productName": "unnamed",
+    "dependencies": {
+        "@skylixgh/nitrojs-cli": "1.0.0-dev.1",
+        "@skylixgh/nitrojs-electron-back": "1.0.0-dev.1",
+        "@skylixgh/nitrojs-uix": "1.0.0-dev.1"
+    }
+}

@@ -49,7 +49,17 @@ export default function init() {
                                         };
 
                                         const placePackageInProject = () => {
-                                            
+                                            fs.writeFile(path.join(initToPath, "package.json"), JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
+
+                                            }).catch(error => {
+                                                terminal.error("Failed to initialize project");
+
+                                                error.split("\n").forEach((line: string) => {
+                                                    terminal.error("  " + line);
+                                                });
+
+                                                terminal.error("Error has been printed above");
+                                            });
                                         };
 
                                         terminal.animate("Fetching NitroJS dependency information");
