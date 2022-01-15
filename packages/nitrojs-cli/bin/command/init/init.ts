@@ -103,10 +103,12 @@ export default function init() {
                                                 author: packageAuthor,
                                                 description: packageDescription,
                                                 productName: packageDisplayName,
+                                                scripts: {
+                                                    "start": "nitrojs dev"
+                                                },
                                                 dependencies: {}
                                             };
 
-                                            console.log();
                                             terminal.log("Generating your project");
 
                                             const initFinished = () => {
@@ -288,6 +290,7 @@ export default function init() {
             );
         };
 
+        terminal.notice(`The project files will be generated in this current directory, please create a sub directory if needed via "mkdir <dirname>" in your system`);
         terminal.animate("This task requires an internet connection, please wait while we test your connection");
 
         dns.resolve("npmjs.com", (error) => {

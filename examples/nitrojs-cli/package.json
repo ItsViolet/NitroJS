@@ -4,6 +4,9 @@
     "author": "Unknown",
     "description": "",
     "productName": "unnamed",
+    "scripts": {
+        "start": "nitrojs dev"
+    },
     "dependencies": {
         "@skylixgh/nitrojs-cli": "1.0.0-dev.1",
         "@skylixgh/nitrojs-electron-back": "1.0.0-dev.1",
