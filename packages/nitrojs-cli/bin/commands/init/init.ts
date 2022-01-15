@@ -15,6 +15,12 @@ import path from "path";
  */
 function writeProjectResource(pathName: string, data: string): Promise<void> {
     return new Promise((resolve, reject) => {
+        if (!fs.existsSync(path.dirname(pathName))) {
+            fs.mkdirSync(path.dirname(pathName), {
+                recursive: true
+            });
+        }
+
         fs.writeFile(pathName, data).then(() => {
             resolve();
         }).catch(error => {
@@ -65,12 +71,6 @@ export default function init() {
          * @returns Promise for when the file was written
          */
         function writeResourceFile(pathName: string, contents: string): ReturnType<typeof writeProjectResource> {
-            if (!fs.existsSync(path.dirname(pathName))) {
-                fs.mkdirSync(path.dirname(pathName), {
-                    recursive: true
-                });
-            }
-
             return writeProjectResource(path.join(initToPath, pathName), contents);
         }
 
@@ -137,7 +137,7 @@ export default function init() {
                                                         terminal.animate("Creating TypeScript configuration");
                                                         const templateTSConfig = fs.readFileSync(path.join(__dirname, "./templateResources/node/tsconfig.json.txt")).toString();
 
-                                                        writeProjectResource("tsconfig.json", templateTSConfig).then(() => {
+                                                        writeResourceFile("tsconfig.json", templateTSConfig).then(() => {
                                                             terminal.stopAnimation(TerminalState.success, "Successfully created TypeScript configuration");
                                                             afterTSConfig();
                                                         }).catch((error) => {
