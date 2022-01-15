@@ -117,6 +117,7 @@ export default function init() {
                                                         start: "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
                                                     } as {},
                                                     dependencies: {},
+                                                    devDependencies: {},
                                                     directories: {},
                                                     files: [] as string[]
                                                 };
@@ -410,8 +411,8 @@ export default function init() {
                                                                                 requestTS.on("close", () => {
                                                                                     const tsTags = JSON.parse(tsTagsRaw) as any[];
 
-                                                                                    projectPackageFile.dependencies = {
-                                                                                        ...projectPackageFile.dependencies,
+                                                                                    projectPackageFile.devDependencies = {
+                                                                                        ...projectPackageFile.devDependencies,
                                                                                         typescript: tsTags[0].name.replace("v", "")
                                                                                     };
 

@@ -34,7 +34,7 @@ export default function readConfig(configPath = "nitrojs.config.ts", callBack: (
                 case ConfigToolsErrors.fileContainsErrors:
                     terminal.stopAnimation(
                         TerminalState.error,
-                        "Failed to load the configuration because it contains errors, please use an IDE/editor to debug it"
+                        "Failed to load the configuration because it contains errors, you may also have an issue in your package file"
                     );
                     break;
 

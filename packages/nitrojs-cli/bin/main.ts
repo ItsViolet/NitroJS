@@ -5,6 +5,8 @@ import pkg from "../package.json";
 import dev from "./commands/dev/dev";
 import init from "./commands/init/init";
 
+Error.stackTraceLimit = Infinity;
+
 cliBuilder.setVersion(pkg.version);
 cliBuilder.setAuthor(pkg.author);
 cliBuilder.setName("NitroJS CLI");

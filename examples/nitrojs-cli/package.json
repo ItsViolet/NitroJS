@@ -10,13 +10,15 @@
         "access": "restricted"
     },
     "scripts": {
-        "start": "nitrojs dev",
+        "start": "nitrojs-dev dev",
         "build": "tsc",
         "clean": "tsc --build --clean"
     },
     "dependencies": {
-        "@skylixgh/nitrojs-cli": "",
-        "@skylixgh/nitrojs-terminal": "1.0.0-dev.5",
+        "@skylixgh/nitrojs-cli": "file:../../packages/nitrojs-cli",
+        "@skylixgh/nitrojs-terminal": "file:../../packages/nitrojs-terminal"
+    },
+    "devDependencies": {
         "typescript": "4.5.4"
     },
     "directories": {
