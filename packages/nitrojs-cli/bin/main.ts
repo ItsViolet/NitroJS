@@ -2,8 +2,8 @@
 
 import cliBuilder from "@skylixgh/nitrojs-cli-builder";
 import pkg from "../package.json";
-import dev from "./command/dev/dev";
-import init from "./command/init/init";
+import dev from "./commands/dev/dev";
+import init from "./commands/init/init";
 
 cliBuilder.setVersion(pkg.version);
 cliBuilder.setAuthor(pkg.author);
