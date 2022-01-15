@@ -76,6 +76,14 @@ export function error(text: string) {
 }
 
 /**
+ * Log a notice message into the terminal
+ * @param text The text to log
+ */
+export function notice(text: string) {
+    console.log(chalk.hex("#FFAB00")(` △ ${text}`));
+}
+
+/**
  * Stop a running animation
  * @param animationState The state of your animation
  * @param newAnimationMessage The new text for the animation
