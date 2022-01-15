@@ -104,7 +104,7 @@ export default function init() {
                                                 description: packageDescription,
                                                 productName: packageDisplayName,
                                                 scripts: {
-                                                    "start": "nitrojs dev"
+                                                    "start": "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
                                                 },
                                                 dependencies: {}
                                             };
@@ -120,7 +120,7 @@ export default function init() {
 
                                                 terminal.log("Get Started:");
                                                 terminal.log(`  Run "npm install" to install all dependencies`);
-                                                terminal.log(`  Run "npx nitrojs dev" to start your project in development`);
+                                                terminal.log(`  Run "npm start" or "npx nitrojs dev" to start your project in development`);
                                             }
 
                                             const placePackageInProject = () => {
@@ -175,11 +175,17 @@ export default function init() {
                                                     const nitroJSTags = (JSON.parse(fullOut) as any[]).sort((first, second) => semver.compare(second.name, first.name));
 
                                                     projectPackageFile.dependencies = {
-                                                        "@skylixgh/nitrojs-cli": nitroJSTags[0].name.replace("v", ""),
-                                                        "@skylixgh/nitrojs-electron-back": nitroJSTags[0].name.replace("v", "")
+                                                        "@skylixgh/nitrojs-cli": nitroJSTags[0].name.replace("v", "")
                                                     };
 
                                                     if (packageProjectType == "desktop" || packageProjectType == "web") {
+                                                        if (packageProjectType == "desktop") {
+                                                            projectPackageFile.dependencies = {
+                                                                ...projectPackageFile.dependencies,
+                                                                "@skylixgh/nitrojs-electron-back": nitroJSTags[0].name.replace("v", "")
+                                                            }
+                                                        }
+
                                                         projectPackageFile.dependencies = {
                                                             ...projectPackageFile.dependencies,
                                                             "@skylixgh/nitrojs-web-pc-uix": nitroJSTags[0].name.replace("v", "")
@@ -200,8 +206,34 @@ export default function init() {
                                                         }
 
                                                         if (packageProjectType == "node") {
-                                                            const afterMainFileGenerated = () => {
+                                                            const afterNitroJSConfigGenerated = () => {
                                                                 generationIsFinished();
+                                                            }
+
+                                                            const afterMainFileGenerated = () => {
+                                                                if (installTS) {
+                                                                    writeResourceFile(
+                                                                        "nitrojs.config.ts",
+                                                                        fs.readFileSync(
+                                                                            path.join(__dirname, "./templateResources/node/nitrojs.config.ts.txt")
+                                                                        ).toString()
+                                                                    ).then(() => {
+                                                                        afterNitroJSConfigGenerated();
+                                                                    }).catch((error) => {
+                                                                        stopGenerationFromErrorAndQuit(error);
+                                                                    });
+                                                                } else {
+                                                                    writeResourceFile(
+                                                                        "nitrojs.config.js",
+                                                                        fs.readFileSync(
+                                                                            path.join(__dirname, "./templateResources/node/nitrojs.config.js.txt")
+                                                                        ).toString()
+                                                                    ).then(() => {
+                                                                        afterNitroJSConfigGenerated();
+                                                                    }).catch((error) => {
+                                                                        stopGenerationFromErrorAndQuit(error);
+                                                                    });
+                                                                }
                                                             }
                                                             
                                                             if (installTS) {
