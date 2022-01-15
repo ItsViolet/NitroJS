@@ -5,10 +5,9 @@
     "description": "",
     "productName": "unnamed",
     "scripts": {
-        "start": "nitrojs dev"
+        "start": "nitrojs dev--config nitrojs.config.js"
     },
     "dependencies": {
-        "@skylixgh/nitrojs-cli": "1.0.0-dev.1",
-        "typescript": "4.5.4"
+        "@skylixgh/nitrojs-cli": "1.0.0-dev.1"
     }
 }
