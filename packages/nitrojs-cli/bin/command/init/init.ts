@@ -7,24 +7,65 @@ import semver from "semver";
 import fs from "fs-extra";
 import path from "path";
 
+/**
+ * Write a file for the project
+ * @param pathName The path to the file
+ * @param data The file contents to write
+ * @returns A promise for when the resource was written
+ */
+function writeProjectResource(pathName: string, data: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(pathName, data).then(() => {
+            resolve();
+        }).catch(error => {
+            reject(error);
+        });
+    });
+}
+
+/**
+ * Render an error from a catch statement formatted for NitroJS and exit the app
+ * @param error The error from the catch statement
+ */
+function quitFromErrorInstance(error: Error | any) {
+    terminal.error("Failed to initialize project");
+
+    error.message.split("\n").forEach((line: string) => {
+        terminal.error("  " + line);
+    });
+
+    terminal.error("Error has been printed above");
+    process.exit();
+}
+
 export default function init() {
     cliBuilder.registerNew("init", {}, (args, flags) => {
         let initToPath = process.cwd();
-
+        
         if (args.length == 1) {
             initToPath = path.join(process.cwd(), args[0]);
-
+            
             if (!fs.existsSync(initToPath)) {
                 terminal.error("The path provided was invalid");
                 return;
             }
-
+            
             if (!fs.lstatSync(initToPath).isDirectory()) {
                 terminal.error("The path expected is a directory but received a path to a file instead");
                 return;
             }
         } else if (args.length > 1 ) {
             terminal.error(`0-1 arguments were expected, received ${args.length} instead`);
+        }
+        
+        /**
+         * Write a project resource relative to the project path
+         * @param pathName The path to the resource
+         * @param contents The file contents to write
+         * @returns Promise for when the file was written
+         */
+        function writeResourceFile(pathName: string, contents: string): ReturnType<typeof writeProjectResource> {
+            return writeProjectResource(path.join(initToPath, pathName), contents);
         }
 
         const logical = () => {
@@ -40,6 +81,16 @@ export default function init() {
                                 terminal.askString("Project Author", "Unknown", (packageAuthor) => {
                                     terminal.askString("What type of project is this (Node/Desktop/Mobile/Webq)", "node", (packageProjectType) => {
                                         terminal.askYN("Use TypeScript", true, (installTS) => {
+                                            if (packageProjectType == "mobile") {
+                                                terminal.error("You cannot create a mobile project at this time :(");
+                                                terminal.error("Possible Reasons:");
+                                                terminal.error("  Your NitroJS CLI service is not up-to-date");
+                                                terminal.error("  This type of project is still under development");
+                                                
+                                                terminal.log("We apiologies deeply for the inconvenience 😢");
+                                                return;
+                                            }
+
                                             const projectPackageFile = {
                                                 name: packageName,
                                                 version: packageVersion,
@@ -48,6 +99,9 @@ export default function init() {
                                                 productName: packageDisplayName,
                                                 dependencies: {}
                                             };
+
+                                            console.log();
+                                            terminal.log("Generating your project");
 
                                             const initFinished = () => {
                                                 terminal.success("Successfully initialized new NitroJS project!");
@@ -59,19 +113,32 @@ export default function init() {
                                             const placePackageInProject = () => {
                                                 terminal.animate("Generating package file");
 
-                                                fs.writeFile(path.join(initToPath, "package.json"), JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
+                                                writeResourceFile("package.json", JSON.stringify(projectPackageFile, null, 4) + "\n").then(() => {
                                                     terminal.stopAnimation(TerminalState.success, "Package file has been generated successfully");
 
-                                                    initFinished();
+                                                    const afterTSConfig = () => {
+
+                                                    }
+
+                                                    if (installTS) {
+                                                        terminal.animate("Creating TypeScript configuration");
+
+                                                        const templateTSConfig = fs.readFileSync(path.join(__dirname, "./templateResources/node/tsconfig.json.txt")).toString();
+
+                                                        writeProjectResource("tsconfig.json", templateTSConfig).then(() => {
+                                                            terminal.stopAnimation(TerminalState.success, "Successfully created TypeScript configuration");
+                                                        }).catch((error) => {
+                                                            terminal.stopAnimation(TerminalState.error, "Failed to create TypeScript configuration");
+                                                            quitFromErrorInstance(error);
+                                                        });
+
+                                                        afterTSConfig();
+                                                    } else {
+                                                        afterTSConfig();
+                                                    }
                                                 }).catch(error => {
                                                     terminal.stopAnimation(TerminalState.error, "Failed to generate package file");
-                                                    terminal.error("Failed to initialize project");
-
-                                                    error.message.split("\n").forEach((line: string) => {
-                                                        terminal.error("  " + line);
-                                                    });
-
-                                                    terminal.error("Error has been printed above");
+                                                    quitFromErrorInstance(error);
                                                 });
                                             };
 
