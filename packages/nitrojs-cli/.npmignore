@@ -1,7 +1,5 @@
+# All source and compiled files
+*
+
 # Node module
 node_modules/
-
-# Build maps and data
-!*.js
-!*.map
-!*.d.ts
