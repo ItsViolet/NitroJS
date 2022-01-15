@@ -105,12 +105,13 @@ export default function init() {
                                                 const projectPackageFile = {
                                                     name: packageName,
                                                     main: "",
+                                                    private: true,
                                                     version: packageVersion,
                                                     author: packageAuthor,
                                                     description: packageDescription,
                                                     productName: packageDisplayName,
                                                     publishConfig: {
-                                                        access: "public"
+                                                        access: "private"
                                                     },
                                                     scripts: {
                                                         start: "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
