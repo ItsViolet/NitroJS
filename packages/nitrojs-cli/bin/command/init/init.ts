@@ -174,16 +174,16 @@ export default function init() {
                                                             "@skylixgh/nitrojs-web-pc-uix": nitroJSTags[0].name.replace("v", "")
                                                         }
                                                     }
-
-                                                    terminal.animate("Fetching dependency information for TypeScript");
-
+                                                    
                                                     const afterTSTasks = () => {
                                                         placePackageInProject();
                                                     }
-
+                                                    
                                                     let tsTagsRaw = "";
-
+                                                    
                                                     if (installTS) {
+                                                        terminal.animate("Fetching dependency information for TypeScript");
+
                                                         https.request({
                                                             hostname: "api.github.com",
                                                             path: "/repos/microsoft/typescript/tags",
@@ -210,6 +210,8 @@ export default function init() {
                                                         }).on("error", () => {
                                                             terminal.stopAnimation(TerminalState.error, "Failed to fetch dependency information for TypeScript");
                                                         }).end();
+                                                    } else {
+                                                        afterTSTasks();
                                                     }
                                                 });
                                             }).on("error", (error) => {
