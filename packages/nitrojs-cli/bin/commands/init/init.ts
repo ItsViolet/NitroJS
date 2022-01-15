@@ -111,7 +111,7 @@ export default function init() {
                                                     description: packageDescription,
                                                     productName: packageDisplayName,
                                                     publishConfig: {
-                                                        access: "private"
+                                                        access: "restricted"
                                                     },
                                                     scripts: {
                                                         start: "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
