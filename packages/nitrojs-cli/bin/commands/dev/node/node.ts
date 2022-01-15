@@ -30,8 +30,10 @@ export default function node() {
 
     if (appPackage["main"].endsWith(".js")) {
         jsPreProcessor = "js";
+        mainEntryPath = appPackage["main"];
     } else if (appPackage["main"].endsWith(".ts")) {
         jsPreProcessor = "ts";
+        mainEntryPath = appPackage["main"];
     } else if (
         (
             appPackage["devDependencies"]["typescript"]
@@ -45,6 +47,7 @@ export default function node() {
         )
     ) {
         jsPreProcessor = "ts";
+        mainEntryPath = appPackage["main"] + ".ts";
     } else if (
         fs.existsSync(
             path.join(
@@ -54,10 +57,12 @@ export default function node() {
         )
     ) {
         jsPreProcessor = "js";
+        mainEntryPath = appPackage["main"] + ".js";
     } else {
         terminal.stopAnimation(TerminalState.error, invalidMainEntryMessage);
         return;
     }
 
-    terminal.stopAnimation(TerminalState.success, `Detected ${jsPreProcessor == "ts" ? "TypeScript" : "Vanila"} as the JavaScript preprocessor`);
+    terminal.stopAnimation(TerminalState.success, `Detected ${jsPreProcessor == "ts" ? "TypeScript" : "Vanilla"} as the JavaScript preprocessor`);
+    console.log(mainEntryPath);
 }
