@@ -80,7 +80,7 @@ export function error(text: string) {
  * @param text The text to log
  */
 export function notice(text: string) {
-    console.log(chalk.hex("#FFAB00")(` △ ${text}`));
+    console.log(chalk.hex("#FFAB00")(` • ${text}`));
 }
 
 /**
@@ -263,7 +263,8 @@ const terminal = {
     stopAnimation,
     askString,
     askYN,
-    hexColorize
+    hexColorize,
+    notice
 };
 
 export default terminal;

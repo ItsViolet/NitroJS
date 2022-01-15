@@ -6,6 +6,7 @@
     "productName": "unnamed",
     "dependencies": {
         "@skylixgh/nitrojs-cli": "1.0.0-dev.1",
-        "@skylixgh/nitrojs-electron-back": "1.0.0-dev.1"
+        "@skylixgh/nitrojs-electron-back": "1.0.0-dev.1",
+        "typescript": "4.5.4"
     }
 }

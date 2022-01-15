@@ -111,6 +111,11 @@ export default function init() {
 
                                             const initFinished = () => {
                                                 terminal.success("Successfully initialized new NitroJS project!");
+                                                
+                                                if (path.join(process.cwd()) != initToPath) {
+                                                    terminal.notice("The project was not created in the current directory, be sure to CD into the project directory ;)");
+                                                }
+
                                                 terminal.log("Get Started:");
                                                 terminal.log(`  Run "npm install" to install all dependencies`);
                                                 terminal.log(`  Run "npx nitrojs dev" to start your project in development`);
@@ -137,8 +142,6 @@ export default function init() {
                                                             terminal.stopAnimation(TerminalState.error, "Failed to create TypeScript configuration");
                                                             quitFromErrorInstance(error);
                                                         });
-
-                                                        afterTSConfig();
                                                     } else {
                                                         afterTSConfig();
                                                     }
