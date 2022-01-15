@@ -1,6 +1,6 @@
 {
     "name": "@skylixgh/nitrojs-cli-builder",
-    "version": "1.0.0-dev.1",
+    "version": "1.0.0-dev.2",
     "description": "> TODO: description",
     "author": "Skylix",
     "homepage": "https://github.com/SkylixGH/NitroJS#readme",
@@ -28,8 +28,8 @@
         "url": "https://github.com/SkylixGH/NitroJS/issues"
     },
     "dependencies": {
-        "@skylixgh/nitrojs-object-tools": "1.0.0-dev.1",
-        "@skylixgh/nitrojs-terminal": "1.0.0-dev.1",
+        "@skylixgh/nitrojs-object-tools": "1.0.0-dev.2",
+        "@skylixgh/nitrojs-terminal": "1.0.0-dev.2",
         "@types/yargs": "^17.0.8",
         "yargs": "^17.3.1"
     },
