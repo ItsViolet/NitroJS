@@ -65,6 +65,12 @@ export default function init() {
          * @returns Promise for when the file was written
          */
         function writeResourceFile(pathName: string, contents: string): ReturnType<typeof writeProjectResource> {
+            if (!fs.existsSync(path.dirname(pathName))) {
+                fs.mkdirSync(path.dirname(pathName), {
+                    recursive: true
+                });
+            }
+
             return writeProjectResource(path.join(initToPath, pathName), contents);
         }
 
@@ -79,7 +85,7 @@ export default function init() {
                         terminal.askString("Project Version", "1.0.0-dev", (packageVersion) => {
                             terminal.askString("Project Description", null, (packageDescription) => {
                                 terminal.askString("Project Author", "Unknown", (packageAuthor) => {
-                                    terminal.askString("What type of project is this (Node/Desktop/Mobile/Webq)", "node", (packageProjectType) => {
+                                    terminal.askString("What type of project is this (Node/Desktop/Mobile/Web)", "node", (packageProjectType) => {
                                         terminal.askYN("Use TypeScript", true, (installTS) => {
                                             if (packageProjectType == "mobile") {
                                                 terminal.error("You cannot create a mobile project at this time :(");
@@ -117,16 +123,16 @@ export default function init() {
                                                     terminal.stopAnimation(TerminalState.success, "Package file has been generated successfully");
 
                                                     const afterTSConfig = () => {
-
+                                                        initFinished();
                                                     }
 
                                                     if (installTS) {
                                                         terminal.animate("Creating TypeScript configuration");
-
                                                         const templateTSConfig = fs.readFileSync(path.join(__dirname, "./templateResources/node/tsconfig.json.txt")).toString();
 
                                                         writeProjectResource("tsconfig.json", templateTSConfig).then(() => {
                                                             terminal.stopAnimation(TerminalState.success, "Successfully created TypeScript configuration");
+                                                            afterTSConfig();
                                                         }).catch((error) => {
                                                             terminal.stopAnimation(TerminalState.error, "Failed to create TypeScript configuration");
                                                             quitFromErrorInstance(error);
@@ -176,7 +182,42 @@ export default function init() {
                                                     }
                                                     
                                                     const afterTSTasks = () => {
-                                                        placePackageInProject();
+                                                        terminal.animate("Generating project structure");
+
+                                                        const stopGenerationFromErrorAndQuit = (error: Error | any) => {
+                                                            terminal.stopAnimation(TerminalState.error, "Failed to generate project structure");
+                                                            quitFromErrorInstance(error);
+                                                        }
+
+                                                        const generationIsFinished = () => {
+                                                            terminal.stopAnimation(TerminalState.success, "Project structure generated successfully");
+                                                            placePackageInProject();
+                                                        }
+
+                                                        if (packageProjectType == "node") {
+                                                            const afterMainFileGenerated = () => {
+                                                                generationIsFinished();
+                                                            }
+                                                            
+                                                            if (installTS) {
+                                                                writeResourceFile("src/main.ts", fs.readFileSync(path.join(__dirname, "./templateResources/node/structure/src/main.ts.txt")).toString())
+                                                                    .then(() => {
+                                                                        afterMainFileGenerated();
+                                                                    }).catch((error) => {
+                                                                        stopGenerationFromErrorAndQuit(error);
+                                                                    });
+                                                            } else {
+                                                                writeResourceFile("src/main.js", fs.readFileSync(path.join(__dirname, "./templateResources/node/structure/src/main.js.txt")).toString())
+                                                                    .then(() => {
+                                                                        afterMainFileGenerated();
+                                                                    }).catch((error) => {
+                                                                        stopGenerationFromErrorAndQuit(error);
+                                                                    });
+                                                            }
+                                                        } else {
+                                                            terminal.stopAnimation(TerminalState.error, "Failed to generate project structure because generation for this type of app is not supported");
+                                                            process.exit();
+                                                        }
                                                     }
                                                     
                                                     let tsTagsRaw = "";
