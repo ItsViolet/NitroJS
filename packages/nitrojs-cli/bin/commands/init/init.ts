@@ -99,15 +99,29 @@ export default function init() {
 
                                             const projectPackageFile = {
                                                 name: packageName,
+                                                main: "",
                                                 version: packageVersion,
                                                 author: packageAuthor,
                                                 description: packageDescription,
                                                 productName: packageDisplayName,
-                                                scripts: {
-                                                    "start": "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
+                                                publishConfig: {
+                                                    access: "public"
                                                 },
-                                                dependencies: {}
+                                                scripts: {
+                                                    start: "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
+                                                } as {},
+                                                dependencies: {},
+                                                directories: {},
+                                                files: [] as string[]
                                             };
+
+                                            if (installTS) {
+                                                projectPackageFile.scripts = {
+                                                    ...projectPackageFile.scripts,
+                                                    build: "tsc",
+                                                    clean: "tsc --build --clean"
+                                                }
+                                            }
 
                                             terminal.log("Generating your project");
 
@@ -206,6 +220,15 @@ export default function init() {
                                                         }
 
                                                         if (packageProjectType == "node") {
+                                                            projectPackageFile.main = "./src/main";
+
+                                                            projectPackageFile.directories = {
+                                                                ...projectPackageFile.directories,
+                                                                src: "src"
+                                                            };
+
+                                                            projectPackageFile.files.push("src");
+
                                                             const afterNitroJSConfigGenerated = () => {
                                                                 generationIsFinished();
                                                             }

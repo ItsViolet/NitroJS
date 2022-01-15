@@ -5,9 +5,18 @@
     "description": "",
     "productName": "unnamed",
     "scripts": {
-        "start": "nitrojs dev--config nitrojs.config.js"
+        "start": "nitrojs dev",
+        "build": "tsc",
+        "clean": "tsc --build --clean"
     },
     "dependencies": {
-        "@skylixgh/nitrojs-cli": "1.0.0-dev.1"
-    }
+        "@skylixgh/nitrojs-cli": "1.0.0-dev.5",
+        "typescript": "4.5.4"
+    },
+    "directories": {
+        "src": "src"
+    },
+    "files": [
+        "src"
+    ]
 }
