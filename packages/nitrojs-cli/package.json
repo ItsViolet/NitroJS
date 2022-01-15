@@ -12,10 +12,12 @@
     },
     "directories": {
         "lib": "lib",
+        "bin": "bin",
         "test": "__tests__"
     },
     "files": [
-        "lib"
+        "lib",
+        "bin"
     ],
     "repository": {
         "type": "git",
