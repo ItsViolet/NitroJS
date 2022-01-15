@@ -38,6 +38,7 @@
         "@skylixgh/nitrojs-cli-builder": "1.0.0-dev.5",
         "@skylixgh/nitrojs-config-tools": "1.0.0-dev.5",
         "@skylixgh/nitrojs-terminal": "1.0.0-dev.5",
+        "chokidar": "^3.5.2",
         "fs-extra": "^10.0.0",
         "semver": "^7.3.5",
         "ts-node": "^10.4.0"

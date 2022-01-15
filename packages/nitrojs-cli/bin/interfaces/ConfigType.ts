@@ -5,4 +5,14 @@ export default interface ConfigType {
      * The type of app for deployment
      */
     type: ConfigAppType;
+
+    /**
+     * Configuration for a node based app
+     */
+    node: {
+        /**
+         * Automatically restart the application when files are changed
+         */
+        autoRestart: boolean;
+    }
 }

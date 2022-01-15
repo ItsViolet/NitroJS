@@ -16,7 +16,10 @@ export default function readConfig(configPath = "nitrojs.config.ts", callBack: (
         .read<ConfigType>(
             path.join(process.cwd(), configPath),
             {
-                type: ConfigAppType.desktop
+                type: ConfigAppType.desktop,
+                node: {
+                    autoRestart: true
+                }
             },
             {
                 supportedTypes: {

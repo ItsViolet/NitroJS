@@ -2,7 +2,7 @@ import terminal, { State as TerminalState } from "@skylixgh/nitrojs-terminal";
 import { appCLIRoot, appPackage } from "../dev";
 import fs from "fs-extra";
 import path from "path";
-import objectTools from "../../../../../nitrojs-cli-builder/node_modules/@skylixgh/nitrojs-object-tools/lib/main";
+import chokidar from "chokidar";
 
 /**
  * The node application dev server
@@ -64,5 +64,13 @@ export default function node() {
     }
 
     terminal.stopAnimation(TerminalState.success, `Detected ${jsPreProcessor == "ts" ? "TypeScript" : "Vanilla"} as the JavaScript preprocessor`);
-    console.log(mainEntryPath);
+    
+    const restartApp = () => {
+        killAppProcess();
+        spawnAppProcess();
+    }
+
+    const appRootWatcher = () => {
+
+    }
 }
