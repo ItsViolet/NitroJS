@@ -7,7 +7,7 @@
     },
     "scripts": {
         "prettier": "prettier --write .",
-        "release": "lerna run build && lerna publish && lerna run clean"
+        "release": "lerna run build && lerna publish --exact && lerna run clean"
     },
     "dependencies": {
         "@types/node": "^17.0.8",
