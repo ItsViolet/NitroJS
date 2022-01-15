@@ -9,13 +9,11 @@
         "access": "public"
     },
     "scripts": {
-        "start": "nitrojs dev",
-        "build": "tsc",
-        "clean": "tsc --build --clean"
+        "start": "nitrojs dev--config nitrojs.config.js"
     },
     "dependencies": {
         "@skylixgh/nitrojs-cli": "1.0.0-dev.5",
-        "typescript": "4.5.4"
+        "@skylixgh/nitrojs-terminal": "1.0.0-dev.5"
     },
     "directories": {
         "src": "src"
