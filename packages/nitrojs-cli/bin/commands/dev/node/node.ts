@@ -3,11 +3,14 @@ import { appCLIRoot, appPackage } from "../dev";
 import fs from "fs-extra";
 import path from "path";
 import chokidar from "chokidar";
+import { UserConfig } from "../../../../lib/main";
+import { ChildProcess, spawn } from "child_process";
+import tty from "tty";
 
 /**
  * The node application dev server
  */
-export default function node() {
+export default function node(appConfig: UserConfig) {
     terminal.animate("Detecting JavaScript preprocessor");
 
     const invalidMainEntryMessage = "Could not detect JavaScript preprocessor because the main field provided in the package file is invalid";
@@ -64,13 +67,45 @@ export default function node() {
     }
 
     terminal.stopAnimation(TerminalState.success, `Detected ${jsPreProcessor == "ts" ? "TypeScript" : "Vanilla"} as the JavaScript preprocessor`);
+    let appInstance: ChildProcess;
+
+    const spawnAppProcess = () => {
+        appInstance = spawn("node", [ path.join(appCLIRoot, mainEntryPath) ]);
+
+        appInstance.on("exit", (code) => {
+            if (code)
+                terminal.notice("The app has exited with exit code " + code);
+        });
     
-    const restartApp = () => {
+        process.stdin.pipe(appInstance.stdin!);
+        process.stdin.resume();
+
+        appInstance.stdout?.on("data", data => {
+            process.stdout.write(data.toString());
+        });
+
+        appInstance.stderr?.on("data", data => {
+            process.stderr.write(data.toString());
+        });
+    }
+
+    const killAppProcess = () => {
+        appInstance.kill();
+        process.stdin.pause();
+    }
+    
+    const appRootWatcher = () => {       
+        terminal.log("Restarting the app");
+        
         killAppProcess();
         spawnAppProcess();
     }
 
-    const appRootWatcher = () => {
+    spawnAppProcess();
 
+    if (appConfig.node.autoRestart) {
+        chokidar.watch(appCLIRoot, {
+            ignoreInitial: true
+        }).on("all", appRootWatcher);
     }
 }

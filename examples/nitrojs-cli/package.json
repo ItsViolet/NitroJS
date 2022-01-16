@@ -1,6 +1,6 @@
 {
     "name": "test",
-    "main": "./src/main",
+    "main": "./src/m",
     "private": true,
     "version": "0.0.0",
     "author": "Skylix",

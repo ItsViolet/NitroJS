@@ -52,7 +52,7 @@ export default function dev() {
                         appPackage = packageJSON;
                  
                         if (config.type == UserConfigType.node) {
-                            node();
+                            node(config);
                         } else {
                             terminal.error("Failed to start the development server");
                             terminal.error("Possible Reason:");
