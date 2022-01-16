@@ -104,10 +104,23 @@ export default function node(appConfig: UserConfig) {
 
     spawnAppProcess();
 
+    const pkgWatch = chokidar.watch(path.join(appCLIRoot, "package.json"), {
+        ignoreInitial: true
+    });
+
+    pkgWatch.on("all", () => {
+        process.stdout.write("\n");
+        terminal.notice("The package.json file was modified, please stop this app and start it again");
+    });
+
     if (appConfig.node.autoRestart) {
         chokidar.watch(appCLIRoot, {
             ignoreInitial: true,
             ignored: [ "**/node_modules/**/*" ]
-        }).on("all", appRootWatcher); 
+        }).on("all", (eventName, pathName) => {
+            if (path.join(pathName) != path.join(appCLIRoot, "package.json")) {
+                appRootWatcher();
+            }
+        }); 
     }
 }
