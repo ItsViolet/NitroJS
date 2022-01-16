@@ -70,10 +70,10 @@ export default function node(appConfig: UserConfig) {
     let appInstance: ChildProcess;
 
     const spawnAppProcess = () => {
-        appInstance = spawn("node", [ path.join(appCLIRoot, mainEntryPath) ]);
+        appInstance = spawn("node", [ path.join(__dirname, "./proxy/node.js"), path.join(appCLIRoot, mainEntryPath) ]);
 
         appInstance.on("exit", (code) => {
-            if (code)
+            if (code != undefined)
                 terminal.notice("The app has exited with exit code " + code);
         });
     
