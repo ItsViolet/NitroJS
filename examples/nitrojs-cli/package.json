@@ -1,6 +1,6 @@
 {
     "name": "test",
-    "main": "./src/m.js",
+    "main": "./src/main",
     "private": true,
     "version": "0.0.0",
     "author": "Skylix",
@@ -12,7 +12,7 @@
     "scripts": {
         "start": "nitrojs-dev dev",
         "build": "tsc",
-        "clean": "tsc --build --clean"
+        "clean": "tsc --build --clean"        
     },
     "dependencies": {
         "@skylixgh/nitrojs-cli": "file:../../packages/nitrojs-cli",
