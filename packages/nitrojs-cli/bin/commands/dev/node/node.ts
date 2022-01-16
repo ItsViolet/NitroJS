@@ -94,18 +94,20 @@ export default function node(appConfig: UserConfig) {
         process.stdin.pause();
     }
     
-    const appRootWatcher = () => {       
+    const appRootWatcher = () => {
+        process.stdout.write("\n");  
         terminal.log("Restarting the app");
         
         killAppProcess();
-        spawnAppProcess();
+        spawnAppProcess(); 
     }
 
     spawnAppProcess();
 
     if (appConfig.node.autoRestart) {
         chokidar.watch(appCLIRoot, {
-            ignoreInitial: true
-        }).on("all", appRootWatcher);
+            ignoreInitial: true,
+            ignored: [ "**/node_modules/**/*" ]
+        }).on("all", appRootWatcher); 
     }
 }
