@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import readline from "readline";
+import stripANSI from "strip-ansi";
 
 let animationLoop: NodeJS.Timer | number;
 let animationRunning = false;
@@ -20,6 +21,17 @@ export enum State {
 }
 
 /**
+ * Set the directory for storing debug logs
+ * @param logDir The directory to store the log files in
+ * @returns A promise for if the directory was set
+ */
+export function setDebugLocation(logDir: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+
+    });
+}
+
+/**
  * Colorize some text with hex
  * @param text The text to colorize
  * @param hexColor The hex color for the text
@@ -30,13 +42,55 @@ export function hexColorize(text: string, hexColor: string): string {
 }
 
 /**
+ * Store some text in the debug log
+ * @param text The debug text
+ */
+function storeInDebug(text: string) {
+    console.log(text);
+}
+
+type LogFormattedHexColor = "#999999" | "#50ffab" | "#FFAB00" | "#FF5555";
+
+/**
  * Create and print a formatted message in the terminal
  * @param text Text message
  * @param hexColor Hex color for prefix bullet
+ * @param debug Send this message only to the debug log
  * @returns Nothing
  */
-function logFormatted(text: string, hexColor: string) {
+function logFormatted(text: string, hexColor: LogFormattedHexColor, debug = false) {
     if (!animationFullStopped || questionRunning) {
+        return;
+    }
+
+    if (debug) {
+        let prefix = "";
+
+        switch (hexColor) {
+            case "#50ffab":
+                prefix = " [ Success ]";
+                break;
+
+            case "#999999":
+                prefix = " [ Info ]";
+                break;
+
+            case "#FF5555":
+                prefix = " [ Error ]";
+                break;
+
+            case "#FFAB00":
+                let strippedText = stripANSI(text);
+
+                if (strippedText == text) {
+                    prefix = " [ Warning ]";
+                } else {
+                    prefix = " [ Notice ]";
+                }
+                break;
+        }
+
+        storeInDebug(`${prefix} ${stripANSI(text)}`);
         return;
     }
 
@@ -46,41 +100,46 @@ function logFormatted(text: string, hexColor: string) {
 /**
  * Log an info message into the terminal
  * @param text The text to log
+ * @param debug Send this message only to the debug log
  */
-export function log(text: string) {
-    logFormatted(text, "#999999");
+export function log(text: string, debug = false) {
+    logFormatted(text, "#999999", debug);
 }
 
 /**
  * Log a success message into the terminal
  * @param text Text to log
+ * @param debug Send this message only to the debug log
  */
-export function success(text: string) {
-    logFormatted(text, "#50ffab");
+export function success(text: string, debug = false) {
+    logFormatted(text, "#50ffab", debug);
 }
 
 /**
  *  Log a warning message into the terminal
  * @param text Text to log
+ * @param debug Send this message only to the debug log
  */
-export function warning(text: string) {
-    logFormatted(text, "#FFAB00");
+export function warning(text: string, debug = false) {
+    logFormatted(text, "#FFAB00", debug);
 }
 
 /**
  * Log an error message into the terminal
  * @param text The text to log
+ * @param debug Send this message only to the debug log
  */
-export function error(text: string) {
-    logFormatted(text, "#FF5555");
+export function error(text: string, debug = false) {
+    logFormatted(text, "#FF5555", debug);
 }
 
 /**
  * Log a notice message into the terminal
  * @param text The text to log
+ * @param debug Send this message only to the debug log
  */
-export function notice(text: string) {
-    console.log(chalk.hex("#FFAB00")(` • ${text}`));
+export function notice(text: string, debug = false) {
+    logFormatted(chalk.hex("#FFAB00")(text), "#FFAB00", debug);
 }
 
 /**
@@ -264,7 +323,8 @@ const terminal = {
     askString,
     askYN,
     hexColorize,
-    notice
+    notice,
+    setDebugLocation
 };
 
 export default terminal;

@@ -28,7 +28,8 @@
         "url": "https://github.com/skylixgh/nitrojs/issues"
     },
     "dependencies": {
-        "chalk": "4.1.2"
+        "chalk": "4.1.2",
+        "strip-ansi": "^5.2.0"
     },
     "gitHead": "f44e925096c0ae13c759f2c579004fb48a6cb148",
     "devDependencies": {
