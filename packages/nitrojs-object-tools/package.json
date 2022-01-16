@@ -1,6 +1,6 @@
 {
 	"name": "@skylixgh/nitrojs-object-tools",
-	"version": "1.0.0-dev.5",
+	"version": "1.0.0-dev.6",
 	"description": "> TODO: description",
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
@@ -24,7 +24,7 @@
 		"url": "https://github.com/SkylixGH/NitroJS/issues"
 	},
 	"dependencies": {
-		"@skylixgh/nitrojs-terminal": "1.0.0-dev.5",
+		"@skylixgh/nitrojs-terminal": "1.0.0-dev.6",
 		"cli-highlight": "^2.1.11",
 		"merge-deep": "^3.0.3"
 	},
