@@ -1,21 +1,26 @@
 import terminal, { State as TerminalState } from "@skylixgh/nitrojs-terminal";
-import { appCLIRoot, appPackage } from "../dev";
+import { appCLIRoot, appPackage as appPackageOriginal } from "../dev";
 import fs from "fs-extra";
 import path from "path";
 import chokidar from "chokidar";
 import { UserConfig } from "../../../../lib/main";
 import { ChildProcess, spawn } from "child_process";
-import tty from "tty";
 
 /**
  * The node application dev server
  */
-export default function node(appConfig: UserConfig) {
+export default function node(appConfig: UserConfig, mainLocation?: string) {
     terminal.animate("Detecting JavaScript preprocessor");
 
     const invalidMainEntryMessage = "Could not detect JavaScript preprocessor because the main field provided in the package file is invalid";
     let mainEntryPath = "";
     let jsPreProcessor = null as null | "ts" | "js";
+
+    const appPackage = { ...appPackageOriginal };
+
+    if (mainLocation) {
+        appPackage["main"] = mainLocation;
+    }
 
     if (!appPackage["main"]) {
         terminal.stopAnimation(TerminalState.error, "Could not detect JavaScript preprocessor because the main field was not provided in the package file");

@@ -10,6 +10,18 @@ import objectTools, { ObjectType } from "../../../../nitrojs-cli-builder/node_mo
 let appCLIRoot = process.cwd();
 let appPackage = {} as ObjectType;
 
+interface CommandFlags {
+    /**
+     * The app config location relative to the process cwd path
+     */
+    config?: string;
+
+    /**
+     * The location to the main file
+     */
+    main?: string;
+}
+
 export default function dev() {
     cliBuilder.registerNew(
         "dev",
@@ -17,10 +29,13 @@ export default function dev() {
             flags: {
                 config: {
                     type: FlagType.string
+                },
+                main: {
+                    type: FlagType.string
                 }
             }
         },
-        async (args, flags) => {
+        async (args, flags: CommandFlags) => {
             readConfig(flags.config, (config) => {
                 if (args[0]) {
                     appCLIRoot = path.join(process.cwd(), args[0]);
@@ -52,7 +67,7 @@ export default function dev() {
                         appPackage = packageJSON;
                  
                         if (config.type == UserConfigType.node) {
-                            node(config);
+                            node(config, flags.main);
                         } else {
                             terminal.error("Failed to start the development server");
                             terminal.error("Possible Reason:");
