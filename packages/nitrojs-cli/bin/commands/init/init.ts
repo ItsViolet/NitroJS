@@ -114,7 +114,7 @@ export default function init() {
                                                         access: "restricted"
                                                     },
                                                     scripts: {
-                                                        start: "nitrojs dev" + (!installTS ? "--config nitrojs.config.js" : "")
+                                                        start: "nitrojs dev" + (!installTS ? " --config nitrojs.config.js" : "")
                                                     } as {},
                                                     dependencies: {},
                                                     devDependencies: {},
