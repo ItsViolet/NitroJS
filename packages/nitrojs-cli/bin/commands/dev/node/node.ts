@@ -85,8 +85,10 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
             process.stdin.pause();
             process.stdin.unpipe();
 
-            if (code != undefined)
+            if (code != undefined) {
+                process.stdout.write("\n");  
                 terminal.notice("The app has exited with exit code " + code);
+            }
         });
     
         process.stdin.pipe(appInstance.stdin!);
@@ -107,13 +109,14 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
     }
     
     const appRootWatcher = () => {
-        process.stdout.write("\n");  
         terminal.log("Restarting the app");
+        process.stdout.write("\n");  
         
         killAppProcess();
         spawnAppProcess(); 
     }
 
+    process.stdout.write("\n");  
     spawnAppProcess();
 
     if (appConfig.node.autoRestart) {
@@ -122,7 +125,6 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
         });
     
         configWatch.on("all", () => {
-            process.stdout.write("\n");
             terminal.notice("The NitroJS config file was modified, please stop this app and start it again");
         });
 
