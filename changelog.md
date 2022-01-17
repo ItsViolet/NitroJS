@@ -3,3 +3,4 @@
 
 # Fixes `@skylixgh/nitrojs-cli`
 -   The `SyntaxError: Cannot use import statement outside a module` error when using `nitrojs` command.
+-   Weird import caused by bad IDE auto import plugin.
