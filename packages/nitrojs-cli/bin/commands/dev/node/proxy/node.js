@@ -5,7 +5,7 @@
 
 const { spawn } = require("child_process");
 
-const proc = spawn("node", [ process.argv[2] ]);
+const proc = spawn("node", [ process.argv[2] ], { env : { FORCE_COLOR: true }});
 
 proc.stdout.pipe(process.stdout);
 proc.stderr.pipe(process.stderr);

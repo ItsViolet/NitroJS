@@ -76,9 +76,9 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
 
     const spawnAppProcess = () => {
         if (jsPreProcessor == "ts") {
-            appInstance = spawn("node", [ path.join(__dirname, "./proxy/typescript.js"), path.join(appCLIRoot, mainEntryPath), appCLIRoot ]);
+            appInstance = spawn("node", [ path.join(__dirname, "./proxy/typescript.js"), path.join(appCLIRoot, mainEntryPath), appCLIRoot ], { env : { FORCE_COLOR: true } as any});
         } else {
-            appInstance = spawn("node", [ path.join(__dirname, "./proxy/node.js"), path.join(appCLIRoot, mainEntryPath) ]);
+            appInstance = spawn("node", [ path.join(__dirname, "./proxy/node.js"), path.join(appCLIRoot, mainEntryPath) ], { env : { FORCE_COLOR: true } as any});
         }
 
         appInstance.on("exit", (code) => {
