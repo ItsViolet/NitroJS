@@ -23,14 +23,17 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
     }
 
     if (!appPackage["main"]) {
-        terminal.stopAnimation(TerminalState.error, "Could not detect JavaScript preprocessor because the main field was not provided in the package file");
+        terminal.stopAnimation(
+            TerminalState.error,
+            "Could not detect JavaScript preprocessor because the main field was not provided in the package file"
+        );
         return;
-    } 
-    
+    }
+
     if (
-        !fs.existsSync(path.join(appCLIRoot, appPackage["main"]))
-        && !fs.existsSync(path.join(appCLIRoot, appPackage["main"] + ".js"))
-        && !fs.existsSync(path.join(appCLIRoot, appPackage["main"] + ".ts"))
+        !fs.existsSync(path.join(appCLIRoot, appPackage["main"])) &&
+        !fs.existsSync(path.join(appCLIRoot, appPackage["main"] + ".js")) &&
+        !fs.existsSync(path.join(appCLIRoot, appPackage["main"] + ".ts"))
     ) {
         terminal.stopAnimation(TerminalState.error, invalidMainEntryMessage);
         return;
@@ -43,27 +46,12 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
         jsPreProcessor = "ts";
         mainEntryPath = appPackage["main"];
     } else if (
-        (
-            appPackage["devDependencies"]["typescript"]
-            || appPackage["dependencies"]["typescript"]
-        )
-        && fs.existsSync(
-            path.join(
-                appCLIRoot,
-                appPackage["main"] + ".ts"
-            )
-        )
+        (appPackage["devDependencies"]["typescript"] || appPackage["dependencies"]["typescript"]) &&
+        fs.existsSync(path.join(appCLIRoot, appPackage["main"] + ".ts"))
     ) {
         jsPreProcessor = "ts";
         mainEntryPath = appPackage["main"] + ".ts";
-    } else if (
-        fs.existsSync(
-            path.join(
-                appCLIRoot,
-                appPackage["main"] + ".js"
-            )
-        )
-    ) {
+    } else if (fs.existsSync(path.join(appCLIRoot, appPackage["main"] + ".js"))) {
         jsPreProcessor = "js";
         mainEntryPath = appPackage["main"] + ".js";
     } else {
@@ -76,60 +64,71 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
 
     const spawnAppProcess = () => {
         if (jsPreProcessor == "ts") {
-            appInstance = spawn("node", [ path.join(__dirname, "./proxy/typescript.js"), path.join(appCLIRoot, mainEntryPath), appCLIRoot ], { env : { FORCE_COLOR: true } as any});
+            appInstance = spawn("node", [path.join(__dirname, "./proxy/typescript.js"), path.join(appCLIRoot, mainEntryPath), appCLIRoot], {
+                env: { FORCE_COLOR: true } as any
+            });
         } else {
-            appInstance = spawn("node", [ path.join(__dirname, "./proxy/node.js"), path.join(appCLIRoot, mainEntryPath) ], { env : { FORCE_COLOR: true } as any});
+            appInstance = spawn("node", [path.join(__dirname, "./proxy/node.js"), path.join(appCLIRoot, mainEntryPath)], {
+                env: { FORCE_COLOR: true } as any
+            });
         }
 
         appInstance.on("exit", (code) => {
+            process.stdout.write("\n");
+            appInstance.stdin?.end();
+            process.stdin.destroy();
+
             if (code != undefined) {
-                process.stdout.write("\n");  
                 terminal.notice("The app has exited with exit code " + code);
             }
         });
-    
+
         process.stdin.pipe(appInstance.stdin!);
 
-        appInstance.stdout?.on("data", data => {
+        appInstance.stdout?.on("data", (data) => {
             process.stdout.write(data.toString());
         });
 
-        appInstance.stderr?.on("data", data => {
+        appInstance.stderr?.on("data", (data) => {
             process.stderr.write(data.toString());
         });
-    }
+    };
 
     const killAppProcess = () => {
+        appInstance.stdin?.end();
+        process.stdin.destroy();
         appInstance.kill();
-    }
-    
+    };
+
     const appRootWatcher = () => {
         terminal.log("Restarting the app");
-        process.stdout.write("\n");  
-        
+        process.stdout.write("\n");
+
         killAppProcess();
-        spawnAppProcess(); 
+        spawnAppProcess();
 
         process.stdin.resume();
-    }
+    };
 
-    process.stdout.write("\n");  
+    process.stdout.write("\n");
     spawnAppProcess();
 
     if (appConfig.node.autoRestart) {
         const configWatch = chokidar.watch(path.join(appCLIRoot, appConfigLocation), {
             ignoreInitial: true
         });
-    
+
         configWatch.on("all", () => {
             terminal.notice("The NitroJS config file was modified, please stop this app and start it again");
         });
 
-        chokidar.watch(appCLIRoot, {
-            ignoreInitial: true,
-            ignored: [ "**/node_modules/**/*" ]
-        }).on("all", (eventName, pathName) => {
-            appRootWatcher();
-        }); 
+        chokidar
+            .watch(appCLIRoot, {
+                ignoreInitial: true,
+                ignored: ["**/node_modules/**/*"]
+            })
+            .on("all", (eventName, pathName) => {
+                appRootWatcher();
+            });
     }
 }
