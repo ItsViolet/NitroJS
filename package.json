@@ -8,7 +8,8 @@
     "scripts": {
         "prettier": "prettier --write .",
         "release": "lerna run build && lerna publish --exact && lerna run clean",
-        "postinstall": "lerna bootstrap"
+        "postinstall": "lerna bootstrap && npm run install-cli-dev",
+        "install-cli-dev": "npm i -g ./packages/nitrojs-cli"
     },
     "dependencies": {
         "@types/node": "^17.0.8",
