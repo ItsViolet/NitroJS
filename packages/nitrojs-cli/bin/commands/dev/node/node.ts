@@ -9,7 +9,7 @@ import { ChildProcess, spawn } from "child_process";
 /**
  * The node application dev server
  */
-export default function node(appConfig: UserConfig, mainLocation?: string) {
+export default function node(appConfig: UserConfig, appConfigLocation: string, mainLocation?: string) {
     terminal.animate("Detecting JavaScript preprocessor");
 
     const invalidMainEntryMessage = "Could not detect JavaScript preprocessor because the main field provided in the package file is invalid";
@@ -117,16 +117,7 @@ export default function node(appConfig: UserConfig, mainLocation?: string) {
     spawnAppProcess();
 
     if (appConfig.node.autoRestart) {
-        const pkgWatch = chokidar.watch(path.join(appCLIRoot, "package.json"), {
-            ignoreInitial: true
-        });
-    
-        pkgWatch.on("all", () => {
-            process.stdout.write("\n");
-            terminal.notice("The package.json file was modified, please stop this app and start it again");
-        });
-
-        const configWatch = chokidar.watch(path.join(appCLIRoot, "package.json"), {
+        const configWatch = chokidar.watch(path.join(appCLIRoot, appConfigLocation), {
             ignoreInitial: true
         });
     
@@ -139,9 +130,7 @@ export default function node(appConfig: UserConfig, mainLocation?: string) {
             ignoreInitial: true,
             ignored: [ "**/node_modules/**/*" ]
         }).on("all", (eventName, pathName) => {
-            if (path.join(pathName) != path.join(appCLIRoot, "package.json")) {
-                appRootWatcher();
-            }
+            appRootWatcher();
         }); 
     }
 }

@@ -67,7 +67,7 @@ export default function dev() {
                         appPackage = packageJSON;
                  
                         if (config.type == UserConfigType.node) {
-                            node(config, flags.main);
+                            node(config, flags.config ?? "nitrojs.config.ts", flags.main);
                         } else {
                             terminal.error("Failed to start the development server");
                             terminal.error("Possible Reason:");
