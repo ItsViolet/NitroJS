@@ -116,16 +116,25 @@ export default function node(appConfig: UserConfig, mainLocation?: string) {
 
     spawnAppProcess();
 
-    const pkgWatch = chokidar.watch(path.join(appCLIRoot, "package.json"), {
-        ignoreInitial: true
-    });
-
-    pkgWatch.on("all", () => {
-        process.stdout.write("\n");
-        terminal.notice("The package.json file was modified, please stop this app and start it again");
-    });
-
     if (appConfig.node.autoRestart) {
+        const pkgWatch = chokidar.watch(path.join(appCLIRoot, "package.json"), {
+            ignoreInitial: true
+        });
+    
+        pkgWatch.on("all", () => {
+            process.stdout.write("\n");
+            terminal.notice("The package.json file was modified, please stop this app and start it again");
+        });
+
+        const configWatch = chokidar.watch(path.join(appCLIRoot, "package.json"), {
+            ignoreInitial: true
+        });
+    
+        configWatch.on("all", () => {
+            process.stdout.write("\n");
+            terminal.notice("The NitroJS config file was modified, please stop this app and start it again");
+        });
+
         chokidar.watch(appCLIRoot, {
             ignoreInitial: true,
             ignored: [ "**/node_modules/**/*" ]
