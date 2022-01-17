@@ -1,5 +1,5 @@
 import path from "path";
-import configTools from "../../../nitrojs-config-tools/lib/main";
+import configTools from "@skylixgh/nitrojs-config-tools";
 import ConfigAppType from "../enums/ConfigAppType";
 import ConfigType from "../interfaces/ConfigType";
 import { Errors as ConfigToolsErrors } from "@skylixgh/nitrojs-config-tools";
