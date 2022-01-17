@@ -262,6 +262,10 @@ export function updateAnimation(newAnimationMessage: string) {
  */
 export function animate(text: string) {
     (async () => {
+        if (animationRunning || !animationFullStopped) {
+            stopAnimation(State.info, animationText);
+        }
+
         animationText = text;
         animationRunning = true;
         animationFullStopped = false;
