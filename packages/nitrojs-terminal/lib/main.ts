@@ -28,18 +28,6 @@ export enum State {
     error
 }
 
-export enum SetDebugLocationErrors {
-    /**
-     * The path is invalid
-     */
-    invalidPath,
-
-    /**
-     * The path provided is a file
-     */
-    pathIsFile
-}
-
 /**
  * Set the directory for storing debug logs
  * @param logDir The directory to store the log files in

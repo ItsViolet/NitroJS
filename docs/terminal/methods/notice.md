@@ -1,6 +1,6 @@
-# Method `warning`
+# Method `notice`
 
-Log a warning into the terminal.
+Log a notice message to the terminal.
 
 ## Information
 

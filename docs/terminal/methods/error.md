@@ -6,3 +6,4 @@ Log an error message into the terminal.
 
 -   Parameters
     -   `text` : `string` **[Required]** The text to log in the terminal.
+    -   `debug` : `boolean` **[Optional]** Whether to only send this output to the debug log. Default `false`.
