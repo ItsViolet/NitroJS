@@ -16,6 +16,7 @@ let questionRunning = false;
 let animationRenderFunction: (updateFrame: boolean) => void;
 let debugDirectory = path.join(process.cwd(), "./debug");
 let debugUseMilitary = false;
+let debugEnabled = false;
 let currentDebugIndex = null as null | number;
 const animationInterval = 100;
 const animationFrames = ["|", "/", "-", "\\"];
@@ -53,6 +54,14 @@ export function setDebugLocation(logDir: string) {
  */
 export function setDebugMilitaryStampMode(mode: boolean) {
     debugUseMilitary = mode;
+}
+
+/**
+ * Enable or disable the debugger
+ * @param mode Should the debugger be enabled
+ */
+export function setDebuggerEnabled(mode: boolean) {
+    debugEnabled = mode;
 }
 
 /**
@@ -124,41 +133,41 @@ function logFormatted(text: string, hexColor: LogFormattedHexColor, debug = fals
         return;
     }
 
-    if (debug) {
-        let prefix = "";
+    if (!debug)
+        console.log(` ${chalk.hex(hexColor)("•")} ${text}`);
 
-        switch (hexColor) {
-            case "#50ffab":
-                prefix = " [ Success ]";
-                break;
+    let prefix = "";
 
-            case "#999999":
-                prefix = " [ Info ]";
-                break;
+    switch (hexColor) {
+        case "#50ffab":
+            prefix = "[ Success ]";
+            break;
 
-            case "#FF5555":
-                prefix = " [ Error ]";
-                break;
+        case "#999999":
+            prefix = "[ Info ]";
+            break;
 
-            case "#FFAB00":
-                let strippedText = stripANSI(text);
+        case "#FF5555":
+            prefix = "[ Error ]";
+            break;
 
-                if (strippedText == text) {
-                    prefix = " [ Warning ]";
-                } else {
-                    prefix = " [ Notice ]";
-                }
-                break;
-        }
+        case "#FFAB00":
+            let strippedText = stripANSI(text);
 
-        const date = DateTime.fromJSDate(new Date()).toFormat("yyyy LLL dd");
-        const time = DateTime.fromJSDate(new Date()).toFormat((debugUseMilitary ? "HH" : "hh") + ":mm:ss a");
-
-        storeInDebug(` [ ${date} ] [ ${time} ] ${prefix} ${stripANSI(text)}`);
-        return;
+            if (strippedText == text) {
+                prefix = "[ Warning ]";
+            } else {
+                prefix = "[ Notice ]";
+            }
+            break;
     }
 
-    console.log(` ${chalk.hex(hexColor)("•")} ${text}`);
+    if (!debugEnabled) return;
+
+    const date = DateTime.fromJSDate(new Date()).toFormat("yyyy LLL dd");
+    const time = DateTime.fromJSDate(new Date()).toFormat((debugUseMilitary ? "HH" : "hh") + ":mm:ss a");
+
+    storeInDebug(` [ ${debug ? "Debug" : "Standard"} ] [ ${date} ] [ ${time} ] ${prefix} ${stripANSI(text)}`);
 }
 
 /**
@@ -388,7 +397,9 @@ const terminal = {
     askYN,
     hexColorize,
     notice,
-    setDebugLocation
+    setDebugLocation,
+    setDebugMilitaryStampMode,
+    setDebuggerEnabled
 };
 
 export default terminal;

@@ -1,0 +1,6 @@
+ Debug Log [ Sun Jan 16 2022 19:51:43 GMT-0500 (Easter Island Summer Time) ]
+ [ 2022 Jan 16 ] [ 07:51:43 PM ] [ Info ] All messages that are logged or stored explicitly as a debug output will be sent to the debug logger
+ [ 2022 Jan 16 ] [ 07:51:43 PM ] [ Notice ] Debugging
+ [ 2022 Jan 16 ] [ 07:51:43 PM ] [ Info ] This is an info message
+ [ 2022 Jan 16 ] [ 07:51:43 PM ] [ Success ] This is a success message
+ [ 2022 Jan 16 ] [ 07:51:43 PM ] [ Warning ] This is a warning message

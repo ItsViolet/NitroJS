@@ -1,0 +1,7 @@
+ Debug Log [ Sun Jan 16 2022 19:53:04 GMT-0500 (Easter Island Summer Time) ]
+ [ Standard ] [ 2022 Jan 16 ] [ 07:53:04 PM ] [ Info ] This test case is used for testing debug
+ [ Standard ] [ 2022 Jan 16 ] [ 07:53:04 PM ] [ Info ] All messages that are logged or stored explicitly as a debug output will be sent to the debug logger
+ [ Debug ] [ 2022 Jan 16 ] [ 07:53:04 PM ] [ Notice ] Debugging
+ [ Debug ] [ 2022 Jan 16 ] [ 07:53:04 PM ] [ Info ] This is an info message
+ [ Debug ] [ 2022 Jan 16 ] [ 07:53:04 PM ] [ Success ] This is a success message
+ [ Debug ] [ 2022 Jan 16 ] [ 07:53:04 PM ] [ Warning ] This is a warning message

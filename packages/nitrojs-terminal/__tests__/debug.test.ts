@@ -1,7 +1,10 @@
 import path from "path";
 import terminal from "..";
 
+terminal.setDebuggerEnabled(true);
 terminal.setDebugLocation(path.join(__dirname, "./debug"));
+
+terminal.log("Initializing debugger");
 
 terminal.log("This test case is used for testing debug");
 terminal.log("All messages that are logged or stored explicitly as a debug output will be sent to the debug logger");
