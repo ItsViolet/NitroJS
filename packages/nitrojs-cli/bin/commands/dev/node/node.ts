@@ -82,17 +82,20 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
         }
 
         appInstance.on("exit", (code) => {
-            process.stdin.pause();
             process.stdin.unpipe();
+            process.stdin.pause();
 
             if (code != undefined) {
                 process.stdout.write("\n");  
                 terminal.notice("The app has exited with exit code " + code);
             }
         });
+
+        appInstance.on("close", (code) => {
+            terminal.notice("CLOS");
+        });
     
         process.stdin.pipe(appInstance.stdin!);
-        process.stdin.resume();
 
         appInstance.stdout?.on("data", data => {
             process.stdout.write(data.toString());
