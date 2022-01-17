@@ -1,6 +1,5 @@
 # NitroJS Change Log
--   Version: `v1.0.0-dev.8`
+-   Version: `v1.0.0-dev.9`
 
 # Fixes `@skylixgh/nitrojs-cli`
--   The `SyntaxError: Cannot use import statement outside a module` error when using `nitrojs` command.
--   Weird import caused by bad IDE auto import plugin.
+-   Fixed more execution errors
