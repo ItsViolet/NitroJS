@@ -11,4 +11,4 @@ terminal.askString("Your name", null, (name) => {
     terminal.success("We got your name! Its: " + name);
     process.exit();
 });
-     
+                 

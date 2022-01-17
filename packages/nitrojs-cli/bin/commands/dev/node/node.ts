@@ -82,10 +82,6 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
         }
 
         appInstance.on("exit", (code) => {
-            process.stdin.unpipe();
-            process.stdin.pause();
-            process.stdin.end();
-
             if (code != undefined) {
                 process.stdout.write("\n");  
                 terminal.notice("The app has exited with exit code " + code);
@@ -105,7 +101,6 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
 
     const killAppProcess = () => {
         appInstance.kill();
-        process.stdin.pause();
     }
     
     const appRootWatcher = () => {
@@ -114,6 +109,8 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
         
         killAppProcess();
         spawnAppProcess(); 
+
+        process.stdin.resume();
     }
 
     process.stdout.write("\n");  
