@@ -1,6 +1,10 @@
 import chalk from "chalk";
+import path from "path";
 import readline from "readline";
 import stripANSI from "strip-ansi";
+import fs from "fs-extra";
+import moment from "moment"; // TODO: Uninstall
+import luxon, { DateTime } from "luxon";
 
 let animationLoop: NodeJS.Timer | number;
 let animationRunning = false;
@@ -10,6 +14,9 @@ let animationEndHex = "#999999";
 let animationFullStopped = true;
 let questionRunning = false;
 let animationRenderFunction: (updateFrame: boolean) => void;
+let debugDirectory = path.join(process.cwd(), "./debug");
+let debugUseMilitary = false;
+let currentDebugIndex = null as null | number;
 const animationInterval = 100;
 const animationFrames = ["|", "/", "-", "\\"];
 
@@ -20,15 +27,32 @@ export enum State {
     error
 }
 
+export enum SetDebugLocationErrors {
+    /**
+     * The path is invalid
+     */
+    invalidPath,
+
+    /**
+     * The path provided is a file
+     */
+    pathIsFile
+}
+
 /**
  * Set the directory for storing debug logs
  * @param logDir The directory to store the log files in
- * @returns A promise for if the directory was set
  */
-export function setDebugLocation(logDir: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+export function setDebugLocation(logDir: string) {
+    debugDirectory = logDir;
+}
 
-    });
+/**
+ * Whether to use a military time stamp for debug logs
+ * @param mode The military stamp mode
+ */
+export function setDebugMilitaryStampMode(mode: boolean) {
+    debugUseMilitary = mode;
 }
 
 /**
@@ -46,7 +70,44 @@ export function hexColorize(text: string, hexColor: string): string {
  * @param text The debug text
  */
 function storeInDebug(text: string) {
-    console.log(text);
+    if (fs.existsSync(debugDirectory) && fs.lstatSync(debugDirectory).isFile()) {
+        fs.removeSync(debugDirectory);
+    }
+
+    if (!fs.existsSync(debugDirectory)) {
+        fs.mkdirSync(debugDirectory, {
+            recursive: true
+        });
+    }
+
+    const calculateIndex = () => {
+        if (currentDebugIndex == null) 
+            currentDebugIndex = 0;
+        else 
+            currentDebugIndex++;
+
+        if (fs.existsSync(path.join(debugDirectory, "debug-log-" + currentDebugIndex + ".txt"))) {
+            calculateIndex();
+        }
+    }
+
+    if (currentDebugIndex == null) {
+        calculateIndex();
+    }
+
+    fs.writeFileSync(
+        path.join(
+            debugDirectory, 
+            "debug-log-" + currentDebugIndex + ".txt"),                                                                     // ! ////////////////////////////////////////////////////////////////////////////////////// ! //
+        (() => {                                                                                                           // ! This is an important message                                                           ! //
+            if (fs.existsSync(path.join(debugDirectory, "debug-log-" + currentDebugIndex + ".txt"))) {                    // ! This method is very bad because if the log becomes to large it may impact performance  ! //
+                return fs.readFileSync(path.join(debugDirectory, "debug-log-" + currentDebugIndex + ".txt"))             // ! Please use some sort of stream                                                         ! //
+                           .toString() + "\r\n" + text;                                                                 // ! ////////////////////////////////////////////////////////////////////////////////////// ! //
+            }
+
+            return " Debug Log [ " + new Date() + " ]";
+        })()
+    );
 }
 
 type LogFormattedHexColor = "#999999" | "#50ffab" | "#FFAB00" | "#FF5555";
@@ -90,7 +151,10 @@ function logFormatted(text: string, hexColor: LogFormattedHexColor, debug = fals
                 break;
         }
 
-        storeInDebug(`${prefix} ${stripANSI(text)}`);
+        const date = DateTime.fromJSDate(new Date()).toFormat("yyyy LLL dd");
+        const time = DateTime.fromJSDate(new Date()).toFormat((debugUseMilitary ? "HH" : "hh") + ":mm:ss a");
+
+        storeInDebug(` [ ${date} ] [ ${time} ] ${prefix} ${stripANSI(text)}`);
         return;
     }
 

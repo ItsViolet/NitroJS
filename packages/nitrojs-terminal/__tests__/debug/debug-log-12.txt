@@ -1,0 +1,4 @@
+ Debug Log [ Sun Jan 16 2022 19:46:04 GMT-0500 (Easter Island Summer Time) ]
+ [ 2022 Jan 16 ] [ 07:46:04 PM ]  [ Info ] This is an info message
+ [ 2022 Jan 16 ] [ 07:46:04 PM ]  [ Success ] This is a success message
+ [ 2022 Jan 16 ] [ 07:46:04 PM ]  [ Warning ] This is a warning message
