@@ -37,6 +37,7 @@
         "@pobedit/package-name-parser": "^1.0.0",
         "@skylixgh/nitrojs-cli-builder": "1.0.0-dev.7",
         "@skylixgh/nitrojs-config-tools": "1.0.0-dev.7",
+        "@skylixgh/nitrojs-object-tools": "^1.0.0-dev.7",
         "@skylixgh/nitrojs-terminal": "1.0.0-dev.7",
         "chokidar": "^3.5.2",
         "fs-extra": "^10.0.0",

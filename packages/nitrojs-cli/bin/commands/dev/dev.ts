@@ -5,7 +5,7 @@ import path from "path";
 import { UserConfigType } from "../../../lib/main";
 import readConfig from "../../utils/readConfig";
 import node from "./node/node";
-import objectTools, { ObjectType } from "../../../../nitrojs-cli-builder/node_modules/@skylixgh/nitrojs-object-tools/lib/main";
+import objectTools, { ObjectType } from "@skylixgh/nitrojs-object-tools";
 
 let appCLIRoot = process.cwd();
 let appPackage = {} as ObjectType;
