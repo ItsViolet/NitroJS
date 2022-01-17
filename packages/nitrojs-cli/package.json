@@ -1,6 +1,6 @@
 {
     "name": "@skylixgh/nitrojs-cli",
-    "version": "1.0.0-dev.8",
+    "version": "1.0.0-dev.9",
     "description": "> TODO: description",
     "author": "Skylix",
     "homepage": "https://github.com/skylixgh/nitrojs#readme",
@@ -35,10 +35,10 @@
     },
     "dependencies": {
         "@pobedit/package-name-parser": "^1.0.0",
-        "@skylixgh/nitrojs-cli-builder": "1.0.0-dev.8",
-        "@skylixgh/nitrojs-config-tools": "1.0.0-dev.8",
-        "@skylixgh/nitrojs-object-tools": "1.0.0-dev.8",
-        "@skylixgh/nitrojs-terminal": "1.0.0-dev.8",
+        "@skylixgh/nitrojs-cli-builder": "1.0.0-dev.9",
+        "@skylixgh/nitrojs-config-tools": "1.0.0-dev.9",
+        "@skylixgh/nitrojs-object-tools": "1.0.0-dev.9",
+        "@skylixgh/nitrojs-terminal": "1.0.0-dev.9",
         "chokidar": "^3.5.2",
         "fs-extra": "^10.0.0",
         "semver": "^7.3.5",
