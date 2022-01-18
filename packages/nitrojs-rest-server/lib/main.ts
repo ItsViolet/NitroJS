@@ -1,7 +1,21 @@
-import objectTools, { DeepPartial } from "@skylixgh/nitrojs-object-tools";
+import objectTools, { DeepPartial, ObjectType } from "@skylixgh/nitrojs-object-tools";
 import EventEmitter from "events";
 import http, { Server } from "http";
 import https from "https";
+import Request from "./Request";
+import Response from "./Response";
+
+export enum SettingsCORS {
+    /**
+     * Allow request from anywhere
+     */
+    allowAll,
+
+    /**
+     * Allow requests from the current origin
+     */
+    currentOrigin
+}
 
 export interface Settings {
     /**
@@ -14,6 +28,16 @@ export interface Settings {
      */
     host: string;
 
+    /**
+     * HTTP(s) back log
+     */
+    backlog: number;
+
+    /**
+     * The CORS mode
+     */
+    cors: SettingsCORS;
+ 
     /**
      * SSL information
      */
@@ -59,7 +83,37 @@ export enum StartErrors {
     alreadyStarting
 }
 
-export default class RESTServer extends EventEmitter {
+declare interface RESTServer {
+    /**
+     * Listen for when the server is ready
+     * @param event Event name
+     * @param listener Event callback
+     */
+    on(event: "ready", listener: () => void): this;
+
+    /**
+     * Listen for when the server is ready
+     * @param event Event name
+     * @param listener Event callback
+     */
+    once(event: "request", listener: () => void): this;
+
+    /**
+     * Listen for new connections to the server
+     * @param event Event name
+     * @param listener Event callback
+     */
+    on(event: "request", listener: (request: Request, response: Response) => void): this;
+
+    /**
+     * Listen for new connections to the server
+     * @param event Event name
+     * @param listener Event callback
+     */
+    once(event: "connection", listener: (request: Request, response: Response) => void): this;
+}
+
+class RESTServer extends EventEmitter {
     /**
      * Server settings
      */
@@ -86,7 +140,9 @@ export default class RESTServer extends EventEmitter {
             {
                 port: 8080,
                 host: "localhost",
-                ssl: false
+                ssl: false,
+                backlog: 10000,
+                cors: SettingsCORS.allowAll
             },
             settings
         );
@@ -134,15 +190,30 @@ export default class RESTServer extends EventEmitter {
             }
 
             this.httpServer.on("request", (httpRequest, httpResponse) => {
+                const requestHeaders = {
+                    "Access-Control-Allow-Methods": "GET, POST",
+                    "Access-Control-Max-Age": 2592000
+                } as ObjectType;
+
+                if (this._settings.cors == SettingsCORS.allowAll) {
+                    requestHeaders["Access-Control-Allow-Origin"] = "*";
+                }
+
+                // TODO: Router
+                httpResponse.writeHead(200, requestHeaders);
+
                 httpResponse.write("<h3>NitroJS....</h3>");
                 httpResponse.end();
             });
 
-            // ! Update back log
-            this.httpServer.listen(this._settings.port, this._settings.host, 100000, () => {
+            this.httpServer.listen(this._settings.port, this._settings.host, this._settings.backlog, () => {
                 this._bootState = BootState.running;
                 resolve();
+
+                this.emit("ready");
             });
         });
     }
 }
+
+export default RESTServer;

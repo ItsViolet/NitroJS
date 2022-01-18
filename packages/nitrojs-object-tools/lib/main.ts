@@ -9,8 +9,8 @@ import { PartialDeep } from "type-fest";
 export type ObjectType = {
     [index: string]: any | ObjectType;
 };
-
-/**
+ 
+/** 
  * Merge two object together to create configurations
  * @param baseObject The base object
  * @param partialObject The object with certain or all properties missing

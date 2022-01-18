@@ -122,6 +122,12 @@ export default function node(appConfig: UserConfig, appConfigLocation: string, m
             terminal.notice("The NitroJS config file was modified, please stop this app and start it again");
         });
 
+        appConfig.node.resourceDirectories.forEach(dir => {
+            chokidar.watch(dir, {
+                ignoreInitial: true
+            }).on("all", () => appRootWatcher()); 
+        });
+
         chokidar
             .watch(appCLIRoot, {
                 ignoreInitial: true,

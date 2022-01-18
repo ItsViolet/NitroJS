@@ -6,4 +6,3 @@ export default defineConfig({
         resourceDirectories: [ "../../packages/nitrojs-rest-server" ]
     }
 });
-e
