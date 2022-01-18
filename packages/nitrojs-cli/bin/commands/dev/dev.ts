@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import cliBuilder, { FlagType } from "@skylixgh/nitrojs-cli-builder";
 import terminal from "@skylixgh/nitrojs-terminal";
 import path from "path";
-import { UserConfigType } from "../../../lib/main";
+import { ConfigAppType } from "../../../lib/main";
 import readConfig from "../../utils/readConfig";
 import node from "./node/node";
 import objectTools, { ObjectType } from "@skylixgh/nitrojs-object-tools";
@@ -66,14 +66,14 @@ export default function dev() {
                     objectTools.jsonParse<ObjectType>(fs.readFileSync(path.join(appCLIRoot, "./package.json")).toString()).then((packageJSON) => {
                         appPackage = packageJSON;
                  
-                        if (config.type == UserConfigType.node) {
+                        if (config.type == ConfigAppType.node) {
                             node(config, flags.config ?? "nitrojs.config.ts", flags.main);
                         } else {
                             terminal.error("Failed to start the development server");
                             terminal.error("Possible Reason:");
                             terminal.error("  -> Because your CLI service version is not up-to-date");
                             terminal.error("  -> NitroJS currently isn't done implementing this version");
-                            terminal.error("  -> You didn't set the app type correctly");    
+                            terminal.error("  -> You didn't set the app type correctly");
                         }
                     });
                 }

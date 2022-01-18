@@ -104,14 +104,14 @@ let programAuthor = "Unknown";
  * @param command The command options
  * @param handle The command handler
  */
-export function registerNew(trigger: BinItem["trigger"], command: DeepPartial<Command> = {}, handle: BinItem["handle"]) {
+export function registerNew(trigger: BinItem["trigger"], command: Partial<Command> = {}, handle: BinItem["handle"]) {
     commandBins.push({
         trigger,
         command: objectTools.mergeObject<Command>(
             {
                 flags: {}
             },
-            command,
+            command as DeepPartial<Command>,
             true
         ),
         handle
