@@ -13,5 +13,5 @@ export function defineConfig(config: DeepPartial<ConfigType>): Object {
 
 export { 
     ConfigType as UserConfig, 
-    ConfigAppType as UserConfigType
+    ConfigAppType
 };

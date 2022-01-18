@@ -1,5 +1,5 @@
-const { defineConfig, UserConfigType } = require("@skylixgh/nitrojs-cli");
+const { defineConfig, ConfigAppType } = require("@skylixgh/nitrojs-cli");
 
 module.exports = defineConfig({
-    type: UserConfigType.node
+    type: ConfigAppType.node
 });
