@@ -35,13 +35,6 @@ export default function readConfig(configPath = "nitrojs.config.ts", callBack: (
         })
         .catch((errorCode) => {
             switch (errorCode) {
-                case ConfigToolsErrors.fileContainsErrors:
-                    terminal.stopAnimation(
-                        TerminalState.error,
-                        "Failed to load the configuration because it contains errors, you may also have an issue in your package file"
-                    );
-                    break;
-
                 case ConfigToolsErrors.filePathWasDirectory:
                     terminal.stopAnimation(TerminalState.error, "Failed to load the configuration because the file path provided was a directory");
                     break;
@@ -65,6 +58,16 @@ export default function readConfig(configPath = "nitrojs.config.ts", callBack: (
                         TerminalState.error,
                         "Failed to load the configuration because the file extension is unsupported for loading configurations in this app"
                     );
+                    break;
+
+                default:
+                    terminal.stopAnimation(TerminalState.error, "Failed to load your configuration because the file contains errors");
+
+                    errorCode.split("\n").forEach((line: string) => {
+                        terminal.error("  " + line);
+                    });
+
+                    terminal.error("The error has been printed above");
                     break;
             }
         });

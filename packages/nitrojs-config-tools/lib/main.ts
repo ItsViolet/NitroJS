@@ -12,11 +12,6 @@ export enum Errors {
     unsupportedFileType,
 
     /**
-     * The file contains errors
-     */
-    fileContainsErrors,
-
-    /**
      * The path to the file was invalid
      */
     invalidFilePath,
@@ -113,9 +108,16 @@ export function read<ConfigDataType>(
                 });
             });
 
+            let errorData = "";
+
             readerProcess.stderr.on("data", (data: Buffer) => {
-                readerProcess.kill();
-                reject(Errors.fileContainsErrors);
+                errorData += data.toString();
+            });
+
+            readerProcess.on("exit", () => {
+                if (errorData.length > 0) {
+                    reject(errorData);
+                }
             });
         } else if (configPath.endsWith(allowedToEndWith.js) && options.supportedTypes.js) {
             const readerProcess = spawn("node", [path.join(__dirname, "./services/readTSBasedConfig.js"), configPath]);
@@ -131,9 +133,17 @@ export function read<ConfigDataType>(
                 });
             });
 
+            let errorRaw = "";
+
             readerProcess.stderr.on("data", (data: Buffer) => {
                 readerProcess.kill();
-                reject(Errors.fileContainsErrors);
+                errorRaw += data.toString();
+            });
+
+            readerProcess.on("exit", () => {
+                if (errorRaw.length > 0) {
+                    reject(errorRaw);
+                }
             });
         } else if (configPath.endsWith(allowedToEndWith.json) && options.supportedTypes.json) {
             fs.readFile(configPath).then((jsonString) => {
@@ -141,7 +151,7 @@ export function read<ConfigDataType>(
                     const parsedJSON = commentJSON.parse(jsonString.toString());
                     resolve(parsedJSON);
                 } catch (error) {
-                    reject(Errors.fileContainsErrors);
+                    reject(error);
                 }
             });
         } else if ((configPath.endsWith(allowedToEndWith.yaml[0]) || configPath.endsWith(allowedToEndWith.yaml[1])) && options.supportedTypes.yaml) {
@@ -150,7 +160,7 @@ export function read<ConfigDataType>(
                     const yamlData = YAML.parse(yamlString.toString());
                     resolve(yamlData);
                 } catch (error) {
-                    reject(Errors.fileContainsErrors);
+                    reject(error);
                 }
             });
         } else {
