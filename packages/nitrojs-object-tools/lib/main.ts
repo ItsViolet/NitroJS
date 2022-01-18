@@ -79,8 +79,11 @@ export function dump(dumpObject: ObjectType | any[]) {
     terminal.log(terminal.hexColorize("Debug: ", "#999999") + "An object was dumped above");
 }
 
-export type DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+/**
+ * Make all interfaces properties become optional
+ */
+export type DeepPartial<InterfaceType> = {
+    [P in keyof InterfaceType]?: InterfaceType[P] extends object ? DeepPartial<[P]> : InterfaceType[P];
 };
 
 const objectTools = {
