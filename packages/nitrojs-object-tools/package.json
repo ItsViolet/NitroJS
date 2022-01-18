@@ -26,7 +26,8 @@
 	"dependencies": {
 		"@skylixgh/nitrojs-terminal": "1.0.0-dev.9",
 		"cli-highlight": "^2.1.11",
-		"merge-deep": "^3.0.3"
+		"merge-deep": "^3.0.3",
+		"type-fest": "^2.9.0"
 	},
 	"devDependencies": {
 		"@types/merge-deep": "^3.0.0",

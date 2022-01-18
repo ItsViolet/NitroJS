@@ -14,5 +14,10 @@ export default interface ConfigType {
          * Automatically restart the application when files are changed
          */
         autoRestart: boolean;
+
+        /**
+         * Any other directories you project is getting resources from
+         */
+        resourceDirectories: string[];
     }
 }

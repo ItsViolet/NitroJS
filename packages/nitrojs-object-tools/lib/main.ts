@@ -1,6 +1,7 @@
 import terminal from "@skylixgh/nitrojs-terminal";
 import cliHighlight from "cli-highlight";
 import mergeDeep from "merge-deep";
+import { PartialDeep } from "type-fest";
 
 /**
  * Better data type for dynamic objects with no restricted types
@@ -82,9 +83,7 @@ export function dump(dumpObject: ObjectType | any[]) {
 /**
  * Make all interfaces properties become optional
  */
-export type DeepPartial<InterfaceType> = {
-    [P in keyof InterfaceType]?: InterfaceType[P] extends object ? DeepPartial<[P]> : InterfaceType[P];
-};
+export type DeepPartial<InterfaceType> = PartialDeep<InterfaceType>;
 
 const objectTools = {
     mergeObject,

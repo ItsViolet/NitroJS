@@ -18,7 +18,8 @@ export default function readConfig(configPath = "nitrojs.config.ts", callBack: (
             {
                 type: ConfigAppType.desktop,
                 node: {
-                    autoRestart: true
+                    autoRestart: true,
+                    resourceDirectories: []
                 }
             },
             {
