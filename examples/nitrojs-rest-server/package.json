@@ -1,0 +1,30 @@
+{
+    "name": "nitrojs-rest-server-examples",
+    "main": "./src/main",
+    "private": true,
+    "version": "0.0.0",
+    "author": "Skylix",
+    "description": "A group of example for the NitroJS REST server module",
+    "productName": "nitrojs-rest-server-examples",
+    "publishConfig": {
+        "access": "restricted"
+    },
+    "scripts": {
+        "start": "nitrojs dev",
+        "build": "tsc",
+        "clean": "tsc --build --clean"
+    },
+    "dependencies": {
+        "@skylixgh/nitrojs-cli": "1.0.0-dev.9",
+        "@skylixgh/nitrojs-terminal": "1.0.0-dev.9"
+    },
+    "devDependencies": {
+        "typescript": "4.5.4"
+    },
+    "directories": {
+        "src": "src"
+    },
+    "files": [
+        "src"
+    ]
+}
