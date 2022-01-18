@@ -1,6 +1,6 @@
 {
     "name": "nitrojs-rest-server-examples",
-    "main": "./src/main",
+    "main": "./src/basic/index",
     "private": true,
     "version": "0.0.0",
     "author": "Skylix",
@@ -10,13 +10,14 @@
         "access": "restricted"
     },
     "scripts": {
-        "start": "nitrojs dev",
+        "start:basic": "nitrojs-dev dev --main src/basic/index",
         "build": "tsc",
         "clean": "tsc --build --clean"
     },
     "dependencies": {
-        "@skylixgh/nitrojs-cli": "1.0.0-dev.9",
-        "@skylixgh/nitrojs-terminal": "1.0.0-dev.9"
+        "@skylixgh/nitrojs-cli": "file:../../packages/nitrojs-cli",
+        "@skylixgh/nitrojs-terminal": "file:../../packages/nitrojs-terminal",
+        "@skylixgh/nitrojs-rest-server": "file:../../packages/nitrojs-rest-server"
     },
     "devDependencies": {
         "typescript": "4.5.4"

@@ -1,5 +1,5 @@
-import { defineConfig, UserConfigType } from "@skylixgh/nitrojs-cli";
+import { defineConfig, ConfigAppType } from "@skylixgh/nitrojs-cli";
 
 export default defineConfig({
-    type: UserConfigType.node
+    type: ConfigAppType.node
 });
