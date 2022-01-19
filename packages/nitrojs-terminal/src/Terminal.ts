@@ -1,7 +1,7 @@
 import { PartialDeep } from "type-fest";
 import LogCustomTagSettings from "./LogCustomTagSettings";
 import chalk from "chalk";
-import luxon from "luxon";
+import { DateTime } from "luxon";
 
 /**
  * NitroJS base terminal class
@@ -18,13 +18,47 @@ export default class Terminal {
 	 */
 	public static log(text: string) {
 		this.logCustomTag(text, {
-			tagPrefix: "Info",
+			tagPrefix: "INFO",
 		});
 	}
 
 	/**
-	 *
-	 * @param text Log a message with custom parameters
+	 * Log a success message into the terminal
+	 * @param text THe text to log
+	 */
+	public static success(text: string) {
+		this.logCustomTag(text, {
+			tagPrefix: "SUCCESS",
+			hexColor: "#50FFAB"
+		});
+	}
+
+	/**
+	 * Log a warning message into the terminal
+	 * @param text The text to log
+	 */
+	public static warn(text: string) {
+		this.logCustomTag(text, {
+			tagPrefix: "WARN",
+			hexColor: "#FFAB00"
+		});
+	}
+
+	/**
+	 * Log an error message into the terminal
+	 * @param text The text to log
+	 */
+	public static error(text: string) {
+		this.logCustomTag(text, {
+			tagPrefix: "ERR",
+			useColorThroughout: true,
+			hexColor: "#FF7777"
+		});
+	}
+
+	/**
+	 * Log a message into the terminal with custom parameters
+	 * @param The text to log
 	 * @param settings
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
@@ -33,7 +67,7 @@ export default class Terminal {
 		if (this.useTimeStamps) {
 			prefixes.push(
 				chalk.hex("#999999")("[ ") +
-					chalk.hex(settings.hexColor ?? "#999999")(settings.tagPrefix ?? "") +
+					chalk.hex("#999999")(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
 					chalk.hex("#999999")(" ]")
 			);
 		}
@@ -44,7 +78,11 @@ export default class Terminal {
 				chalk.hex("#999999")(" ]")
 		);
 
-		console.log(prefixes.join(" "));
+		console.log(
+			`${prefixes.join(" ")} ${
+				settings.useColorThroughout ? chalk.hex(settings.hexColor ?? "#999999")(text) : text
+			}`
+		);
 	}
 
 	/**
