@@ -29,6 +29,7 @@
 	},
 	"dependencies": {
 		"chalk": "4.1.2",
+		"get-cursor-position": "^1.0.5",
 		"luxon": "^2.3.0",
 		"type-fest": "^2.9.0"
 	},

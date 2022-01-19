@@ -2,6 +2,10 @@ import { PartialDeep } from "type-fest";
 import LogCustomTagSettings from "./LogCustomTagSettings";
 import chalk from "chalk";
 import { DateTime } from "luxon";
+import TerminalPrompt from "./TerminalPrompt";
+import TerminalPromptType from "./TerminalPromptType";
+
+export { TerminalPrompt, TerminalPromptType };
 
 /**
  * NitroJS base terminal class
@@ -62,6 +66,10 @@ export default class Terminal {
 	 * @param settings
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
+		if (TerminalPrompt.isRunning) {
+			return;
+		}
+		
 		const prefixes = [] as string[];
 
 		if (this.useTimeStamps) {

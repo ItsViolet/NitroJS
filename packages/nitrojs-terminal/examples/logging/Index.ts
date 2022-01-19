@@ -1,6 +1,6 @@
 import Terminal from "../../src/Terminal";
 
-Terminal.setTimeStampsMode(true)
+Terminal.setTimeStampsMode(true);
 
 Terminal.log("Hello world");
 Terminal.success("A success message");
