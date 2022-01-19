@@ -2,7 +2,7 @@ import { PartialDeep } from "type-fest";
 import LogCustomTagSettings from "./LogCustomTagSettings";
 import chalk from "chalk";
 import { DateTime } from "luxon";
-import TerminalPrompt from "./TerminalPrompt";
+import TerminalPrompt from "./prompt/TerminalPrompt";
 import TerminalPromptType from "./TerminalPromptType";
 
 export { TerminalPrompt, TerminalPromptType };
