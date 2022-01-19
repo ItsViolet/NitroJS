@@ -1,5 +1,0 @@
-# Method `methodName`
-
-## Information
-
- - Parameters

@@ -1,5 +1,0 @@
-
- [ Notice ] Debugging
- [ Info ] This is an info message
- [ Success ] This is a success message
- [ Warning ] This is a warning message
