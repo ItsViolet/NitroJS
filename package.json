@@ -10,6 +10,7 @@
 	"scripts": {
 		"build": "tsc --build",
 		"clean": "tsc --build --clean",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"postinstall": "lerna bootstrap"
 	}
 }
