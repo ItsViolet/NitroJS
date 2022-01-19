@@ -1,5 +1,5 @@
 import TerminalPromptType from "../TerminalPromptType";
-import PromptHandler from "./PromptHandler";
+import PromptBoolean from "./PromptBoolean";
 
 /**
  * Create interactive prompts in the terminal
@@ -29,8 +29,10 @@ export default class TerminalPrompt {
     public static prompt(type: TerminalPromptType.string, question: string, callback: (answer: string) => string, defaultValue?: boolean): void;
 
     public static prompt(type: TerminalPromptType, question: string, callback: any, defaultValue = false) {
+        this._isRunning = true;
+        
         if (type == TerminalPromptType.boolean) {
-            PromptHandler.handleBooleanInput(question, callback, defaultValue);
+            PromptBoolean.handleBooleanInput(question, callback, defaultValue);
         }
     }
 

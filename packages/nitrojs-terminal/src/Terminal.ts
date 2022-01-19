@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import TerminalPrompt from "./prompt/TerminalPrompt";
 import TerminalPromptType from "./TerminalPromptType";
 
-export { TerminalPrompt, TerminalPromptType };
+export { TerminalPrompt, TerminalPromptType, LogCustomTagSettings };
 
 /**
  * NitroJS base terminal class
@@ -33,7 +33,7 @@ export default class Terminal {
 	public static success(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "SUCCESS",
-			hexColor: "#50FFAB"
+			hexColor: "#50FFAB",
 		});
 	}
 
@@ -44,7 +44,7 @@ export default class Terminal {
 	public static warn(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "WARN",
-			hexColor: "#FFAB00"
+			hexColor: "#FFAB00",
 		});
 	}
 
@@ -56,26 +56,38 @@ export default class Terminal {
 		this.logCustomTag(text, {
 			tagPrefix: "ERR",
 			useColorThroughout: true,
-			hexColor: "#FF7777"
+			hexColor: "#FF7777",
+		});
+	}
+
+	/**
+	 * Log a notice message into the terminal
+	 * @param text The text to log
+	 */
+	public static notice(text: string) {
+		this.logCustomTag(text, {
+			tagPrefix: "NOTICE",
+			useColorThroughout: true,
+			hexColor: "#FFAB00",
 		});
 	}
 
 	/**
 	 * Log a message into the terminal with custom parameters
 	 * @param The text to log
-	 * @param settings
+	 * @param settings Settings for logging
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
 		if (TerminalPrompt.isRunning) {
 			return;
 		}
-		
+
 		const prefixes = [] as string[];
 
 		if (this.useTimeStamps) {
 			prefixes.push(
 				chalk.hex("#999999")("[ ") +
-					chalk.hex("#999999")(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
+					chalk.hex(settings.useColorThroughout ? (settings.hexColor ? settings.hexColor : "#999999") : "#999999")(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
 					chalk.hex("#999999")(" ]")
 			);
 		}
