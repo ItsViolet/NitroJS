@@ -32,7 +32,10 @@ export default class TerminalPrompt {
         this._isRunning = true;
         
         if (type == TerminalPromptType.boolean) {
-            PromptBoolean.handleBooleanInput(question, callback, defaultValue);
+            PromptBoolean.handleBooleanInput(question, (answer) => {
+                this._isRunning = false;
+                callback(answer);
+            }, defaultValue);
         }
     }
 

@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import readline from "readline";
 
 /**
@@ -33,14 +34,13 @@ export default class PromptBoolean {
 		}
 
 		function renderOutputData() {
-			let output = "";
-
+			const output = `> ${question}: Yes / No`;
+			const hexMuted = chalk.hex("#999999");
+			
 			if (currentState) {
-				output = `${question} [YES] /  NO  `;
-				process.stdout.write(output);
+				process.stdout.write(`${hexMuted(">")} ${question}: ${chalk.underline("Yes")} / ${hexMuted("No")}`);
 			} else {
-				output = `${question}  YES  / [NO] `;
-				process.stdout.write(output);
+				process.stdout.write(`${hexMuted(">")} ${question}: ${hexMuted("Yes")} / ${chalk.underline("No")}`);
 			}
 
 			let wrappedLines = calculateWrappedLineCount(process.stdout.columns, question);
@@ -56,14 +56,15 @@ export default class PromptBoolean {
 
 		const keyPressHandle = (value: any, key: any) => {
 			if (key.sequence == "\x03") {
+				process.stdout.write("\n");
 				process.exit(0);
 			}
 
 			if (key.name == "return") {
-				process.stdin.end();
-				process.stdin.removeListener("keypress", keyPressHandle);
-
+				process.stdin.removeListener("keypress", keyPressHandle);		
 				this.stopSTDIN();
+				
+				process.stdout.write("\n");
 				callback(currentState);
 			}
 
