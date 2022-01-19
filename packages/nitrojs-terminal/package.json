@@ -1,31 +1,39 @@
 {
-  "name": "@skylixgh/nitrojs-terminal",
-  "version": "2.0.0-dev",
-  "description": "> TODO: description",
-  "author": "Skylix",
-  "homepage": "https://github.com/SkylixGH/NitroJS#readme",
-  "license": "MIT",
-  "main": "src/Terminal.ts",
-  "directories": {
-    "lib": "lib"
-  },
-  "files": [
-    "lib"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SkylixGH/NitroJS.git"
-  },
-  "scripts": {
-    "example:logging": "ts-node --transpile-only ./examples/logging/Index.ts"
-  },
-  "bugs": {
-    "url": "https://github.com/SkylixGH/NitroJS/issues"
-  },
-  "dependencies": {
-    "chalk": "^4.1.2"
-  }
+	"name": "@skylixgh/nitrojs-terminal",
+	"version": "2.0.0-dev",
+	"description": "NitroJS Terminal Module",
+	"author": "Skylix",
+	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
+	"license": "MIT",
+	"main": "src/Terminal",
+	"directories": {
+		"lib": "lib",
+		"docs": "docs",
+		"examples": "examples"
+	},
+	"files": [
+		"lib"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/SkylixGH/NitroJS.git"
+	},
+	"scripts": {
+		"terminal:e:logging": "ts-node --transpile-only examples/logging/Index"
+	},
+	"bugs": {
+		"url": "https://github.com/SkylixGH/NitroJS/issues"
+	},
+	"dependencies": {
+		"chalk": "4.1.2",
+		"get-cursor-position": "^1.0.5",
+		"luxon": "^2.3.0",
+		"type-fest": "^2.9.0"
+	},
+	"devDependencies": {
+		"@types/luxon": "^2.0.9"
+	}
 }
