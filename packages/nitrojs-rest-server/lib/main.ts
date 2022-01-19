@@ -37,21 +37,23 @@ export interface Settings {
      * The CORS mode
      */
     cors: SettingsCORS;
- 
+
     /**
      * SSL information
      */
-    ssl: false | {
-        /**
-         * SSL certificate
-         */
-        certificate: string;
+    ssl:
+        | false
+        | {
+              /**
+               * SSL certificate
+               */
+              certificate: string;
 
-        /**
-         * SSL certificate key
-         */
-        key: string;
-    }
+              /**
+               * SSL certificate key
+               */
+              key: string;
+          };
 }
 
 export enum BootState {
@@ -96,7 +98,7 @@ declare interface RESTServer {
      * @param event Event name
      * @param listener Event callback
      */
-    once(event: "request", listener: () => void): this;
+    once(event: "ready", listener: () => void): this;
 
     /**
      * Listen for new connections to the server
@@ -104,6 +106,20 @@ declare interface RESTServer {
      * @param listener Event callback
      */
     on(event: "request", listener: (request: Request, response: Response) => void): this;
+
+    /**
+     * Listen for when the server is ready
+     * @param event Event name
+     * @param listener Event callback
+     */
+    once(event: "request", listener: () => void): this;
+
+    /**
+     * Listen for new connections to the server
+     * @param event Event name
+     * @param listener Event callback
+     */
+    on(event: "connection", listener: (request: Request, response: Response) => void): this;
 
     /**
      * Listen for new connections to the server
@@ -192,7 +208,8 @@ class RESTServer extends EventEmitter {
             this.httpServer.on("request", (httpRequest, httpResponse) => {
                 const requestHeaders = {
                     "Access-Control-Allow-Methods": "GET, POST",
-                    "Access-Control-Max-Age": 2592000
+                    "Access-Control-Max-Age": 2592000,
+                    "Content-Type": "text"
                 } as ObjectType;
 
                 if (this._settings.cors == SettingsCORS.allowAll) {
@@ -202,7 +219,7 @@ class RESTServer extends EventEmitter {
                 // TODO: Router
                 httpResponse.writeHead(200, requestHeaders);
 
-                httpResponse.write("<h3>NitroJS....</h3>");
+                httpResponse.write('{ hello: "world" }');
                 httpResponse.end();
             });
 
