@@ -29,20 +29,7 @@ export default class PromptBoolean {
 		let currentState = defaultValue;
 
 		function calculateWrappedLineCount(width: number, rawData: string): number {
-			let lines = 0;
-			let modRaw = rawData;
-
-			const nextLine = () => {
-				if (modRaw.length != 0) {
-					modRaw = modRaw.substring(width);
-					lines++;
-
-					nextLine();
-				}
-			}
-
-			nextLine();
-			return lines;
+			return Math.floor(rawData.length / width);
 		}
 
 		function renderOutputData() {
@@ -62,7 +49,7 @@ export default class PromptBoolean {
 				wrappedLines = 2;
 			}
 			
-			process.stdout.moveCursor(-output.length, -(wrappedLines - 1));
+			process.stdout.moveCursor(-output.length, -(wrappedLines));
 		}
 		
 		renderOutputData();
