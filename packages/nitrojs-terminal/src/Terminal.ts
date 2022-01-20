@@ -4,8 +4,9 @@ import chalk from "chalk";
 import { DateTime } from "luxon";
 import TerminalPrompt from "./prompt/TerminalPrompt";
 import TerminalPromptType from "./TerminalPromptType";
+import KeyPressMeta from "./prompt/KeyPressMeta";
 
-export { TerminalPrompt, TerminalPromptType, LogCustomTagSettings };
+export { TerminalPrompt, TerminalPromptType, LogCustomTagSettings, KeyPressMeta };
 
 /**
  * NitroJS base terminal class

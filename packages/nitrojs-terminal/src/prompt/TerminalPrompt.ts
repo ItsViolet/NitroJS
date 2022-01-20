@@ -1,6 +1,8 @@
 import TerminalPromptType from "../TerminalPromptType";
+import KeyPressMeta from "./KeyPressMeta";
 import PromptBoolean from "./PromptBoolean";
 import PromptString from "./PromptString";
+import readline from "readline";
 
 /**
  * Create interactive prompts in the terminal
@@ -10,6 +12,11 @@ export default class TerminalPrompt {
      * If a prompt is running
      */
     private static _isRunning = false;
+
+    /**
+     * All key press listeners
+     */
+    private static currentKeyPressListeners = [] as any[];
 
     /**
      * Use a yes or no boolean based prompt
@@ -82,5 +89,30 @@ export default class TerminalPrompt {
         });
 
         return linesRendered;
+    }
+
+    /**
+     * Add a key press listener to the STDIO
+     * @param callback The event listener
+     */
+    public static addKeyListener(callback: (value: string | undefined, key: KeyPressMeta) => void) {
+        process.stdin.resume();
+        process.stdin.setRawMode(true);
+
+        readline.emitKeypressEvents(process.stdin);
+
+        this.currentKeyPressListeners.push(callback);
+        process.stdin.addListener("keypress", callback);
+    }
+
+    /**
+     * Remove all key listeners that were registered from this class
+     */
+    public static removeKeyListeners() {
+        this.currentKeyPressListeners.forEach(callback => {
+            process.stdin.removeListener("keypress", callback);
+        });
+
+        process.stdin.pause();
     }
 }
