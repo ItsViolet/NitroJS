@@ -58,6 +58,7 @@ export default class TerminalAnimation {
 				label: animationItem.label,
 				name: animationItem.name,
 				done: false,
+				state: TerminalAnimationState.success
 			});
 		});
 
@@ -88,8 +89,34 @@ export default class TerminalAnimation {
 		const render = () => {
 			const lines = [] as string[];
 
+			const getHexFromState = (state: TerminalAnimationState) => {
+				let hex = "";
+	
+				console.log(state);
+				switch (state) {
+					case TerminalAnimationState.success:
+						hex = "#50FFAB";
+						break;
+					
+					case TerminalAnimationState.warning:
+						hex = "#FFAB00";
+						break;
+					
+					case TerminalAnimationState.info:
+						hex = "#999999";
+						break;
+
+					case TerminalAnimationState.error:
+						hex = "#FF5555";
+						break;
+				}
+
+				return hex;
+			}
+
 			this.currentAnimationMeta.forEach((metaItem) => {
-				lines.push(`${metaItem.done ? "•" : metaItem.frames[metaItem.frame]} ${metaItem.label}`);
+				const color = chalk.hex(getHexFromState(metaItem.state));
+				lines.push(`${metaItem.done ? color("•") : metaItem.frames[metaItem.frame]} ${metaItem.label}`);
 			});
 
 			this.linesRendered = TerminalPrompt.renderLines(lines);
@@ -118,7 +145,8 @@ export default class TerminalAnimation {
 		this.currentAnimationMeta.forEach((metaItem) => {
 			if (metaItem.name == name) {
 				if (newLabel) metaItem.label = newLabel;
-
+				
+				metaItem.state = state;
 				metaItem.done = true;
 			}
 		});

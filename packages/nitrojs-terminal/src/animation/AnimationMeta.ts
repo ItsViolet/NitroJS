@@ -1,3 +1,5 @@
+import TerminalAnimationState from "./TerminalAnimationState";
+
 /**
  * The animation meta item
  */
@@ -26,4 +28,9 @@ export default interface AnimationMeta {
      * If the animation is done
      */
     done: boolean;
+
+    /**
+     * Animation state
+     */
+    state: TerminalAnimationState;
 }
