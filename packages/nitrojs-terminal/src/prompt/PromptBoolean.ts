@@ -17,14 +17,19 @@ export default class PromptBoolean {
 	private static callback: (answer: boolean) => void;
 
 	/**
-	 * The default value
-	 */
-	private static defaultValue = false;
-
-	/**
 	 * The current value
 	 */
 	private static currentValue = false;
+
+	/**
+	 * The amount of lines last rendered
+	 */
+	private static linesRendered: number | null = null;
+
+	/**
+	 * If the prompt was forcefully halted
+	 */
+	private static halted = false;
 
 	/**
 	 * The boolean type prompt handler
@@ -39,12 +44,15 @@ export default class PromptBoolean {
 	) {
 		this.question = question;
 		this.callback = callback;
-		this.defaultValue = defaultValue;
-		this.currentValue = false;
+		this.currentValue = defaultValue;
+
+		this.renderLines();
 
 		TerminalPrompt.addKeyListener((value, key) => {
 			if (key.name == "c" && key.ctrl) {
-				process.stdout.write("\n");
+				this.halted = true;
+
+				this.renderLines();
 				process.exit(0);
 			}
 
@@ -67,6 +75,8 @@ export default class PromptBoolean {
 					this.leftArrow();
 					break;
 			}
+
+			this.renderLines();
 		});
 	}
 
@@ -75,6 +85,9 @@ export default class PromptBoolean {
 	 * @param width The max width
 	 * @param rawData The raw text as one line
 	 * @returns The number of lines this will wrap to
+	 * ! Is this still really
+	 * ! Needed for the supp-
+	 * ! ort of the framework?
 	 */
 	private static calculateWrappedLineCount(width: number, rawData: string) {
 		return Math.floor(rawData.length / width);
@@ -83,17 +96,41 @@ export default class PromptBoolean {
 	/**
 	 * Render all lines based off of current state
 	 */
-	private static renderLines() {}
+	private static renderLines() {
+		const chalkGray = chalk.hex("#999999");
+
+		const render = () => {
+			this.linesRendered = TerminalPrompt.renderLines(
+				`${this.halted ? chalk.hex("#FF5555")("✕") : chalkGray(">")} ${this.question}: ${
+					this.currentValue
+						? `${chalk.underline("Yes")} / ${chalkGray("No")}`
+						: `${chalkGray("Yes")} / ${chalk.underline("No")}`
+				}`
+			);
+		}
+		
+		if (!this.linesRendered) {
+			render();
+			return;
+		}
+
+		TerminalPrompt.clearLinesFrom(-this.linesRendered);
+		render();
+	}
 
 	/**
 	 * Handle state for right arrow
 	 */
-	private static rightArrow() {}
+	private static rightArrow() {
+		this.currentValue = false;
+	}
 
 	/**
 	 * Handle state for left arrow
 	 */
-	private static leftArrow() {}
+	private static leftArrow() {
+		this.currentValue = true;
+	}
 }
 
 /**
