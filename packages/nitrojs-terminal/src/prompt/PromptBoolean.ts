@@ -32,6 +32,11 @@ export default class PromptBoolean {
 	private static halted = false;
 
 	/**
+	 * If the flashing arrow is in its on or off frame
+	 */
+	private static flashState = false;
+
+	/**
 	 * The boolean type prompt handler
 	 * @param question The question to ask
 	 * @param callback The answer callback
@@ -47,6 +52,15 @@ export default class PromptBoolean {
 		this.currentValue = defaultValue;
 
 		this.renderLines();
+		setInterval(() => {
+			if (this.flashState) {
+				this.flashState = false;
+			} else {
+				this.flashState = true;
+			}
+
+			this.renderLines();
+		}, 500);
 
 		TerminalPrompt.addKeyListener((value, key) => {
 			if (key.name == "c" && key.ctrl) {
@@ -58,9 +72,9 @@ export default class PromptBoolean {
 
 			switch (value) {
 				case "1":
-					this.leftArrow()
+					this.leftArrow();
 					break;
-				
+
 				case "0":
 					this.rightArrow();
 					break;
@@ -70,7 +84,7 @@ export default class PromptBoolean {
 				case "right":
 					this.rightArrow();
 					break;
-				
+
 				case "left":
 					this.leftArrow();
 					break;
@@ -101,14 +115,16 @@ export default class PromptBoolean {
 
 		const render = () => {
 			this.linesRendered = TerminalPrompt.renderLines(
-				`${this.halted ? chalk.hex("#FF5555")("✕") : chalkGray(">")} ${this.question}: ${
+				`${this.halted ? chalk.hex("#FF5555")(">") : this.flashState ? ">" : chalkGray(">")} ${
+					this.question
+				}: ${
 					this.currentValue
 						? `${chalk.underline("Yes")} / ${chalkGray("No")}`
 						: `${chalkGray("Yes")} / ${chalk.underline("No")}`
 				}`
 			);
-		}
-		
+		};
+
 		if (!this.linesRendered) {
 			render();
 			return;
