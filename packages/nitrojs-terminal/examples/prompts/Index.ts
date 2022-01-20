@@ -26,5 +26,10 @@ import { TerminalPrompt, TerminalPromptType } from "../../src/Terminal";
 // );
 
 TerminalPrompt.prompt(TerminalPromptType.boolean, "Are you a programmer?", (answer) => {
-	console.log(answer);
+	TerminalPrompt.prompt(TerminalPromptType.boolean, "Are you a gamer?", (answer) => {
+		console.log(answer);
+		TerminalPrompt.prompt(TerminalPromptType.boolean, "Are you a human?", (answer) => {
+			console.log(answer);
+		});	
+	});	
 });

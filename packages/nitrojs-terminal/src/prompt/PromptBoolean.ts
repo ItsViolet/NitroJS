@@ -22,6 +22,11 @@ export default class PromptBoolean {
 	private static currentValue = false;
 
 	/**
+	 * If the response is done
+	 */
+	private static done = false;
+
+	/**
 	 * The amount of lines last rendered
 	 */
 	private static linesRendered: number | null = null;
@@ -30,11 +35,6 @@ export default class PromptBoolean {
 	 * If the prompt was forcefully halted
 	 */
 	private static halted = false;
-
-	/**
-	 * If the flashing arrow is in its on or off frame
-	 */
-	private static flashState = false;
 
 	/**
 	 * The boolean type prompt handler
@@ -50,18 +50,10 @@ export default class PromptBoolean {
 		this.question = question;
 		this.callback = callback;
 		this.currentValue = defaultValue;
-
+		this.linesRendered = null;
+		this.done = false;
 		this.renderLines();
-		const flashLoop = setInterval(() => {
-			if (this.flashState) {
-				this.flashState = false;
-			} else {
-				this.flashState = true;
-			}
-
-			this.renderLines();
-		}, 500);
-
+		
 		TerminalPrompt.addKeyListener((value, key) => {
 			if (key.name == "c" && key.ctrl) {
 				this.halted = true;
@@ -88,9 +80,18 @@ export default class PromptBoolean {
 				case "left":
 					this.leftArrow();
 					break;
+				
+				case "return":
+					this.done = true;
+					break;
 			}
 
 			this.renderLines();
+			
+			if (this.done) {
+				TerminalPrompt.removeKeyListeners();
+				this.callback(this.currentValue);
+			}
 		});
 	}
 
@@ -109,13 +110,14 @@ export default class PromptBoolean {
 
 	/**
 	 * Render all lines based off of current state
+	 * @param clear If the output should be cleared first
 	 */
-	private static renderLines() {
+	private static renderLines(clear = true) {
 		const chalkGray = chalk.hex("#999999");
 
 		const render = () => {
 			this.linesRendered = TerminalPrompt.renderLines(
-				`${this.halted ? chalk.hex("#FF5555")(">") : this.flashState ? ">" : chalkGray(">")} ${
+				`${this.halted ? chalk.hex("#FF5555")(">") : (this.done ? "✓" : chalkGray(">"))} ${
 					this.question
 				}: ${
 					this.currentValue
