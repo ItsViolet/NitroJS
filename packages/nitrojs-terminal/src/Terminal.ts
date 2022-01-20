@@ -8,6 +8,7 @@ import KeyPressMeta from "./prompt/KeyPressMeta";
 import AnimationItem from "./animation/AnimationItem";
 import TerminalAnimation from "./animation/TerminalAnimation";
 import AnimationMeta from "./animation/AnimationMeta";
+import TerminalAnimationState from "./animation/TerminalAnimationState";
 
 export {
 	TerminalPrompt,
@@ -17,6 +18,7 @@ export {
 	TerminalAnimation,
 	AnimationMeta,
 	AnimationItem,
+	TerminalAnimationState,
 };
 
 /**

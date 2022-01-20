@@ -21,4 +21,9 @@ export default interface AnimationMeta {
      * Animation frames
      */
     frames: string[];
+
+    /**
+     * If the animation is done
+     */
+    done: boolean;
 }

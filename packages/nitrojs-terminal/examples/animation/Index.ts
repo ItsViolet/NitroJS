@@ -1,4 +1,4 @@
-import { TerminalAnimation } from "../../src/Terminal";
+import { TerminalAnimation, TerminalAnimationState } from "../../src/Terminal";
 
 TerminalAnimation.startAnimation([
 	{
@@ -14,3 +14,7 @@ TerminalAnimation.startAnimation([
         name: "gamer"
     }
 ]);
+
+setTimeout(() => {
+    TerminalAnimation.stop("s", TerminalAnimationState.error, "An error lol");
+}, 1000);
