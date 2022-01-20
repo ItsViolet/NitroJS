@@ -92,7 +92,6 @@ export default class TerminalAnimation {
 			const getHexFromState = (state: TerminalAnimationState) => {
 				let hex = "";
 	
-				console.log(state);
 				switch (state) {
 					case TerminalAnimationState.success:
 						hex = "#50FFAB";
@@ -138,8 +137,6 @@ export default class TerminalAnimation {
 	 * @param newLabel New animation label
 	 */
 	public static stop(name: string, state: TerminalAnimationState, newLabel?: string) {
-		this.renderLines();
-
 		let stoppedAnimation = 0;
 
 		this.currentAnimationMeta.forEach((metaItem) => {
@@ -161,5 +158,7 @@ export default class TerminalAnimation {
 			this._isRunning = false;
 			clearInterval(this.loop);
 		}
+
+		this.renderLines();
 	}
 }

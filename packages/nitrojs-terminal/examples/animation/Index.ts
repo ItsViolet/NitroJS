@@ -16,5 +16,13 @@ TerminalAnimation.startAnimation([
 ]);
 
 setTimeout(() => {
-    TerminalAnimation.stop("s", TerminalAnimationState.error, "An error lol");
+	TerminalAnimation.stop("s", TerminalAnimationState.error, "An error lol");
+	
+	setTimeout(() => {
+		TerminalAnimation.stop("f", TerminalAnimationState.error, "Bye world");
+
+		setTimeout(() => {
+			TerminalAnimation.stop("gamer", TerminalAnimationState.error, "Gamer loaded");
+		}, 1000);
+	}, 1500);
 }, 1000);
