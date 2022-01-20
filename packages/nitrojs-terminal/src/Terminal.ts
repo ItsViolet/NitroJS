@@ -23,6 +23,7 @@ export default class Terminal {
 	public static log(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "INFO",
+			hexColor: "#999999"
 		});
 	}
 
@@ -33,7 +34,7 @@ export default class Terminal {
 	public static success(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "SUCCESS",
-			hexColor: "#50FFAB",
+			hexColor: "#40c283",
 		});
 	}
 

@@ -1,28 +1,14 @@
-import { PartialDeep } from "type-fest";
-import Terminal, { LogCustomTagSettings, TerminalPrompt, TerminalPromptType } from "../../src/Terminal";
+import Terminal from "../../src/Terminal";
+
+Terminal.log("This is an info message");
+Terminal.success("This is a success message");
+Terminal.warn("This is a warning message");
+Terminal.error("This is an error message\n");
 
 Terminal.setTimeStampsMode(true);
+Terminal.log("Now rendering with time stamps \n")
 
-Terminal.log("Hello world");
-Terminal.success("A success message");
-Terminal.warn("A warning");
-Terminal.error("An error");
-Terminal.notice("Notice alert");
-
-Terminal.logCustomTag("NitroJS Test", {
-    tagPrefix: "Test Tag"
-});
-
-Terminal.logCustomTag("Hello word", {
-    useColorThroughout: true,
-    tagPrefix: "aaaa",
-    hexColor: "#19F175"
-});
-
-TerminalPrompt.prompt(
-	TerminalPromptType.boolean,
-	"Are you in school Are you in school Are you in school Are you in school Are you in school Are you in school Are you in school Are you in school Are you in school",
-	(answer) => {
-		Terminal.log("Answer received: " + answer);
-	}
-);
+Terminal.log("This is an info message");
+Terminal.success("This is a success message");
+Terminal.warn("This is a warning message");
+Terminal.error("This is an error message");

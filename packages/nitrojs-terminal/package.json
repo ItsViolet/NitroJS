@@ -22,7 +22,8 @@
 		"url": "git+https://github.com/SkylixGH/NitroJS.git"
 	},
 	"scripts": {
-		"terminal:e:logging": "ts-node --transpile-only examples/logging/Index"
+		"terminal:e:logging": "ts-node --transpile-only ./examples/logging/Index.ts",
+		"terminal:e:prompts": "ts-node --transpile-only ./examples/prompts/Index.ts"
 	},
 	"bugs": {
 		"url": "https://github.com/SkylixGH/NitroJS/issues"

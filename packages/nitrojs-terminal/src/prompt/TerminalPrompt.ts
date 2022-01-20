@@ -26,16 +26,16 @@ export default class TerminalPrompt {
      * @param callback The prompt callback
      * @param defaultValue The default value
      */
-    public static prompt(type: TerminalPromptType.string, question: string, callback: (answer: string) => string, defaultValue?: boolean): void;
+    public static prompt(type: TerminalPromptType.string, question: string, callback: (answer: string) => (void | string), defaultValue?: string): void;
 
-    public static prompt(type: TerminalPromptType, question: string, callback: any, defaultValue = false) {
+    public static prompt(type: TerminalPromptType, question: string, callback: any, defaultValue?: any) {
         this._isRunning = true;
         
         if (type == TerminalPromptType.boolean) {
             PromptBoolean.handleBooleanInput(question, (answer) => {
                 this._isRunning = false;
                 callback(answer);
-            }, defaultValue);
+            }, defaultValue ?? false);
         }
     }
 

@@ -26,6 +26,7 @@ export default class PromptBoolean {
 		callback: (answer: boolean) => void,
 		defaultValue: boolean
 	) {
+		process.stdin.resume();
 		process.stdin.setRawMode(true);
 		let currentState = defaultValue;
 
@@ -44,11 +45,6 @@ export default class PromptBoolean {
 			}
 
 			let wrappedLines = calculateWrappedLineCount(process.stdout.columns, question);
-
-			if (wrappedLines - 1 < -1) {
-				wrappedLines = 2;
-			}
-			
 			process.stdout.moveCursor(-output.length, -(wrappedLines));
 		}
 		
@@ -62,6 +58,7 @@ export default class PromptBoolean {
 
 			if (key.name == "return") {
 				process.stdin.removeListener("keypress", keyPressHandle);		
+				process.stdin.pause();
 				this.stopSTDIN();
 				
 				process.stdout.write("\n");
