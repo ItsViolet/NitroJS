@@ -52,7 +52,7 @@ export default class PromptBoolean {
 		this.currentValue = defaultValue;
 
 		this.renderLines();
-		setInterval(() => {
+		const flashLoop = setInterval(() => {
 			if (this.flashState) {
 				this.flashState = false;
 			} else {
