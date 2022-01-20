@@ -12,11 +12,6 @@ export default class PromptBoolean {
 	private static question = "";
 
 	/**
-	 * The answer callback
-	 */
-	private static callback: (answer: boolean) => void;
-
-	/**
 	 * The current value
 	 */
 	private static currentValue = false;
@@ -48,7 +43,6 @@ export default class PromptBoolean {
 		defaultValue: boolean
 	) {
 		this.question = question;
-		this.callback = callback;
 		this.currentValue = defaultValue;
 		this.linesRendered = null;
 		this.done = false;
@@ -90,7 +84,7 @@ export default class PromptBoolean {
 			
 			if (this.done) {
 				TerminalPrompt.removeKeyListeners();
-				this.callback(this.currentValue);
+				callback(this.currentValue);
 			}
 		});
 	}
