@@ -1,5 +1,6 @@
 import TerminalPromptType from "../TerminalPromptType";
 import PromptBoolean from "./PromptBoolean";
+import PromptString from "./PromptString";
 
 /**
  * Create interactive prompts in the terminal
@@ -36,6 +37,11 @@ export default class TerminalPrompt {
                 this._isRunning = false;
                 callback(answer);
             }, defaultValue ?? false);
+        } else if (type == TerminalPromptType.string) {
+            PromptString.handleStringInput(question, (answer) => {
+                this._isRunning = false;
+                callback(answer);
+            }, defaultValue ?? "");
         }
     }
 
