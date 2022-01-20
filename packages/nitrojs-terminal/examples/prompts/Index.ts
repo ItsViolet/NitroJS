@@ -1,6 +1,6 @@
 // import Terminal, { TerminalPrompt, TerminalPromptType } from "../../src/Terminal";
 
-import { TerminalPrompt } from "../../src/Terminal";
+import { TerminalPrompt, TerminalPromptType } from "../../src/Terminal";
 
 // TerminalPrompt.prompt(
 // 	TerminalPromptType.boolean,
@@ -25,20 +25,6 @@ import { TerminalPrompt } from "../../src/Terminal";
 // 	true
 // );
 
-const frames = [ "[     ]", "[ .   ]", "[ ..  ]", "[ ... ]", "[  .. ]", "[   . ]" ];
-let frame = 0;
-
-let rendered = TerminalPrompt.renderLines([" - Hello World", " - Hello NitroJS"]);
-
-setInterval(() => {
-	TerminalPrompt.clearLinesFrom(-rendered);
-
-	frame++;
-
-	if (frame == frames.length) {
-		frame = 0;
-	}
-
-	console.log(` ${frames[frame]} First spinner`);
-	console.log(` ${frames[frame]} Second spinner`);
-}, 100);
+TerminalPrompt.prompt(TerminalPromptType.boolean, "Are you a programmer?", (answer) => {
+	console.log(answer);
+});
