@@ -1,3 +1,6 @@
+/**
+ * All types of prompts for NitroJS
+ */
 enum TerminalPromptType {
     /**
      * Boolean prompt

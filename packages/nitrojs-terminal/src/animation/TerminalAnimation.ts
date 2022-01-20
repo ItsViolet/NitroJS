@@ -1,0 +1,101 @@
+import { TerminalPrompt } from "../Terminal";
+import AnimationItem from "./AnimationItem";
+import AnimationMeta from "./AnimationMeta";
+
+/**
+ * Create animations in the terminal
+ */
+export default class TerminalAnimation {
+    /**
+     * If the animation is running
+     */
+    private static _isRunning = false;
+
+    /**
+     * The animation items
+     */
+    private static currentAnimationItems: AnimationItem[] = [];
+
+    /**
+     * Current animation's meta
+     */
+    private static currentAnimationMeta: AnimationMeta[] = [];
+
+    /**
+     * Animation loop
+     */
+    private static loop: NodeJS.Timer;
+
+    /**
+     * The number of lines rendered
+     */
+    private static linesRendered: null | number = null;
+
+    /**
+     * Create animations
+     * @param animations The animation or animations
+     */
+    public static startAnimation(animations: AnimationItem | AnimationItem[]) {
+        this.currentAnimationItems = [];
+        this.currentAnimationMeta = [];
+
+        if (Array.isArray(animations))
+            this.currentAnimationItems = animations;
+        else
+            this.currentAnimationItems = [animations];
+        
+        const defaultFrames = ["|", "/", "-", "\\"];
+
+        this.currentAnimationItems.forEach(animationItem => {
+            this.currentAnimationMeta.push({
+                frame: 0,
+                frames: animationItem.frames ?? defaultFrames,
+                label: animationItem.label,
+                name: animationItem.name
+            });
+        });
+
+        this.loop = setInterval(() => {
+            this.currentAnimationMeta.forEach(metaItem => {
+                metaItem.frame++;
+
+                if (metaItem.frames.length == metaItem.frame) {
+                    metaItem.frame = 0;
+                }
+            });
+
+            this.renderLines();
+        }, 100);
+    }
+
+    /**
+     * If the animation is running
+     */
+    public static get isRunning() {
+        return this._isRunning;
+    }
+
+    /**
+     * Render all lines
+     */
+    private static renderLines() {
+        const render = () => {
+            const lines = [] as string[];
+
+            this.currentAnimationMeta.forEach(metaItem => {
+                lines.push(`${metaItem.frames[metaItem.frame]} ${metaItem.label}`);
+            });
+
+            this.linesRendered = TerminalPrompt.renderLines(lines);
+        }
+
+        if (this.linesRendered) {
+            TerminalPrompt.clearLinesFrom(-this.linesRendered);
+            
+            render();
+            return;
+        }
+
+        render();
+    }
+}

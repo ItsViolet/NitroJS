@@ -3,7 +3,7 @@ import readline from "readline";
 import TerminalPrompt from "./TerminalPrompt";
 
 /**
- * Class containing methods for creating prompts
+ * Class containing methods for creating boolean prompts
  */
 export default class PromptBoolean {
 	/**

@@ -5,8 +5,19 @@ import { DateTime } from "luxon";
 import TerminalPrompt from "./prompt/TerminalPrompt";
 import TerminalPromptType from "./TerminalPromptType";
 import KeyPressMeta from "./prompt/KeyPressMeta";
+import AnimationItem from "./animation/AnimationItem";
+import TerminalAnimation from "./animation/TerminalAnimation";
+import AnimationMeta from "./animation/AnimationMeta";
 
-export { TerminalPrompt, TerminalPromptType, LogCustomTagSettings, KeyPressMeta };
+export {
+	TerminalPrompt,
+	TerminalPromptType,
+	LogCustomTagSettings,
+	KeyPressMeta,
+	TerminalAnimation,
+	AnimationMeta,
+	AnimationItem,
+};
 
 /**
  * NitroJS base terminal class
@@ -24,7 +35,7 @@ export default class Terminal {
 	public static log(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "INFO",
-			hexColor: "#999999"
+			hexColor: "#999999",
 		});
 	}
 
@@ -89,7 +100,13 @@ export default class Terminal {
 		if (this.useTimeStamps) {
 			prefixes.push(
 				chalk.hex("#999999")("[ ") +
-					chalk.hex(settings.useColorThroughout ? (settings.hexColor ? settings.hexColor : "#999999") : "#999999")(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
+					chalk.hex(
+						settings.useColorThroughout
+							? settings.hexColor
+								? settings.hexColor
+								: "#999999"
+							: "#999999"
+					)(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
 					chalk.hex("#999999")(" ]")
 			);
 		}

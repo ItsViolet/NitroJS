@@ -1,3 +1,6 @@
+/**
+ * NodeJS STDIN keypress key meta
+ */
 export default interface KeyPressMeta {
     /**
      * Key sequence

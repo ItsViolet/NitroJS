@@ -1,10 +1,16 @@
 import readline from "readline";
 import chalk from "chalk";
+import TerminalPrompt from "./TerminalPrompt";
 
 /**
- * A string prompt handler
+ * Class containing methods for creating string prompts
  */
 export default class PromptString {
+    /**
+     * The number of lines rendered
+     */
+    private static linesRendered: null | number = null;
+
     /**
      * Ask a string based question
      * @param question The question to ask
@@ -12,38 +18,16 @@ export default class PromptString {
      * @param defaultAnswer The default answer
      */
     public static handleStringInput(question: string, callback: (answer: string) => (void | string), defaultAnswer: string) {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
+        TerminalPrompt.addKeyListener((value, key) => {
+            // TODO: C^ key press
+            process.stdout.write(value + "");
         });
+    }
 
-        const questionTxt = `> ${question}:  `;
-        let outputText = "";
+    /**
+     * Render all the lines
+     */
+    private static renderLines() {
 
-        function render() {
-            process.stdout.moveCursor(-process.stdout.columns, 0);
-            process.stdout.write(questionTxt + outputText + "                                    ");
-        }
-
-        function keyPressHandle(value: string, key: any) {
-            if (key.name == "c" && key.ctrl) {
-                process.stdout.write("\n");
-                process.exit();
-            }
-
-            if (value) {
-                console.log([ value, key ])
-
-                if (key.name == "backspace" && outputText.length != 0) {
-                    outputText = outputText.slice(0, -1);
-                } else {
-                    outputText += value;
-                }
-            }
-
-            render();
-        }
-
-        process.stdin.on("keypress", keyPressHandle);
     }
 }
