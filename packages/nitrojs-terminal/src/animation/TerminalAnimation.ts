@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { TerminalPrompt } from "../Terminal";
 import AnimationItem from "./AnimationItem";
 import AnimationMeta from "./AnimationMeta";
@@ -36,6 +37,11 @@ export default class TerminalAnimation {
      * @param animations The animation or animations
      */
     public static startAnimation(animations: AnimationItem | AnimationItem[]) {
+        if (TerminalPrompt.isRunning || this.isRunning) {
+            return;
+        }
+
+        this._isRunning = true;
         this.currentAnimationItems = [];
         this.currentAnimationMeta = [];
 
@@ -44,7 +50,13 @@ export default class TerminalAnimation {
         else
             this.currentAnimationItems = [animations];
         
-        const defaultFrames = ["|", "/", "-", "\\"];
+        const muted = chalk.hex("#999999");
+        const defaultFrames = [
+            muted("|"),
+            muted("/"),
+            muted("-"),
+            muted("\\")
+        ];
 
         this.currentAnimationItems.forEach(animationItem => {
             this.currentAnimationMeta.push({

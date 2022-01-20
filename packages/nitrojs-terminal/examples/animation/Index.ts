@@ -3,24 +3,14 @@ import { TerminalAnimation } from "../../src/Terminal";
 TerminalAnimation.startAnimation([
 	{
 		label: "Hello world",
-		name: "f",
-		frames: [
-			"[            ]",
-			"[#           ]",
-			"[##          ]",
-			"[###         ]",
-			"[#####       ]",
-			"[######      ]",
-			"[#######     ]",
-			"[########    ]",
-			"[#########   ]",
-			"[##########  ]",
-			"[############]",
-		],
+		name: "f"
 	},
 	{
 		label: "This is another animation",
-		name: "s",
-		frames: ["   ", ".  ", ".. ", "...", " ..", "  ."],
-	},
+		name: "s"
+    },
+    {
+        label: "Loading your gamer self",
+        name: "gamer"
+    }
 ]);

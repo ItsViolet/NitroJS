@@ -91,7 +91,7 @@ export default class Terminal {
 	 * @param settings Settings for logging
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
-		if (TerminalPrompt.isRunning) {
+		if (TerminalPrompt.isRunning || TerminalAnimation.isRunning) {
 			return;
 		}
 

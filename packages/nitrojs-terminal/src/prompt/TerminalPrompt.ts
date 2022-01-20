@@ -3,6 +3,7 @@ import KeyPressMeta from "./KeyPressMeta";
 import PromptBoolean from "./PromptBoolean";
 import PromptString from "./PromptString";
 import readline from "readline";
+import { TerminalAnimation } from "../Terminal";
 
 /**
  * Create interactive prompts in the terminal
@@ -37,6 +38,10 @@ export default class TerminalPrompt {
     public static prompt(type: TerminalPromptType.string, question: string, callback: (answer: string) => (void | string), defaultValue?: string): void;
 
     public static prompt(type: TerminalPromptType, question: string, callback: any, defaultValue?: any) {
+        if (TerminalAnimation.isRunning || this.isRunning) {
+            return;
+        }
+        
         this._isRunning = true;
         
         if (type == TerminalPromptType.boolean) {
