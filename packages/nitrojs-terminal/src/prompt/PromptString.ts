@@ -77,7 +77,7 @@ export default class PromptString {
 				this.renderLines();
 
 				clearInterval(cursorLoop);
-				callback(this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer);
+				callback((this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "");
 			} else {
 				this.currentValue += value;
 			}

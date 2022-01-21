@@ -11,127 +11,200 @@ import cliCursor from "cli-cursor";
  * Create interactive prompts in the terminal
  */
 export default class TerminalPrompt {
-    /**
-     * If a prompt is running
-     */
-    private static _isRunning = false;
+	/**
+	 * If a prompt is running
+	 */
+	private static _isRunning = false;
 
-    /**
-     * All key press listeners
-     */
-    private static currentKeyPressListeners = [] as any[];
+	/**
+	 * All key press listeners
+	 */
+	private static currentKeyPressListeners = [] as any[];
 
-    /**
-     * Use a yes or no boolean based prompt
-     * @param type The type of prompt
-     * @param question The prompt question
-     * @param callback The prompt answer callback
-     * @param defaultValue The default value
-     */
-    public static prompt(type: TerminalPromptType.boolean, question: string, callback: (answer: boolean) => void, defaultValue?: boolean): void;
+	/**
+	 * Use a yes or no boolean based prompt
+	 * @param type The type of prompt
+	 * @param question The prompt question
+	 * @param callback The prompt answer callback
+	 * @param defaultValue The default value
+	 */
+	public static prompt(
+		type: TerminalPromptType.boolean,
+		question: string,
+		callback: (answer: boolean) => void,
+		defaultValue?: boolean
+	): void;
 
-    /**
-     * Use a string based prompt
-     * @param type The type of prompt
-     * @param question The prompt question
-     * @param callback The prompt callback
-     * @param defaultValue The default value
-     */
-    public static prompt(type: TerminalPromptType.string, question: string, callback: (answer: string) => (void | string), defaultValue?: string): void;
+	/**
+	 * Use a string based prompt
+	 * @param type The type of prompt
+	 * @param question The prompt question
+	 * @param callback The prompt callback
+	 * @param defaultValue The default value
+	 */
+	public static prompt(
+		type: TerminalPromptType.string,
+		question: string,
+		callback: (answer: string) => void | string,
+		defaultValue?: string
+	): void;
 
-    public static prompt(type: TerminalPromptType, question: string, callback: any, defaultValue?: any) {
-        if (TerminalAnimation.isRunning || this.isRunning) {
-            return;
-        }
-        
-        this._isRunning = true;
-        cliCursor.hide();
-        
-        if (type == TerminalPromptType.boolean) {
-            PromptBoolean.handleBooleanInput(question, (answer) => {
-                this._isRunning = false;
-                cliCursor.hide();
+	public static prompt(
+		type: TerminalPromptType,
+		question: string,
+		callback: any,
+		defaultValue?: any
+	) {
+		if (TerminalAnimation.isRunning || this.isRunning) {
+			return;
+		}
+
+		this._isRunning = true;
+		cliCursor.hide();
+
+		if (type == TerminalPromptType.boolean) {
+			PromptBoolean.handleBooleanInput(
+				question,
+				(answer) => {
+					this._isRunning = false;
+					cliCursor.hide();
+
+					callback(answer);
+				},
+				defaultValue ?? false
+			);
+		} else if (type == TerminalPromptType.string) {
+			PromptString.handleStringInput(
+				question,
+				(answer) => {
+					this._isRunning = false;
+					cliCursor.hide();
+
+					callback(answer);
+				},
+				defaultValue ?? ""
+			);
+		}
+	}
+
+	/**
+	 * Ask a group of prompts in order
+	 * @param prompts All prompts
+	 * @param callback The answer callback
+	 */
+	public static promptQueue(
+		prompts: {
+			type: TerminalPromptType;
+			question: string;
+			name: string;
+			defaultAnswer?: string | boolean | number;
+			validator?: (question: string) => void;
+		}[],
+		callback: (answers: { [index: string]: boolean | string | number }[]) => void
+	) {
+		let index = -1;
+        const fullResult: any = {};
+
+		if (prompts.length > 0) {
+			const iterate = () => {
+                index++;
+
+				if (prompts[index] != undefined) {
+					this.prompt(
+						prompts[index].type as any,
+						prompts[index].question,
+						(answer) => {
+							if (prompts[index].validator != undefined) {
+                                const validated = prompts[index].validator!(answer as any) as string | void;
+
+                                if (typeof validated == "string" && validated.length > 0) return validated;
+
+                                fullResult[prompts[index].name] = answer;
+                            }
+                            
+                            iterate();
+						},
+						(prompts[index].defaultAnswer as any) ?? undefined
+                    );
+                    
+                    return;
+                }
                 
-                callback(answer);
-            }, defaultValue ?? false);
-        } else if (type == TerminalPromptType.string) {
-            PromptString.handleStringInput(question, (answer) => {
-                this._isRunning = false;
-                cliCursor.hide();
-
-                callback(answer);
-            }, defaultValue ?? "");
+                callback(fullResult);
+            };
+            
+            iterate();
         }
-    }
+	}
 
-    /**
-     * If a prompt is running
-     */
-    public static get isRunning() {
-        return this._isRunning;
-    }
+	/**
+	 * If a prompt is running
+	 */
+	public static get isRunning() {
+		return this._isRunning;
+	}
 
-    /**
-     * Clear all lines from and below the relative number
-     * @param lineNumberRelative The line number relative to the current cursor position
-     */
-    public static clearLinesFrom(lineNumberRelative: number) {
-        process.stdout.moveCursor(0, lineNumberRelative);
-        process.stdout.clearScreenDown();
-    }
+	/**
+	 * Clear all lines from and below the relative number
+	 * @param lineNumberRelative The line number relative to the current cursor position
+	 */
+	public static clearLinesFrom(lineNumberRelative: number) {
+		process.stdout.moveCursor(0, lineNumberRelative);
+		process.stdout.clearScreenDown();
+	}
 
-    /**
-     * Render a group or a single line
-     * @param lines The line or lines as an array
-     * @returns Number of lines rendered
-     */
-    public static renderLines(lines: string | string[]) {
-        const linesArray = [];
-        let linesRendered = 0;
+	/**
+	 * Render a group or a single line
+	 * @param lines The line or lines as an array
+	 * @returns Number of lines rendered
+	 */
+	public static renderLines(lines: string | string[]) {
+		const linesArray = [];
+		let linesRendered = 0;
 
-        if (Array.isArray(lines)) {
-            linesArray.push(...lines);
-        } else {
-            linesArray.push(lines);
-        }
+		if (Array.isArray(lines)) {
+			linesArray.push(...lines);
+		} else {
+			linesArray.push(lines);
+		}
 
-        linesArray.forEach(line => {
-            process.stdout.write(line + "\n");
-            let extraWrapLines = 0;
+		linesArray.forEach((line) => {
+			process.stdout.write(line + "\n");
+			let extraWrapLines = 0;
 
-            const mathResult = Math.ceil(stripAnsi(line).length / process.stdout.columns);
-            if ((mathResult - 1) >= 1) {
-                extraWrapLines = mathResult - 1;
-            }
+			const mathResult = Math.ceil(stripAnsi(line).length / process.stdout.columns);
+			if (mathResult - 1 >= 1) {
+				extraWrapLines = mathResult - 1;
+			}
 
-            linesRendered += (1 + extraWrapLines);
-        });
+			linesRendered += 1 + extraWrapLines;
+		});
 
-        return linesRendered;
-    }
+		return linesRendered;
+	}
 
-    /**
-     * Add a key press listener to the STDIO
-     * @param callback The event listener
-     */
-    public static addKeyListener(callback: (value: string | undefined, key: KeyPressMeta) => void) {
-        process.stdin.resume();
-        process.stdin.setRawMode(true);
+	/**
+	 * Add a key press listener to the STDIO
+	 * @param callback The event listener
+	 */
+	public static addKeyListener(callback: (value: string | undefined, key: KeyPressMeta) => void) {
+		process.stdin.resume();
+		process.stdin.setRawMode(true);
 
-        readline.emitKeypressEvents(process.stdin);
+		readline.emitKeypressEvents(process.stdin);
 
-        this.currentKeyPressListeners.push(callback);
-        process.stdin.addListener("keypress", callback);
-    }
+		this.currentKeyPressListeners.push(callback);
+		process.stdin.addListener("keypress", callback);
+	}
 
-    /**
-     * Remove all key listeners that were registered from this class
-     */
-    public static removeKeyListeners() {
-        this.currentKeyPressListeners.forEach(callback => {
-            process.stdin.removeListener("keypress", callback);
-        });
+	/**
+	 * Remove all key listeners that were registered from this class
+	 */
+	public static removeKeyListeners() {
+		this.currentKeyPressListeners.forEach((callback) => {
+			process.stdin.removeListener("keypress", callback);
+		});
 
-        process.stdin.pause();
-    }
+		process.stdin.pause();
+	}
 }
