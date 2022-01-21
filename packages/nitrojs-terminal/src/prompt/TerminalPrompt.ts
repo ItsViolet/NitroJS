@@ -1,4 +1,4 @@
-import KeyPressMeta from "./KeyPressMeta.js";
+import KeyPressMeta from "./KeyPressMeta";
 import readline from "readline";
 import stripAnsi from "strip-ansi";
 
