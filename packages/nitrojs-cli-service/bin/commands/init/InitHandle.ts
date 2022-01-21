@@ -22,7 +22,8 @@ export default class InitHandle {
 					{
 						question: "What is your project called?",
 						name: "name",
-						type: TerminalPromptType.string
+						type: TerminalPromptType.string,
+						defaultAnswer: "unnamed-project"
 					},
 					{
 						question: "Project description",
@@ -32,62 +33,24 @@ export default class InitHandle {
 					{
 						question: "Project version",
 						name: "version",
-						type: TerminalPromptType.string
+						type: TerminalPromptType.string,
+						defaultAnswer: "1.0.0"
 					},
 					{
 						question: "Integrate TypeScript support",
 						name: "useTypeScript",
-						type: TerminalPromptType.string
+						type: TerminalPromptType.string,
+						defaultAnswer: true
 					},
 					{
-						question: "Use demo application or blank project",
+						question: "Use demo application otherwise blank project",
 						name: "demo",
-						type: TerminalPromptType.boolean
+						type: TerminalPromptType.boolean,
+						defaultAnswer: true
 					}
 				], (answers) => {
 					console.log(answers);
 				});
-
-			// 	TerminalPrompt.prompt(TerminalPromptType.string, "Name of your project", (projectName) => {
-			// 		TerminalPrompt.prompt(
-			// 			TerminalPromptType.string,
-			// 			"What type of project is this (Node / Web / Desktop / Mobile)",
-			// 			(projectType) => {
-			// 				TerminalPrompt.prompt(
-			// 					TerminalPromptType.string,
-			// 					"Project description",
-			// 					(projectDescription) => {
-			// 						TerminalPrompt.prompt(
-			// 							TerminalPromptType.string,
-			// 							"Project version",
-			// 							(projectVersion) => {
-			// 								TerminalPrompt.prompt(
-			// 									TerminalPromptType.string,
-			// 									"Project author",
-			// 									(projectAuthor) => {
-			// 										TerminalPrompt.prompt(
-			// 											TerminalPromptType.boolean,
-			// 											"Should this project use TypeScript",
-			// 											(useTypeScript) => {
-			// 												TerminalPrompt.prompt(
-			// 													TerminalPromptType.boolean,
-			// 													"Open with VSCode when finished",
-			// 													(openWithCode) => {},
-			// 													false
-			// 												);
-			// 											},
-			// 											true
-			// 										);
-			// 									}
-			// 								);
-			// 							},
-			// 							"1.0.0"
-			// 						);
-			// 					}
-			// 				);
-			// 			}
-			// 		);
-			// 	});
 			});
 	}
 }
