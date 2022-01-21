@@ -5,6 +5,7 @@ import PromptString from "./PromptString.js";
 import readline from "readline";
 import { TerminalAnimation } from "../Terminal";
 import stripAnsi from "strip-ansi";
+import cliCursor from "cli-cursor";
 
 /**
  * Create interactive prompts in the terminal
@@ -44,15 +45,20 @@ export default class TerminalPrompt {
         }
         
         this._isRunning = true;
+        cliCursor.hide();
         
         if (type == TerminalPromptType.boolean) {
             PromptBoolean.handleBooleanInput(question, (answer) => {
                 this._isRunning = false;
+                cliCursor.hide();
+                
                 callback(answer);
             }, defaultValue ?? false);
         } else if (type == TerminalPromptType.string) {
             PromptString.handleStringInput(question, (answer) => {
                 this._isRunning = false;
+                cliCursor.hide();
+
                 callback(answer);
             }, defaultValue ?? "");
         }

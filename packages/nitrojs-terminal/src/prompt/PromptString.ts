@@ -43,6 +43,8 @@ export default class PromptString {
 
 			if (key.name == "backspace") {
 				this.currentValue = this.currentValue.slice(0, -1);
+			} else if (key.name == "return") {
+				
 			} else {
 				this.currentValue += value;
 			}
