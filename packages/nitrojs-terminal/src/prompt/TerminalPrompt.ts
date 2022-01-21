@@ -116,12 +116,10 @@ export default class TerminalPrompt {
 						(answer) => {
 							if (prompts[index].validator != undefined) {
                                 const validated = prompts[index].validator!(answer as any) as string | void;
-
                                 if (typeof validated == "string" && validated.length > 0) return validated;
-
-                                fullResult[prompts[index].name] = answer;
                             }
                             
+                            fullResult[prompts[index].name] = answer;
                             iterate();
 						},
 						(prompts[index].defaultAnswer as any) ?? undefined

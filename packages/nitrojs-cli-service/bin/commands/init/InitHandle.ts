@@ -28,6 +28,21 @@ export default class InitHandle {
 						question: "Project description",
 						name: "description",
 						type: TerminalPromptType.string
+					},
+					{
+						question: "Project version",
+						name: "version",
+						type: TerminalPromptType.string
+					},
+					{
+						question: "Integrate TypeScript support",
+						name: "useTypeScript",
+						type: TerminalPromptType.string
+					},
+					{
+						question: "Use demo application or blank project",
+						name: "demo",
+						type: TerminalPromptType.boolean
 					}
 				], (answers) => {
 					console.log(answers);
