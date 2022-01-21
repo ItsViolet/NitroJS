@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import cliCursor from "cli-cursor";
 import TerminalPrompt from "./TerminalPrompt";
 
@@ -76,17 +77,17 @@ export default class TerminalPromptSelect {
 				cliCursor.show();
 				callback(this.currentValue);
 			} else if (key.name == "up") {
-				currentIndex++;
-				if (!this.answers[currentIndex]) {
-					currentIndex = 0;
-				}
-
-				this.currentValue = this.answers[currentIndex].value;
-			} else if (key.name == "down") {
 				currentIndex--;
 
 				if (currentIndex < 0) {
 					currentIndex = this.answers.length - 1;
+				}
+
+				this.currentValue = this.answers[currentIndex].value;
+			} else if (key.name == "down") {
+				currentIndex++;
+				if (!this.answers[currentIndex]) {
+					currentIndex = 0;
 				}
 
 				this.currentValue = this.answers[currentIndex].value;
@@ -100,8 +101,29 @@ export default class TerminalPromptSelect {
 	 * Render all lines
 	 */
 	private static renderLines() {
+		const chalkGray = chalk.hex("#999999");
+
 		const render = () => {
-			this.linesRendered = TerminalPrompt.renderLines(this.currentValue);
+			const optionsWithSelected = [] as string[];
+
+			this.answers.forEach(answer => {
+				if (answer.value == this.currentValue) {
+					optionsWithSelected.push(
+						`> ${answer.label}`
+					);
+
+					return;
+				}
+
+				optionsWithSelected.push(
+					`  ${chalkGray(answer.label)}`
+				);
+			});
+
+			this.linesRendered = TerminalPrompt.renderLines([
+				`${chalkGray(">")} ${this.question}:`,
+				...optionsWithSelected
+			]);
 		};
 
 		if (!this.linesRendered) {
