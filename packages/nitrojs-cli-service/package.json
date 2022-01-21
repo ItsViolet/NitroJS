@@ -6,6 +6,7 @@
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
 	"main": "src/CLIService.js",
+  "type": "module",
 	"directories": {
 		"src": "src",
 		"docs": "docs"
