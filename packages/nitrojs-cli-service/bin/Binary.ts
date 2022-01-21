@@ -1,5 +1,7 @@
 import Terminal from "@skylixgh/nitrojs-terminal/src/Terminal";
 import pkg from "../package.json";
+import { program } from "commander";
+import InitHandle from "./commands/init/InitHandle";
 
 /**
  * The CLI service entry point
@@ -9,6 +11,10 @@ new class Binary {
      * Application main method
      */
     public constructor() {
-        Terminal.log("NitroJS CLI - " + pkg.version);
+        program.version(pkg.version);
+
+        new InitHandle();
+
+        program.parse();
     }
 }

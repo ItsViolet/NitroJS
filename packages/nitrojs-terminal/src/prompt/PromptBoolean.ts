@@ -109,14 +109,23 @@ export default class PromptBoolean {
 		const chalkGray = chalk.hex("#999999");
 
 		const render = () => {
+			let yesNoArea: string;
+			const chalkGray = chalk.hex("#999999");
+			
+			if (this.done) {
+				yesNoArea = chalk.underline(this.currentValue ? "Yes" : "No");
+			} else {
+				if (this.currentValue) {
+					yesNoArea = `${chalk.underline("Yes")} / ${chalkGray("No")}`;
+				} else {
+					yesNoArea = `${chalkGray("Yes")} / ${chalk.underline("No")}`;
+				}
+			}
+
 			this.linesRendered = TerminalPrompt.renderLines(
-				`${this.halted ? chalk.hex("#FF5555")(">") : (this.done ? "✓" : chalkGray(">"))} ${
+				`${this.halted ? chalk.hex("#FF5555")(">") : this.done ? chalkGray("✓") : chalkGray(">")} ${
 					this.question
-				}: ${
-					this.currentValue
-						? `${chalk.underline("Yes")} / ${chalkGray("No")}`
-						: `${chalkGray("Yes")} / ${chalk.underline("No")}`
-				}`
+				}: ${yesNoArea}`
 			);
 		};
 
