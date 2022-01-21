@@ -42,10 +42,10 @@ export default class TerminalPromptBoolean {
 	 * @param callback The answer callback
 	 * @param defaultValue The default value
 	 */
-	public static handleBooleanInput(
+	public static prompt(
 		question: string,
 		callback: (answer: boolean) => void,
-		defaultValue: boolean
+		defaultValue = false
 	) {
 		this.question = question;
 		this.currentValue = defaultValue;
@@ -84,6 +84,7 @@ export default class TerminalPromptBoolean {
 
 				case "return":
 					this.done = true;
+					this._isRunning = false;
 					break;
 			}
 
@@ -133,7 +134,7 @@ export default class TerminalPromptBoolean {
 			}
 
 			this.linesRendered = TerminalPrompt.renderLines(
-				`${this.halted ? chalk.hex("#FF5555")(">") : this.done ? chalkGray("✓") : chalkGray(">")} ${
+				`${this.halted ? chalk.hex("#FF5555")("?") : this.done ? chalkGray("✓") : chalkGray("?")} ${
 					this.question
 				}: ${yesNoArea}`
 			);

@@ -1,6 +1,6 @@
-import { TerminalPromptSelect } from "../../src/Terminal";
+import Terminal, { TerminalPromptBoolean, TerminalPromptSelect } from "../../src/Terminal";
 
-TerminalPromptSelect.prompt("What is your favourite framework?", [
+TerminalPromptSelect.prompt("What is your favorite framework?", [
     {
         label: "React",
         value: "rjs"
@@ -14,5 +14,7 @@ TerminalPromptSelect.prompt("What is your favourite framework?", [
         value: "ajs"
     }
 ], answer => {
-    console.log(answer);
+    TerminalPromptBoolean.prompt("Do you use this framework daily?", (ans) => {
+			Terminal.log("Cool! Seems like you use " + answer);
+		});
 }, "rjs");

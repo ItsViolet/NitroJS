@@ -73,8 +73,11 @@ export default class TerminalPromptSelect {
 			if (key.name == "return") {
 				this.done = true;
 				TerminalPrompt.removeKeyListeners();
-				
+			
+				this.renderLines();
 				cliCursor.show();
+
+				this._isRunning = false;
 				callback(this.currentValue);
 			} else if (key.name == "up") {
 				currentIndex--;
@@ -93,7 +96,8 @@ export default class TerminalPromptSelect {
 				this.currentValue = this.answers[currentIndex].value;
 			}
 
-			this.renderLines();
+			if (!this.done)
+				this.renderLines();
 		});
 	}
 
@@ -120,9 +124,19 @@ export default class TerminalPromptSelect {
 				);
 			});
 
+			let finalAnswer: string | undefined;
+
+			if (this.done) {
+				this.answers.forEach(answer => {
+					if (answer.value == this.currentValue) {
+						finalAnswer = answer.label;
+					}
+				});
+			}
+
 			this.linesRendered = TerminalPrompt.renderLines([
-				`${chalkGray(">")} ${this.question}:`,
-				...optionsWithSelected
+				`${chalkGray(this.done ? "✓" : "?")} ${this.question}: ${finalAnswer ? finalAnswer : ""}`,
+				...(this.done ? [] : optionsWithSelected)
 			]);
 		};
 

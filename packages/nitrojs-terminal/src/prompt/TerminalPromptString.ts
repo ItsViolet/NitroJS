@@ -47,10 +47,10 @@ export default class TerminalPromptString {
 	 * @param callback The answer callback
 	 * @param defaultAnswer The default answer
 	 */
-	public static handleStringInput(
+	public static prompt(
 		question: string,
 		callback: (answer: string) => void | string,
-		defaultAnswer: string
+		defaultAnswer = ""
 	) {
 		this.question = question;
 		this.renderedLines = null;
@@ -80,11 +80,12 @@ export default class TerminalPromptString {
 				TerminalPrompt.removeKeyListeners();
 				this.cursorVisibility = false;
 				this.done = true;
-
-				this.renderLines();
 				clearInterval(cursorLoop);
 
+				this.renderLines();
 				cliCursor.show();
+
+				this._isRunning = false;
 				callback((this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "");
 			} else {
 				this.currentValue += value;
@@ -100,7 +101,7 @@ export default class TerminalPromptString {
 	private static renderLines() {
 		const render = () => {
 			this.renderedLines = TerminalPrompt.renderLines(
-				`${this.done ? chalk.hex("#999999")("✓") : chalk.hex("#999999")(">")} ${this.question}${
+				`${this.done ? chalk.hex("#999999")("✓") : chalk.hex("#999999")("?")} ${this.question}${
 					this.defaultAnswer ? chalk.hex("#999999")(" [ " + this.defaultAnswer + " ]") : ""
 				}: ${this.currentValue}${this.cursorVisibility ? "|" : ""}`
 			);
