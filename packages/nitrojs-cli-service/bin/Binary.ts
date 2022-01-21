@@ -1,7 +1,10 @@
 import Terminal from "@skylixgh/nitrojs-terminal/src/Terminal";
 import pkg from "../package.json";
-import { program } from "commander";
+import { Command } from "commander";
 import InitHandle from "./commands/init/InitHandle";
+
+let options = {} as any;
+const program = new Command();
 
 /**
  * The CLI service entry point
@@ -16,5 +19,8 @@ new class Binary {
         new InitHandle();
 
         program.parse();
+        options = program.opts();
     }
 }
+
+export { options, program };

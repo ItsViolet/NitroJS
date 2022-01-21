@@ -2,7 +2,8 @@ import Terminal, {
 	TerminalPrompt,
 	TerminalPromptType,
 } from "@skylixgh/nitrojs-terminal/src/Terminal";
-import { program } from "commander";
+import { program } from "../../Binary";
+import CommandOptions from "./CommandOptions";
 
 /**
  * Init command handler
@@ -14,8 +15,8 @@ export default class InitHandle {
 	public constructor() {
 		program
 			.command("init [directory]")
-			.option("--name", "Name of the project", "")
-			.action((directory?: string) => {
+			.option("--name <name>", "Name of the project", "unnamed-project")
+			.action((directory: string | undefined, options: CommandOptions) => {
 				Terminal.log("Initialize a new project");
 
 				TerminalPrompt.promptQueue([
@@ -23,7 +24,7 @@ export default class InitHandle {
 						question: "What is your project called?",
 						name: "name",
 						type: TerminalPromptType.string,
-						defaultAnswer: "unnamed-project"
+						defaultAnswer: options.name
 					},
 					{
 						question: "Project description",
@@ -49,7 +50,7 @@ export default class InitHandle {
 						defaultAnswer: true
 					}
 				], (answers) => {
-					console.log(answers);
+					
 				});
 			});
 	}
