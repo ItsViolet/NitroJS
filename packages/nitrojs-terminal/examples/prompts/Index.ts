@@ -17,7 +17,7 @@ TerminalPrompt.prompt(
 
 					TerminalPrompt.prompt(TerminalPromptType.string, "Enter your name", (name) => {
 						Terminal.log("Hi " + name);
-					});
+					}, "Person");
 				},
 				true
 			);

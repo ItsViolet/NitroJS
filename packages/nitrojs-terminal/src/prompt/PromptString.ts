@@ -21,6 +21,21 @@ export default class PromptString {
 	private static question = "";
 
 	/**
+	 * The default answer
+	 */
+	private static defaultAnswer = "";
+
+	/**
+	 * If the prompt is done
+	 */
+	private static done = false;
+
+	/**
+	 * If the fake cursor is visible
+	 */
+	private static cursorVisibility = false;
+
+	/**
 	 * Ask a string based question
 	 * @param question The question to ask
 	 * @param callback The answer callback
@@ -31,10 +46,20 @@ export default class PromptString {
 		callback: (answer: string) => void | string,
 		defaultAnswer: string
 	) {
-        this.question = question;
-        this.renderedLines = null;
+		this.question = question;
+		this.renderedLines = null;
+		this.defaultAnswer = defaultAnswer;
+		this.done = false;
+		this.cursorVisibility = false;
 
-        this.renderLines();
+		const cursorLoop = setInterval(() => {
+			if (this.cursorVisibility) this.cursorVisibility = false;
+			else this.cursorVisibility = true;
+
+			if (!this.done) this.renderLines();
+		}, 800);
+
+		this.renderLines();
 
 		TerminalPrompt.addKeyListener((value, key) => {
 			if (key.name == "c" && key.ctrl) {
@@ -44,12 +69,19 @@ export default class PromptString {
 			if (key.name == "backspace") {
 				this.currentValue = this.currentValue.slice(0, -1);
 			} else if (key.name == "return") {
-				
+				TerminalPrompt.removeKeyListeners();
+				this.cursorVisibility = false;
+				this.done = true;
+
+				this.renderLines();
+
+				clearInterval(cursorLoop);
+				callback(this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer);
 			} else {
 				this.currentValue += value;
 			}
 
-			this.renderLines();
+			if (!this.done) this.renderLines();
 		});
 	}
 
@@ -59,7 +91,9 @@ export default class PromptString {
 	private static renderLines() {
 		const render = () => {
 			this.renderedLines = TerminalPrompt.renderLines(
-				`${chalk.hex("#999999")(">")} ${this.question}: ${this.currentValue}|`
+				`${chalk.hex("#999999")(">")} ${this.question}${
+					this.defaultAnswer ? chalk.hex("#999999")("[ " + this.defaultAnswer + " ]") : ""
+				}: ${this.currentValue}${this.cursorVisibility ? "|" : ""}`
 			);
 		};
 
@@ -68,7 +102,7 @@ export default class PromptString {
 			return;
 		}
 
-		TerminalPrompt.clearLinesFrom(-(this.renderedLines));
+		TerminalPrompt.clearLinesFrom(-this.renderedLines);
 		render();
 	}
 }
