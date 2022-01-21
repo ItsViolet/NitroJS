@@ -4,7 +4,7 @@ import TerminalPrompt from "./TerminalPrompt";
 /**
  * Class containing methods for creating boolean prompts
  */
-export default class PromptBoolean {
+export default class TerminalPromptBoolean {
 	/**
 	 * The prompt question
 	 */
@@ -19,6 +19,11 @@ export default class PromptBoolean {
 	 * If the response is done
 	 */
 	private static done = false;
+
+	/**
+	 * If is running
+	 */
+	private static _isRunning = false;
 
 	/**
 	 * The amount of lines last rendered
@@ -46,7 +51,7 @@ export default class PromptBoolean {
 		this.linesRendered = null;
 		this.done = false;
 		this.renderLines();
-		
+
 		TerminalPrompt.addKeyListener((value, key) => {
 			if (key.name == "c" && key.ctrl) {
 				this.halted = true;
@@ -73,14 +78,14 @@ export default class PromptBoolean {
 				case "left":
 					this.leftArrow();
 					break;
-				
+
 				case "return":
 					this.done = true;
 					break;
 			}
 
 			this.renderLines();
-			
+
 			if (this.done) {
 				TerminalPrompt.removeKeyListeners();
 				callback(this.currentValue);
@@ -111,7 +116,7 @@ export default class PromptBoolean {
 		const render = () => {
 			let yesNoArea: string;
 			const chalkGray = chalk.hex("#999999");
-			
+
 			if (this.done) {
 				yesNoArea = this.currentValue ? "Yes" : "No";
 			} else {
@@ -150,5 +155,12 @@ export default class PromptBoolean {
 	 */
 	private static leftArrow() {
 		this.currentValue = true;
+	}
+
+	/**
+	 * If is running
+	 */
+	public static get isRunning() {
+		return this._isRunning;
 	}
 }

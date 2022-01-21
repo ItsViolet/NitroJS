@@ -4,7 +4,7 @@ import TerminalPrompt from "./TerminalPrompt";
 /**
  * Class containing methods for creating string prompts
  */
-export default class PromptString {
+export default class TerminalPromptString {
 	/**
 	 * The number of lines rendered
 	 */
@@ -34,6 +34,11 @@ export default class PromptString {
 	 * If the fake cursor is visible
 	 */
 	private static cursorVisibility = false;
+
+	/**
+	 * If is running
+	 */
+	private static _isRunning = false;
 
 	/**
 	 * Ask a string based question
@@ -105,5 +110,12 @@ export default class PromptString {
 
 		TerminalPrompt.clearLinesFrom(-this.renderedLines);
 		render();
+	}
+
+	/**
+	 * If is running
+	 */
+	public static get isRunning() {
+		return this._isRunning;
 	}
 }

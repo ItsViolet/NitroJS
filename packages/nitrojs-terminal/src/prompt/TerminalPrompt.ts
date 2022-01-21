@@ -1,146 +1,15 @@
-import TerminalPromptType from "../TerminalPromptType.js";
 import KeyPressMeta from "./KeyPressMeta.js";
-import PromptBoolean from "./PromptBoolean.js";
-import PromptString from "./PromptString.js";
 import readline from "readline";
-import { TerminalAnimation } from "../Terminal";
 import stripAnsi from "strip-ansi";
-import cliCursor from "cli-cursor";
 
 /**
  * Create interactive prompts in the terminal
  */
 export default class TerminalPrompt {
 	/**
-	 * If a prompt is running
-	 */
-	private static _isRunning = false;
-
-	/**
 	 * All key press listeners
 	 */
 	private static currentKeyPressListeners = [] as any[];
-
-	/**
-	 * Use a yes or no boolean based prompt
-	 * @param type The type of prompt
-	 * @param question The prompt question
-	 * @param callback The prompt answer callback
-	 * @param defaultValue The default value
-	 */
-	public static prompt(
-		type: TerminalPromptType.boolean,
-		question: string,
-		callback: (answer: boolean) => void,
-		defaultValue?: boolean
-	): void;
-
-	/**
-	 * Use a string based prompt
-	 * @param type The type of prompt
-	 * @param question The prompt question
-	 * @param callback The prompt callback
-	 * @param defaultValue The default value
-	 */
-	public static prompt(
-		type: TerminalPromptType.string,
-		question: string,
-		callback: (answer: string) => void | string,
-		defaultValue?: string
-	): void;
-
-	public static prompt(
-		type: TerminalPromptType,
-		question: string,
-		callback: any,
-		defaultValue?: any
-	) {
-		if (TerminalAnimation.isRunning || this.isRunning) {
-			return;
-		}
-
-		this._isRunning = true;
-		cliCursor.hide();
-
-		if (type == TerminalPromptType.boolean) {
-			PromptBoolean.handleBooleanInput(
-				question,
-				(answer) => {
-					this._isRunning = false;
-					cliCursor.hide();
-
-					callback(answer);
-				},
-				defaultValue ?? false
-			);
-		} else if (type == TerminalPromptType.string) {
-			PromptString.handleStringInput(
-				question,
-				(answer) => {
-					this._isRunning = false;
-					cliCursor.hide();
-
-					callback(answer);
-				},
-				defaultValue ?? ""
-			);
-		}
-	}
-
-	/**
-	 * Ask a group of prompts in order
-	 * @param prompts All prompts
-	 * @param callback The answer callback
-	 */
-	public static promptQueue(
-		prompts: {
-			type: TerminalPromptType;
-			question: string;
-			name: string;
-			defaultAnswer?: string | boolean | number;
-			validator?: (question: string) => void;
-		}[],
-		callback: (answers: { [index: string]: boolean | string | number }[]) => void
-	) {
-		let index = -1;
-        const fullResult: any = {};
-
-		if (prompts.length > 0) {
-			const iterate = () => {
-                index++;
-
-				if (prompts[index] != undefined) {
-					this.prompt(
-						prompts[index].type as any,
-						prompts[index].question,
-						(answer) => {
-							if (prompts[index].validator != undefined) {
-                                const validated = prompts[index].validator!(answer as any) as string | void;
-                                if (typeof validated == "string" && validated.length > 0) return validated;
-                            }
-                            
-                            fullResult[prompts[index].name] = answer;
-                            iterate();
-						},
-						(prompts[index].defaultAnswer as any) ?? undefined
-                    );
-                    
-                    return;
-                }
-                
-                callback(fullResult);
-            };
-            
-            iterate();
-        }
-	}
-
-	/**
-	 * If a prompt is running
-	 */
-	public static get isRunning() {
-		return this._isRunning;
-	}
 
 	/**
 	 * Clear all lines from and below the relative number

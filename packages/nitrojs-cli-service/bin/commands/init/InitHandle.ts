@@ -40,7 +40,7 @@ export default class InitHandle {
 					{
 						question: "Integrate TypeScript support",
 						name: "useTypeScript",
-						type: TerminalPromptType.string,
+						type: TerminalPromptType.boolean,
 						defaultAnswer: true
 					},
 					{
@@ -50,7 +50,7 @@ export default class InitHandle {
 						defaultAnswer: true
 					}
 				], (answers) => {
-					
+					console.log
 				});
 			});
 	}

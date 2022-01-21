@@ -2,23 +2,27 @@ import { PartialDeep } from "type-fest";
 import LogCustomTagSettings from "./LogCustomTagSettings";
 import chalk from "chalk";
 import { DateTime } from "luxon";
-import TerminalPrompt from "./prompt/TerminalPrompt";
-import TerminalPromptType from "./TerminalPromptType";
 import KeyPressMeta from "./prompt/KeyPressMeta";
 import AnimationItem from "./animation/AnimationItem";
 import TerminalAnimation from "./animation/TerminalAnimation";
 import AnimationMeta from "./animation/AnimationMeta";
 import TerminalAnimationState from "./animation/TerminalAnimationState";
+import TerminalPrompt from "./prompt/TerminalPrompt";
+import TerminalPromptString from "./prompt/TerminalPromptString";
+import TerminalPromptBoolean from "./prompt/TerminalPromptBoolean";
+import TerminalPromptSelect from "./prompt/TerminalPromptSelect";
 
 export {
 	TerminalPrompt,
-	TerminalPromptType,
 	LogCustomTagSettings,
 	KeyPressMeta,
 	TerminalAnimation,
 	AnimationMeta,
 	AnimationItem,
 	TerminalAnimationState,
+	TerminalPromptBoolean,
+	TerminalPromptSelect,
+	TerminalPromptString
 };
 
 /**
@@ -93,7 +97,7 @@ export default class Terminal {
 	 * @param settings Settings for logging
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
-		if (TerminalPrompt.isRunning || TerminalAnimation.isRunning) {
+		if (TerminalPromptString.isRunning || TerminalPromptBoolean.isRunning || TerminalPromptSelect.isRunning || TerminalAnimation.isRunning) {
 			return;
 		}
 
