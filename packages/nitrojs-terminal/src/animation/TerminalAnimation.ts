@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { TerminalAnimationState, TerminalPrompt } from "../Terminal";
+import { TerminalAnimationState, TerminalPrompt, TerminalPromptBoolean, TerminalPromptSelect, TerminalPromptString } from "../Terminal";
 import AnimationItem from "./AnimationItem";
 import AnimationMeta from "./AnimationMeta";
 
@@ -37,7 +37,12 @@ export default class TerminalAnimation {
 	 * @param animations The animation or animations
 	 */
 	public static startAnimation(animations: AnimationItem | AnimationItem[]) {
-		if (TerminalPrompt.isRunning || this.isRunning) {
+		if (
+			TerminalPromptString.isRunning ||
+			TerminalPromptBoolean.isRunning ||
+			TerminalPromptSelect.isRunning ||
+			this.isRunning
+		) {
 			return;
 		}
 

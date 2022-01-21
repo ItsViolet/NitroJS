@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import cliCursor from "cli-cursor";
 import TerminalPrompt from "./TerminalPrompt";
 
 /**
@@ -50,6 +51,8 @@ export default class TerminalPromptBoolean {
 		this.currentValue = defaultValue;
 		this.linesRendered = null;
 		this.done = false;
+
+		cliCursor.hide();
 		this.renderLines();
 
 		TerminalPrompt.addKeyListener((value, key) => {
@@ -88,6 +91,8 @@ export default class TerminalPromptBoolean {
 
 			if (this.done) {
 				TerminalPrompt.removeKeyListeners();
+
+				cliCursor.show();
 				callback(this.currentValue);
 			}
 		});
