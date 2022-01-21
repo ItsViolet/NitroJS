@@ -4,6 +4,7 @@ import PromptBoolean from "./PromptBoolean.js";
 import PromptString from "./PromptString.js";
 import readline from "readline";
 import { TerminalAnimation } from "../Terminal";
+import stripAnsi from "strip-ansi";
 
 /**
  * Create interactive prompts in the terminal
@@ -90,7 +91,14 @@ export default class TerminalPrompt {
 
         linesArray.forEach(line => {
             process.stdout.write(line + "\n");
-            linesRendered++;
+            let extraWrapLines = 0;
+
+            const mathResult = Math.ceil(stripAnsi(line).length / process.stdout.columns);
+            if ((mathResult - 1) >= 1) {
+                extraWrapLines = mathResult - 1;
+            }
+
+            linesRendered += (1 + extraWrapLines);
         });
 
         return linesRendered;

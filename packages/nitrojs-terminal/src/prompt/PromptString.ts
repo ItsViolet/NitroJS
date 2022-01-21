@@ -57,7 +57,7 @@ export default class PromptString {
 	private static renderLines() {
 		const render = () => {
 			this.renderedLines = TerminalPrompt.renderLines(
-				`${chalk.hex("#999999")(">")} ${this.question}: ${this.currentValue}`
+				`${chalk.hex("#999999")(">")} ${this.question}: ${this.currentValue}|`
 			);
 		};
 
@@ -66,7 +66,7 @@ export default class PromptString {
 			return;
 		}
 
-		TerminalPrompt.clearLinesFrom(-this.renderedLines);
+		TerminalPrompt.clearLinesFrom(-(this.renderedLines));
 		render();
 	}
 }
