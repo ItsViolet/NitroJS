@@ -8,12 +8,14 @@
 	"main": "src/Terminal.js",
 	"type": "module",
 	"directories": {
-		"lib": "lib",
+		"src": "src",
 		"docs": "docs",
 		"examples": "examples"
 	},
 	"files": [
-		"lib"
+		"src",
+		"docs",
+		"examples"
 	],
 	"publishConfig": {
 		"access": "public"
@@ -35,10 +37,10 @@
 		"chalk": "4.1.2",
 		"cli-cursor": "^4.0.0",
 		"luxon": "^2.3.0",
-		"strip-ansi": "^7.0.1",
-		"type-fest": "^2.9.0"
+		"strip-ansi": "^7.0.1"
 	},
 	"devDependencies": {
+		"type-fest": "^2.9.0",
 		"@types/luxon": "^2.0.9"
 	}
 }
