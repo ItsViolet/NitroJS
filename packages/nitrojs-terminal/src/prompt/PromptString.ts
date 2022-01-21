@@ -93,7 +93,7 @@ export default class PromptString {
 		const render = () => {
 			this.renderedLines = TerminalPrompt.renderLines(
 				`${this.done ? chalk.hex("#999999")("✓") : chalk.hex("#999999")(">")} ${this.question}${
-					this.defaultAnswer ? chalk.hex("#999999")("[ " + this.defaultAnswer + " ]") : ""
+					this.defaultAnswer ? chalk.hex("#999999")(" [ " + this.defaultAnswer + " ]") : ""
 				}: ${this.currentValue}${this.cursorVisibility ? "|" : ""}`
 			);
 		};
