@@ -5,7 +5,8 @@
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
-	"main": "src/Terminal",
+	"main": "src/Terminal.js",
+	"type": "module",
 	"directories": {
 		"lib": "lib",
 		"docs": "docs",
@@ -23,7 +24,8 @@
 	},
 	"scripts": {
 		"terminal:e:logging": "ts-node --transpile-only ./examples/logging/Index.ts",
-		"terminal:e:prompts": "ts-node --transpile-only ./examples/prompts/Index.ts"
+		"terminal:e:prompts": "ts-node --transpile-only ./examples/prompts/Index.ts",
+		"terminal:e:animation": "ts-node --transpile-only ./examples/animation/Index.ts"
 	},
 	"bugs": {
 		"url": "https://github.com/SkylixGH/NitroJS/issues"

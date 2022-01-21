@@ -1,7 +1,7 @@
-import TerminalPromptType from "../TerminalPromptType";
-import KeyPressMeta from "./KeyPressMeta";
-import PromptBoolean from "./PromptBoolean";
-import PromptString from "./PromptString";
+import TerminalPromptType from "../TerminalPromptType.js";
+import KeyPressMeta from "./KeyPressMeta.js";
+import PromptBoolean from "./PromptBoolean.js";
+import PromptString from "./PromptString.js";
 import readline from "readline";
 import { TerminalAnimation } from "../Terminal";
 

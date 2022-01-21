@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import readline from "readline";
 import TerminalPrompt from "./TerminalPrompt";
 
 /**

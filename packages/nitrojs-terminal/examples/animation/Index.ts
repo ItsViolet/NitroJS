@@ -4,7 +4,6 @@ TerminalPrompt.prompt(TerminalPromptType.string, "Name", (name) => {
 	console.log(name);
 });
 
-return;
 TerminalPrompt.prompt(TerminalPromptType.boolean, "Are you a dev", (dev) => {
 	TerminalAnimation.startAnimation([
 		{
