@@ -113,7 +113,7 @@ export default class PromptBoolean {
 			const chalkGray = chalk.hex("#999999");
 			
 			if (this.done) {
-				yesNoArea = chalk.underline(this.currentValue ? "Yes" : "No");
+				yesNoArea = this.currentValue ? "Yes" : "No";
 			} else {
 				if (this.currentValue) {
 					yesNoArea = `${chalk.underline("Yes")} / ${chalkGray("No")}`;
