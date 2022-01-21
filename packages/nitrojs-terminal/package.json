@@ -40,7 +40,8 @@
 		"strip-ansi": "^7.0.1"
 	},
 	"devDependencies": {
-		"type-fest": "^2.9.0",
-		"@types/luxon": "^2.0.9"
+		"@types/luxon": "^2.0.9",
+		"ts-node": "^10.4.0",
+		"type-fest": "^2.9.0"
 	}
 }

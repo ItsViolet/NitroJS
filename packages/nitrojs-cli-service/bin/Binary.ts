@@ -1,4 +1,4 @@
-import Terminal from "@skylixgh/nitrojs-terminal";
+import Terminal from "@skylixgh/nitrojs-terminal/src/Terminal";
 import pkg from "../package.json";
 
 /**
