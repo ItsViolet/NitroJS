@@ -7,7 +7,7 @@ import { PartialDeep } from "type-fest";
  * @param config Your config
  * @returns Your config
  */
-export function typeConfig(config: PartialDeep<AppConfig>) {
+export function typeConfig(config: PartialDeep<AppConfig>): PartialDeep<AppConfig> {
     return config;
 }
 

@@ -3,10 +3,10 @@ import {
 	TerminalPromptSelect,
 	TerminalPromptString,
 } from "@skylixgh/nitrojs-terminal/src/Terminal";
-import CommandOptions from "./CommandOptions";
 import InitAnswers from "./interfaces/InitAnswers";
 import semver from "semver";
 import AppConfigType from "../../interfaces/AppConfigType";
+import fs from "fs-extra";
 
 /**
  * Init command handler
@@ -17,8 +17,43 @@ export default class InitHandle {
 	 */
 	public constructor() {
 		this.askAllInfo((projectAnswers) => {
-			console.log(projectAnswers);
+			this.generatePackageJSON(projectAnswers);
 		});
+	}
+
+	private generatePackageJSON(projectData: InitAnswers) {
+		const projectPkg = {
+			name: "",
+			version: "",
+			description: "",
+			author: "",
+			homepage: "",
+			license: "" /** ! In prompt */,
+			main: "",
+			type: "module",
+			directories: {
+				src: "src"
+			},
+			files: ["src"],
+			publishConfig: {
+				access: "public"
+			},
+			repository: {
+				type: "git",
+				url: "git+https://github.com/<YourProject>.git"
+			},
+			scripts: {
+				start: "nitrojs dev",
+				build: "nitrojs build"
+			},
+			bugs: {
+				url: "https://github.com/<YourProject>/issues"
+			},
+			depDependencies: {
+				"@skylixgh/nitrojs-cli-service": "1.0.0-dev.1"
+			} as any,
+			dependencies: {} as any
+		};
 	}
 
 	/**
@@ -102,7 +137,11 @@ export default class InitHandle {
 
 									TerminalPromptString.prompt("Project keywords", (keywords) => {
 										result.project.keywords = keywords.split(" ");
-										askOtherInfo();
+										
+										TerminalPromptString.prompt("Project license", (license) => {
+											result.project.license = license;
+											askOtherInfo();
+										});
 									});
 								});
 							},

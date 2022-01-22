@@ -100,19 +100,6 @@ export default class TerminalPromptBoolean {
 	}
 
 	/**
-	 * Get the number of lines a string will wrap to
-	 * @param width The max width
-	 * @param rawData The raw text as one line
-	 * @returns The number of lines this will wrap to
-	 * ! Is this still really
-	 * ! Needed for the supp-
-	 * ! ort of the framework?
-	 */
-	private static calculateWrappedLineCount(width: number, rawData: string) {
-		return Math.floor(rawData.length / width);
-	}
-
-	/**
 	 * Render all lines based off of current state
 	 * @param clear If the output should be cleared first
 	 */

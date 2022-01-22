@@ -19,6 +19,11 @@ export default interface InitAnswers {
         description: string;
 
         /**
+         * Project license
+         */
+        license: string;
+
+        /**
          * The project version
          */
         version: string;
