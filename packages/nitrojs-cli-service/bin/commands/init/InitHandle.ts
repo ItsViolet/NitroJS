@@ -1,4 +1,4 @@
-import { TerminalPromptString } from "@skylixgh/nitrojs-terminal/src/Terminal";
+import { TerminalPromptBoolean, TerminalPromptSelect, TerminalPromptString } from "@skylixgh/nitrojs-terminal/src/Terminal";
 import CommandOptions from "./CommandOptions";
 import InitAnswers from "./interfaces/InitAnswers";
 import semver from "semver";
@@ -24,7 +24,11 @@ export default class InitHandle {
 		const result = { project: {} } as InitAnswers;
 
 		const askOtherInfo = () => {
-			callback(result);
+			TerminalPromptBoolean.prompt("Use TypeScript?", (useTS) => {
+				result.typeScript = useTS;
+				
+				callback(result);
+			}, true);
 		};
 
 		const askProjectInfo = () => {
@@ -38,10 +42,6 @@ export default class InitHandle {
 						result.project.description = desc;
 
 						TerminalPromptString.prompt("Project version", (version) => {
-							if (!semver.valid(version)) {
-								return "The version provided is not in a valid format, please visit https://semver.org for a proper version formatting guide";
-							}
-
 							result.project.version = version;
 
 							TerminalPromptString.prompt("Project author", (author) => {
@@ -52,15 +52,14 @@ export default class InitHandle {
 									askOtherInfo();
 								});
 							});
+						}, "1.0.0", (answer) => {
+							if (!semver.valid(answer)) {
+								return "The version provided is not in a valid format, please visit https://semver.org for a proper version formatting guide";
+							}
 						});
 					});
 				},
-				"unnamed",
-				(answer) => {
-					if (answer == "uwu") {
-						return "NO uwu allowed lol";
-					}
-				}
+				"unnamed"
 			);
 		};
 

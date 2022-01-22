@@ -1,4 +1,3 @@
-import Terminal from "@skylixgh/nitrojs-terminal/src/Terminal";
 import pkg from "../package.json";
 import { Command } from "commander";
 import InitHandle from "./commands/init/InitHandle";

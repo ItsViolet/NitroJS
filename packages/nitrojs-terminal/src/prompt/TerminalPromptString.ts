@@ -83,6 +83,9 @@ export default class TerminalPromptString {
 			if (key.name == "backspace") {
 				this.currentValue = this.currentValue.slice(0, -1);
 			} else if (key.name == "return") {
+				const mergedAnswer =
+					(this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "";
+
 				const stopAppButNoSuccess = () => {
 					TerminalPrompt.removeKeyListeners();
 
@@ -91,21 +94,21 @@ export default class TerminalPromptString {
 					this.cursorVisibility = false;
 
 					this.renderLines();
-				}
+				};
 
 				const allowContinue = () => {
 					this.done = true;
 					stopAppButNoSuccess();
-					callback((this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "");
+					callback(mergedAnswer);
 				};
 
-				const validated = validator(this.currentValue);
+				const validated = validator(mergedAnswer);
 
 				if (typeof validated == "string" && validated.length > 0) {
 					stopAppButNoSuccess();
 					console.log(`${chalk.hex("#FF5555")(">")} ${validated}`);
 					this.prompt(question, callback, defaultAnswer, validator);
-					
+
 					return;
 				}
 
