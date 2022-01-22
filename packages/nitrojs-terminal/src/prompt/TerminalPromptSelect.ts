@@ -50,7 +50,7 @@ export default class TerminalPromptSelect {
 	 */
 	public static prompt(
 		question: string,
-		answers: [ AnswerType, ...AnswerType[] ],
+		answers: [AnswerType, ...AnswerType[]],
 		callback: (answer: string) => void,
 		defaultAnswer = answers[0].value
 	) {
@@ -73,7 +73,7 @@ export default class TerminalPromptSelect {
 			if (key.name == "return") {
 				this.done = true;
 				TerminalPrompt.removeKeyListeners();
-			
+
 				this.renderLines();
 				cliCursor.show();
 
@@ -96,8 +96,7 @@ export default class TerminalPromptSelect {
 				this.currentValue = this.answers[currentIndex].value;
 			}
 
-			if (!this.done)
-				this.renderLines();
+			if (!this.done) this.renderLines();
 		});
 	}
 
@@ -110,24 +109,20 @@ export default class TerminalPromptSelect {
 		const render = () => {
 			const optionsWithSelected = [] as string[];
 
-			this.answers.forEach(answer => {
+			this.answers.forEach((answer) => {
 				if (answer.value == this.currentValue) {
-					optionsWithSelected.push(
-						`> ${answer.label}`
-					);
+					optionsWithSelected.push(` ● ${answer.label}`);
 
 					return;
 				}
 
-				optionsWithSelected.push(
-					`  ${chalkGray(answer.label)}`
-				);
+				optionsWithSelected.push(`   ${chalkGray(answer.label)}`);
 			});
 
 			let finalAnswer: string | undefined;
 
 			if (this.done) {
-				this.answers.forEach(answer => {
+				this.answers.forEach((answer) => {
 					if (answer.value == this.currentValue) {
 						finalAnswer = answer.label;
 					}
@@ -136,7 +131,7 @@ export default class TerminalPromptSelect {
 
 			this.linesRendered = TerminalPrompt.renderLines([
 				`${chalkGray(this.done ? "✓" : "?")} ${this.question}: ${finalAnswer ? finalAnswer : ""}`,
-				...(this.done ? [] : optionsWithSelected)
+				...(this.done ? [] : optionsWithSelected),
 			]);
 		};
 

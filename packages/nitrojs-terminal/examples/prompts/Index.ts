@@ -1,12 +1,12 @@
 // import Terminal, { TerminalPrompt, TerminalPromptType } from "../../src/Terminal";
 
-import Terminal, { TerminalAnimation, TerminalAnimationState, TerminalPrompt, TerminalPromptType } from "../../src/Terminal";
+import Terminal, { TerminalAnimation, TerminalAnimationState, TerminalPrompt, TerminalPromptSelect, TerminalPromptString, TerminalPromptType } from "../../src/Terminal";
 
 TerminalPrompt.prompt(
 	TerminalPromptType.boolean,
 	"Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?Are you a programmer?",
 	(dev) => {
-		TerminalPrompt.prompt(TerminalPromptType.boolean, "Are you a gamer?", (gamer) => {
+		TerminalPromptString.prompt(TerminalPromptType.boolean, "Are you a gamer?", (gamer) => {
 			TerminalPrompt.prompt(
 				TerminalPromptType.boolean,
 				"Are you a human?",
@@ -15,7 +15,7 @@ TerminalPrompt.prompt(
 					Terminal.log("Gamer: " + gamer);
 					Terminal.log("Human: " + human);
 
-					TerminalPrompt.prompt(TerminalPromptType.string, "Enter your name", (name) => {
+					TerminalPromptString.prompt(TerminalPromptType.string, "Enter your name", (name) => {
 						Terminal.log("Hi " + name);
 
 						TerminalAnimation.startAnimation([
