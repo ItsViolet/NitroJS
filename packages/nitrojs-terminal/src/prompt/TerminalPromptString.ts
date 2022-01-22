@@ -86,15 +86,16 @@ export default class TerminalPromptString {
 				const stopAppButNoSuccess = () => {
 					TerminalPrompt.removeKeyListeners();
 
-					this._isRunning = false;
-					this.done = true;
-
 					clearInterval(cursorLoop);
+					this._isRunning = false;
+					this.cursorVisibility = false;
+
+					this.renderLines();
 				}
 
 				const allowContinue = () => {
+					this.done = true;
 					stopAppButNoSuccess();
-					this.renderLines();
 					callback((this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "");
 				};
 
