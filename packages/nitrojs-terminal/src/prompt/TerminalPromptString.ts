@@ -1,5 +1,7 @@
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
+import Terminal from "../Terminal";
+import KeyPressMeta from "./KeyPressMeta";
 import TerminalPrompt from "./TerminalPrompt";
 
 /**
@@ -49,8 +51,9 @@ export default class TerminalPromptString {
 	 */
 	public static prompt(
 		question: string,
-		callback: (answer: string) => void | string,
-		defaultAnswer = ""
+		callback: (answer: string) => void,
+		defaultAnswer = "",
+		validator: (answer: string) => string | Promise<void> | void = () => {}
 	) {
 		this.question = question;
 		this.renderedLines = null;
@@ -58,18 +61,21 @@ export default class TerminalPromptString {
 		this.defaultAnswer = defaultAnswer;
 		this.done = false;
 		this.cursorVisibility = false;
+		let useCursorLoop = true;
 
-		const cursorLoop = setInterval(() => {
+		const cursorLoopCallback = () => {
 			if (this.cursorVisibility) this.cursorVisibility = false;
 			else this.cursorVisibility = true;
 
-			if (!this.done) this.renderLines();
-		}, 800);
+			if (!this.done && useCursorLoop) this.renderLines();
+		};
+
+		let cursorLoop = setInterval(cursorLoopCallback, 800);
 
 		cliCursor.hide();
 		this.renderLines();
 
-		TerminalPrompt.addKeyListener((value, key) => {
+		const keyListener = (value: string | undefined, key: KeyPressMeta) => {
 			if (key.name == "c" && key.ctrl) {
 				process.exit(0);
 			}
@@ -77,22 +83,53 @@ export default class TerminalPromptString {
 			if (key.name == "backspace") {
 				this.currentValue = this.currentValue.slice(0, -1);
 			} else if (key.name == "return") {
-				TerminalPrompt.removeKeyListeners();
-				this.cursorVisibility = false;
-				this.done = true;
-				clearInterval(cursorLoop);
+				const stopAppButNoSuccess = () => {
+					TerminalPrompt.removeKeyListeners();
 
-				this.renderLines();
-				cliCursor.show();
+					this._isRunning = false;
+					this.done = true;
 
-				this._isRunning = false;
-				callback((this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "");
+					clearInterval(cursorLoop);
+				}
+
+				const allowContinue = () => {
+					stopAppButNoSuccess();
+					this.renderLines();
+					callback((this.currentValue.length > 0 ? this.currentValue : this.defaultAnswer) + "");
+				};
+
+				const validated = validator(this.currentValue);
+
+				if (typeof validated == "string" && validated.length > 0) {
+					stopAppButNoSuccess();
+					console.log(`${chalk.hex("#FF5555")(">")} ${validated}`);
+					this.prompt(question, callback, defaultAnswer, validator);
+					
+					return;
+				}
+
+				if (validated instanceof Promise) {
+					validated
+						.then(() => {
+							allowContinue();
+						})
+						.catch((error) => {
+							stopAppButNoSuccess();
+							console.log(`${chalk.hex("#FF5555")(">")} ${error}`);
+							this.prompt(question, callback, defaultAnswer, validator);
+						});
+					return;
+				}
+
+				allowContinue();
 			} else {
 				this.currentValue += value;
 			}
 
 			if (!this.done) this.renderLines();
-		});
+		};
+
+		TerminalPrompt.addKeyListener(keyListener);
 	}
 
 	/**
