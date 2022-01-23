@@ -51,20 +51,48 @@ export default class ConfigTools {
 	 * @returns Promise containing config
 	 */
 	private static processTSConfig(filePath: string): Promise<Object> {
-        return new Promise((resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			tsImport
 				.compile(filePath, path.dirname(filePath))
 				.then((module) => {
-					console.log(module);
+					if (this.handleModuleConfig(module, reject)) {
+						return;
+                    }
+                    
+                    resolve(module.default);
 				})
-                .catch((error) => {
-					reject(
-						new Error(
-							`${ConfigToolsReadError.configContainsErrors} | ${error.stack}`
-						)
-					);
+				.catch((error) => {
+					reject(new Error(`${ConfigToolsReadError.configContainsErrors} | ${error.stack}`));
 				});
 		});
+	}
+
+    /**
+     * Handle errors for TS/JS config imported data
+     * @param module The config module
+     * @param reject The promise reject
+     * @returns Returns is the promise was rejected
+     */
+	private static handleModuleConfig(module: any, reject: CallableFunction) {
+		let rejected = false;
+
+		if (
+			typeof module != "object" ||
+			Array.isArray(module) ||
+			typeof module.default != "object" ||
+			Array.isArray(module.default)
+        ) {
+            rejected = true;
+            
+			reject(
+				new Error(
+					`${ConfigToolsReadError.objectNotExported} | The data type exported was not a JSON object`
+				)
+			);
+			return;
+		}
+
+		return rejected;
 	}
 
 	/**
@@ -76,28 +104,9 @@ export default class ConfigTools {
 		return new Promise((resolve, reject) => {
 			import("file://" + filePath)
 				.then((module) => {
-					if (
-						typeof module != "object" ||
-						Array.isArray(module) ||
-						typeof module.default != "object" ||
-						Array.isArray(module.default)
-					) {
-						reject(
-							new Error(
-								`${ConfigToolsReadError.objectNotExported} | The data type exported was not a JSON object`
-							)
-						);
-						return;
-					}
-
-					if (typeof module["default"] == "undefined") {
-						reject(
-							new Error(
-								`${ConfigToolsReadError.noDefaultExport} | A default export was not provided`
-							)
-						);
-						return;
-					}
+                    if (this.handleModuleConfig(module, reject)) {
+                        return;
+                    }
 
 					resolve(module.default);
 				})
