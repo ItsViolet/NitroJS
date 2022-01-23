@@ -11,6 +11,7 @@ import { program } from "commander";
 import ini from "ini";
 import path from "path";
 import Generator from "./Generator";
+import { Binary } from "../../Binary";
 
 /**
  * Init command handler
@@ -33,15 +34,17 @@ export default class InitHandle {
 					);
 				} catch (error: any) {
 					Terminal.error("Failed to generate package file");
-
-					error.split("\n").forEach((line: string) => {
-						Terminal.error("  " + line);
-					});
+					Binary.renderErrorException(error);
 				}
 			});
 		});
 	}
 
+	/**
+	 * Generate a package file from user input
+	 * @param projectData Project data
+	 * @returns Project package
+	 */
 	private generatePackageJSON(projectData: InitAnswers) {
 		const projectPkg = {
 			name: projectData.project.name,

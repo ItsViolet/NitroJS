@@ -36,7 +36,7 @@ export default class TerminalAnimation {
 	 * Create animations
 	 * @param animations The animation or animations
 	 */
-	public static startAnimation(animations: AnimationItem | AnimationItem[]) {
+	public static start(animations: AnimationItem | AnimationItem[]) {
 		if (
 			TerminalPromptString.isRunning ||
 			TerminalPromptBoolean.isRunning ||
@@ -158,6 +158,49 @@ export default class TerminalAnimation {
 				stoppedAnimation++;
 			}
 		});
+
+		if (stoppedAnimation == this.currentAnimationMeta.length) {
+			this._isRunning = false;
+			clearInterval(this.loop);
+		}
+
+		this.renderLines();
+	}
+
+	/**
+	 * Stop all animations and show a new state for the animation name specified
+	 * @param name Animation name
+	 * @param state Animation state
+	 * @param newLabel New animation label
+	 */
+	public static stopAll(name: string, state: TerminalAnimationState, newLabel?: string) {
+		let stoppedAnimation = 0;
+		let newItems = [] as AnimationItem[];
+		let newMeta = [] as AnimationMeta[];
+
+		this.currentAnimationMeta.forEach((metaItem) => {
+			if (metaItem.name == name) {
+				if (newLabel) metaItem.label = newLabel;
+
+				metaItem.state = state;
+				metaItem.done = true;
+
+				newMeta.push(metaItem);
+			}
+
+			if (metaItem.done) {
+				stoppedAnimation++;
+			}
+		});
+
+		this.currentAnimationItems.forEach((item) => {
+			if (item.name == name) {
+				newItems.push(item);
+			}
+		});
+
+		this.currentAnimationItems = newItems;
+		this.currentAnimationMeta = newMeta;
 
 		if (stoppedAnimation == this.currentAnimationMeta.length) {
 			this._isRunning = false;
