@@ -2,6 +2,8 @@ import pkg from "../package.json";
 import { program } from "commander";
 import InitHandle from "./commands/init/InitHandle";
 import Terminal from "@skylixgh/nitrojs-terminal";
+import path from "path";
+import { fileURLToPath } from "url";
 
 /**
  * The CLI service entry point
@@ -35,3 +37,7 @@ export class Binary {
 }
 
 new Binary();
+
+export function dirname(metaURL: string) {
+    return path.dirname(fileURLToPath(metaURL));
+}

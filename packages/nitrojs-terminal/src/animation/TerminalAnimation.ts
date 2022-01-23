@@ -159,6 +159,8 @@ export default class TerminalAnimation {
 	 * @param newLabel New animation label
 	 */
 	public static stop(name: string | number, state: TerminalAnimationState, newLabel?: string) {
+		let stoppedAnimation = 0;
+
 		this.currentAnimationMeta.forEach((metaItem) => {
 			if (metaItem.name == name) {
 				if (newLabel) metaItem.label = newLabel;
@@ -166,12 +168,18 @@ export default class TerminalAnimation {
 				metaItem.state = state;
 				metaItem.done = true;
 			}
+
+			if (metaItem.done) {
+				stoppedAnimation++;
+			}
 		});
 
-		this._isRunning = false;
-		TerminalPrompt.removeKeyListeners();
-		cliCursor.show();
-		clearInterval(this.loop);
+		if (stoppedAnimation == this.currentAnimationMeta.length) {
+			this._isRunning = false;
+			TerminalPrompt.removeKeyListeners();
+			cliCursor.show();
+			clearInterval(this.loop);
+		}
 
 		this.renderLines();
 	}
@@ -183,7 +191,6 @@ export default class TerminalAnimation {
 	 * @param newLabel New animation label
 	 */
 	public static stopAll(name: string | number, state: TerminalAnimationState, newLabel?: string) {
-		let stoppedAnimation = 0;
 		let newItems = [] as AnimationItem[];
 		let newMeta = [] as AnimationMeta[];
 
@@ -196,10 +203,6 @@ export default class TerminalAnimation {
 
 				newMeta.push(metaItem);
 			}
-
-			if (metaItem.done) {
-				stoppedAnimation++;
-			}
 		});
 
 		this.currentAnimationItems.forEach((item) => {
@@ -211,12 +214,10 @@ export default class TerminalAnimation {
 		this.currentAnimationItems = newItems;
 		this.currentAnimationMeta = newMeta;
 
-		if (stoppedAnimation == this.currentAnimationMeta.length) {
-			this._isRunning = false;
-			TerminalPrompt.removeKeyListeners();
-			cliCursor.show();
-			clearInterval(this.loop);
-		}
+		this._isRunning = false;
+		TerminalPrompt.removeKeyListeners();
+		cliCursor.show();
+		clearInterval(this.loop);
 
 		this.renderLines();
 	}

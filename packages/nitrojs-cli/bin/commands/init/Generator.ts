@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { dirname } from "../../Binary";
 
 /**
  * Class used for generating project resources
@@ -51,7 +52,8 @@ export default class Generator {
     private static getLocalResource(resourcePath: string) {
         return fs.readFileSync(
             path.join(
-                __dirname,
+                dirname(import.meta.url),
+                "./resources",
                 resourcePath
             )
         ).toString();
