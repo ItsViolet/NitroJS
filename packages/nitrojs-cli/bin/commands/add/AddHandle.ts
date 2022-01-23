@@ -150,10 +150,13 @@ export default class AddHandle {
 									TerminalPromptSelect.prompt(
 										"Release type",
 										promptOptions as any,
-										(releaseType) => {}
+										(releaseType) => {
+											appPackage.dependencies[`@skylixgh/nitrojs-${frameworkComponent}`] =
+                                                this.getLatestTagVersion(releaseType as any, packageInfo.versions);
+                                            
+                                            console.log(appPackage);
+										}
 									);
-
-									appPackage.dependencies[`@skylixgh/nitrojs-${frameworkComponent}`] = "";
 								} catch (error) {
 									TerminalAnimation.stopAll(
 										ProcessAnimationValues.packageExists,
@@ -182,6 +185,41 @@ export default class AddHandle {
 				});
 			});
 		});
+	}
+
+	/**
+	 * Get the latest version of a certain tag
+	 * @param tag The version tag
+	 * @param versions The registry versions
+	 * @return Latest version string
+	 */
+	private getLatestTagVersion(tag: "beta" | "alpha" | "nightly" | "latest", versions: any) {
+		let latest = "";
+
+		for (const versionName in versions) {
+			let type: typeof tag = "latest";
+			const semVerTag = semver.prerelease(versionName);
+
+			if (semVerTag) {
+				if (semVerTag[0] == "dev") {
+					type = "nightly";
+				} else if (semVerTag[0] == "beta") {
+					type = "beta";
+				} else if (semVerTag[0] == "alpha") {
+					type = "alpha";
+				} else {
+					type = "latest";
+				}
+			} else {
+				type = "latest";
+			}
+
+			if (type == tag) {
+				latest = versionName;
+			}
+		}
+
+		return latest;
 	}
 
 	/**
