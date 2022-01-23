@@ -1,6 +1,6 @@
 {
 	"name": "@skylixgh/nitrojs-cli",
-	"version": "2.0.0-dev.1",
+	"version": "2.0.0-dev.1.0",
 	"description": "The NitroJS CLI service",
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
@@ -42,7 +42,7 @@
 		"type-fest": "^2.10.0"
 	},
 	"dependencies": {
-		"@skylixgh/nitrojs-terminal": "2.0.0-dev.1",
+		"@skylixgh/nitrojs-terminal": "^2.0.0-dev.1.0",
 		"@types/fs-extra": "^9.0.13",
 		"commander": "^8.3.0",
 		"fs-extra": "^10.0.0",
