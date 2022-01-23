@@ -56,6 +56,7 @@ export default class TerminalAnimation {
 		this._isRunning = true;
 		this.currentAnimationItems = [];
 		this.currentAnimationMeta = [];
+		this.linesRendered = null;
 
 		cliCursor.hide();
 
