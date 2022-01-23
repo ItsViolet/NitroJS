@@ -45,21 +45,27 @@ export default class ConfigTools {
 		});
 	}
 
-
-    /**
-     * Parse a config based on TS
-     * @param filePath TS file path
-     * @returns Promise containing config
-     */
-    private static processTSConfig(filePath: string): Promise<Object> {
+	/**
+	 * Parse a config based on TS
+	 * @param filePath TS file path
+	 * @returns Promise containing config
+	 */
+	private static processTSConfig(filePath: string): Promise<Object> {
         return new Promise((resolve, reject) => {
-            tsImport.compile(filePath, path.dirname(filePath)).then((module) => {
-                console.log(module);
-            }).catch(error => {
-                reject(new Error(`${ConfigToolsReadError.configContainsErrors} | ${error.message}\n${error.stack}`));
-            });
-        });      
-    }
+			tsImport
+				.compile(filePath, path.dirname(filePath))
+				.then((module) => {
+					console.log(module);
+				})
+                .catch((error) => {
+					reject(
+						new Error(
+							`${ConfigToolsReadError.configContainsErrors} | ${error.stack}`
+						)
+					);
+				});
+		});
+	}
 
 	/**
 	 * Read a JS based config
