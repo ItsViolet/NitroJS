@@ -10,7 +10,7 @@ export default interface AnimationItem {
     /**
      * The name of the animation
      */
-    name: string;
+    name: string | number;
 
     /**
      * Animation frames

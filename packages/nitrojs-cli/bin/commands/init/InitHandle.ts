@@ -1,4 +1,5 @@
 import Terminal, {
+	TerminalAnimation,
 	TerminalPromptBoolean,
 	TerminalPromptSelect,
 	TerminalPromptString,
@@ -22,6 +23,18 @@ export default class InitHandle {
 	 */
 	public constructor() {
 		program.command("init [path]").action((initPath) => {
+			enum ProcessingAnimationNames {
+				generatingPackage
+			}
+
+			TerminalAnimation.start([
+				{
+					label: "Generating package file",
+					name: ProcessingAnimationNames.generatingPackage
+				},
+				
+			])
+
 			this.askAllInfo((projectAnswers) => {
 				const packageFile = this.generatePackageJSON(projectAnswers);
 

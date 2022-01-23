@@ -4,33 +4,33 @@ import TerminalAnimationState from "./TerminalAnimationState";
  * The animation meta item
  */
 export default interface AnimationMeta {
-    /**
-     * Animation name
-     */
-    name: string;
+	/**
+	 * Animation name
+	 */
+	name: string | number;
 
-    /**
-     * Animation label
-     */
-    label: string;
+	/**
+	 * Animation label
+	 */
+	label: string;
 
-    /**
-     * Current animation frame
-     */
-    frame: number;
+	/**
+	 * Current animation frame
+	 */
+	frame: number;
 
-    /**
-     * Animation frames
-     */
-    frames: string[];
+	/**
+	 * Animation frames
+	 */
+	frames: string[];
 
-    /**
-     * If the animation is done
-     */
-    done: boolean;
+	/**
+	 * If the animation is done
+	 */
+	done: boolean;
 
-    /**
-     * Animation state
-     */
-    state: TerminalAnimationState;
+	/**
+	 * Animation state
+	 */
+	state: TerminalAnimationState;
 }
