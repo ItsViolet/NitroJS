@@ -1,3 +1,8 @@
 node_modules
 **/package-lock.json
 package-lock.json
+*.js
+*.cjs
+*.mjs
+*.d.ts
+*.map

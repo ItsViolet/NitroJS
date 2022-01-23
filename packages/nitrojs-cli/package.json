@@ -7,6 +7,9 @@
 	"license": "MIT",
 	"main": "src/CLIService.js",
 	"type": "module",
+	"bin": {
+		"nitrojs": "./bin/loaders/NitroJS.js"
+	},
 	"directories": {
 		"src": "src",
 		"docs": "docs"
@@ -31,11 +34,11 @@
 	},
 	"devDependencies": {
 		"@types/semver": "^7.3.9",
-		"ts-node": "^10.4.0",
 		"type-fest": "^2.10.0"
 	},
 	"dependencies": {
 		"@skylixgh/nitrojs-terminal": "^2.0.0-dev",
+		"ts-node": "^10.4.0",
 		"@types/fs-extra": "^9.0.13",
 		"commander": "^8.3.0",
 		"fs-extra": "^10.0.0",
