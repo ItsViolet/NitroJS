@@ -1,5 +1,4 @@
 # ALl files
-!package-lock.json
 !*.ts
 !*.js
 !*.map
