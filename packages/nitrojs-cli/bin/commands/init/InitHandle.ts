@@ -23,13 +23,18 @@ export default class InitHandle {
 		program.command("init [path]").action((initPath) => {
 			this.askAllInfo((projectAnswers) => {
 				const packageFile = this.generatePackageJSON(projectAnswers);
-				
+
 				try {
-					Generator.generatePackageFile(packageFile, path.join(process.cwd(), initPath, projectAnswers.project.name, "package.json") ?? path.join(process.cwd(), projectAnswers.project.name, "package.json"));
+					Generator.generatePackageFile(
+						packageFile,
+						initPath
+							? path.join(process.cwd(), initPath, projectAnswers.project.name, "package.json")
+							: path.join(process.cwd(), projectAnswers.project.name, "package.json")
+					);
 				} catch (error: any) {
 					Terminal.error("Failed to generate package file");
 
-					error.message.split("\n").forEach((line: string) => {
+					error.split("\n").forEach((line: string) => {
 						Terminal.error("  " + line);
 					});
 				}
@@ -149,57 +154,63 @@ export default class InitHandle {
 									break;
 							}
 
-							TerminalPromptBoolean.prompt("Detect GIT info", (detectGit) => {
-								let rootPath = process.cwd();
+							TerminalPromptBoolean.prompt(
+								"Detect GIT info",
+								(detectGit) => {
+									let rootPath = process.cwd();
 
-								if (detectGit) {
-									const maxParentTravel = 5;
-									let currentTravelCount = 1;
+									if (detectGit) {
+										const maxParentTravel = 5;
+										let currentTravelCount = 1;
 
-									const travel = (base = false) => {
-										currentTravelCount++;
+										const travel = (base = false) => {
+											currentTravelCount++;
 
-										if (currentTravelCount > maxParentTravel) {
-											return;
-										}
+											if (currentTravelCount > maxParentTravel) {
+												return;
+											}
 
-										if (!base) {
-											rootPath = path.join(rootPath, "../");
-										}
+											if (!base) {
+												rootPath = path.join(rootPath, "../");
+											}
 
-										if (fs.existsSync(rootPath) && fs.lstatSync(rootPath).isDirectory()) {
-											if (
-												fs.existsSync(path.join(rootPath, ".git")) &&
-												fs.existsSync(path.join(rootPath, ".git/config"))
-											) {
-												try {
-													const parsedIni = ini.parse(fs.readFileSync(path.join(rootPath, ".git/config")).toString());
-													
-													if (parsedIni[`remote "origin"`]) {
-														result.gitOriginUrl = parsedIni[`remote "origin"`].url;
-														callback(result);
-													} else {
+											if (fs.existsSync(rootPath) && fs.lstatSync(rootPath).isDirectory()) {
+												if (
+													fs.existsSync(path.join(rootPath, ".git")) &&
+													fs.existsSync(path.join(rootPath, ".git/config"))
+												) {
+													try {
+														const parsedIni = ini.parse(
+															fs.readFileSync(path.join(rootPath, ".git/config")).toString()
+														);
+
+														if (parsedIni[`remote "origin"`]) {
+															result.gitOriginUrl = parsedIni[`remote "origin"`].url;
+															callback(result);
+														} else {
+															result.gitOriginUrl = undefined;
+															callback(result);
+														}
+													} catch {
 														result.gitOriginUrl = undefined;
 														callback(result);
 													}
-												} catch {
-													result.gitOriginUrl = undefined;
-													callback(result);
+												} else {
+													travel();
 												}
 											} else {
 												travel();
 											}
-										} else {
-											travel();
-										}
-									};
+										};
 
-									travel(true);
-								} else {
-									result.gitOriginUrl = undefined;
-									callback(result);
-								}
-							}, true);
+										travel(true);
+									} else {
+										result.gitOriginUrl = undefined;
+										callback(result);
+									}
+								},
+								true
+							);
 						}
 					);
 				},
