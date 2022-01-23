@@ -8,6 +8,8 @@ import semver from "semver";
 import AppConfigType from "../../interfaces/AppConfigType";
 import fs from "fs-extra";
 import { program } from "commander";
+import ini from "ini";
+import path from "path";
 
 /**
  * Init command handler
@@ -18,7 +20,6 @@ export default class InitHandle {
 	 */
 	public constructor() {
 		program.command("init [path]").action((initPath, options) => {
-			console.log(options);
 			this.askAllInfo((projectAnswers) => {
 				this.generatePackageJSON(projectAnswers);
 			});
@@ -26,13 +27,15 @@ export default class InitHandle {
 	}
 
 	private generatePackageJSON(projectData: InitAnswers) {
+		console.log(projectData);
+
 		const projectPkg = {
-			name: "",
-			version: "",
-			description: "",
-			author: "",
+			name: projectData.project.name,
+			version: projectData.project.version,
+			description: projectData.project.description,
+			author: projectData.project.author,
 			homepage: "",
-			license: "" /** ! In prompt */,
+			license: projectData.project.license,
 			main: "",
 			type: "module",
 			directories: {
@@ -113,7 +116,57 @@ export default class InitHandle {
 									break;
 							}
 
-							callback(result);
+							TerminalPromptBoolean.prompt("Detect GIT info", (detectGit) => {
+								let rootPath = process.cwd();
+
+								if (detectGit) {
+									const maxParentTravel = 5;
+									let currentTravelCount = 1;
+
+									const travel = (base = false) => {
+										currentTravelCount++;
+
+										if (currentTravelCount > maxParentTravel) {
+											return;
+										}
+
+										if (!base) {
+											rootPath = path.join(rootPath, "../");
+										}
+
+										if (fs.existsSync(rootPath) && fs.lstatSync(rootPath).isDirectory()) {
+											if (
+												fs.existsSync(path.join(rootPath, ".git")) &&
+												fs.existsSync(path.join(rootPath, ".git/config"))
+											) {
+												try {
+													const parsedIni = ini.parse(fs.readFileSync(path.join(rootPath, ".git/config")).toString());
+													
+													if (parsedIni[`remote "origin"`]) {
+														result.gitOriginUrl = parsedIni[`remote "origin"`].url;
+														callback(result);
+													} else {
+														result.gitOriginUrl = undefined;
+														callback(result);
+													}
+												} catch {
+													result.gitOriginUrl = undefined;
+													callback(result);
+												}
+											} else {
+												travel();
+											}
+										} else {
+											travel();
+										}
+									};
+
+									travel(true);
+								} else {
+									result.gitOriginUrl = undefined;
+									callback(result);
+								}
+							}, true);
 						}
 					);
 				},

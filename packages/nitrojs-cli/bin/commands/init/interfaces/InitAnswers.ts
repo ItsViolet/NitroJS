@@ -48,4 +48,9 @@ export default interface InitAnswers {
      * What type of application will NitroJS try to execute
      */
     type: AppConfigType;
+
+    /**
+     * The GIT origin
+     */
+    gitOriginUrl?: string;
 }
