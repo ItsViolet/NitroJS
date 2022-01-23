@@ -53,7 +53,7 @@ export default class Terminal {
 		this.logCustomTag(text, {
 			tagPrefix: "SUCCESS",
 			hexColor: "#40c283",
-		});
+		}); 
 	}
 
 	/**

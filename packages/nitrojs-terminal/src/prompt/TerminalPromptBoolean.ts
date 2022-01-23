@@ -2,7 +2,7 @@ import chalk from "chalk";
 import cliCursor from "cli-cursor";
 import TerminalPrompt from "./TerminalPrompt";
 
-/**
+/** 
  * Class containing methods for creating boolean prompts
  */
 export default class TerminalPromptBoolean {

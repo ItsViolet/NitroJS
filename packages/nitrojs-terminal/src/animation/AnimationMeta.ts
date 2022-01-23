@@ -14,7 +14,7 @@ export default interface AnimationMeta {
 	 */
 	label: string;
 
-	/**
+	/** 
 	 * Current animation frame
 	 */
 	frame: number;

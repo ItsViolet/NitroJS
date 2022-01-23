@@ -5,18 +5,26 @@
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
-	"main": "src/CLIService.js",
+	"main": "./build/src/CLIService.js",
 	"type": "module",
+	"types": "./types/src/CLIService.d.ts",
+	"exports": "./build/src/CLIService.js",
 	"bin": {
 		"nitrojs": "./build/bin/Binary.js"
 	},
 	"directories": {
 		"src": "src",
-		"docs": "docs"
+		"docs": "docs",
+		"build": "build",
+		"bin": "bin",
+		"types": "types"
 	},
 	"files": [
 		"src",
-		"docs"
+		"docs",
+		"build",
+		"bin",
+		"types"
 	],
 	"publishConfig": {
 		"access": "public"

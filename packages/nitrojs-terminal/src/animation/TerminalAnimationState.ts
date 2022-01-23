@@ -5,7 +5,7 @@ enum TerminalAnimationState {
     /**
      * Error state
      */
-    error,
+    error, 
 
     /**
      * Warning state

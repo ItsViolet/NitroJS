@@ -7,7 +7,7 @@ export default interface KeyPressMeta {
      */
     sequence: any;
 
-    /**
+    /** 
      * Key name
      */
     name: string;

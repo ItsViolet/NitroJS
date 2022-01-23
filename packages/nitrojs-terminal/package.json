@@ -6,19 +6,22 @@
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
 	"main": "./build/src/Terminal.js",
-	"exports": {
-		"import": "./build/src/Terminal.js"
-	},
 	"type": "module",
+	"exports": "./build/src/Terminal.js",
+	"types": "./types/src/Terminal.d.ts",
 	"directories": {
 		"src": "src",
 		"docs": "docs",
-		"examples": "examples"
+		"examples": "examples",
+		"build": "build",
+		"types": "types"
 	},
 	"files": [
 		"src",
 		"docs",
-		"examples"
+		"examples",
+		"build",
+		"types"
 	],
 	"publishConfig": {
 		"access": "public"
