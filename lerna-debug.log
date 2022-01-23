@@ -1,14 +1,9 @@
-33 error Error: Command failed with exit code 1: git add -- packages/nitrojs-terminal/package.json packages/nitrojs-terminal/package-lock.json packages/nitrojs-cli/package.json packages/nitrojs-cli/package-lock.json lerna.json
-33 error warning: LF will be replaced by CRLF in lerna.json.
-33 error The file will have its original line endings in your working directory
-33 error warning: LF will be replaced by CRLF in packages/nitrojs-cli/package.json.
-33 error The file will have its original line endings in your working directory
-33 error warning: LF will be replaced by CRLF in packages/nitrojs-terminal/package.json.
-33 error The file will have its original line endings in your working directory
-33 error The following paths are ignored by one of your .gitignore files:
-33 error packages/nitrojs-cli/package-lock.json
-33 error packages/nitrojs-terminal/package-lock.json
-33 error     at makeError (C:\Users\26KhanR\Downloads\NitroJS\node_modules\execa\lib\error.js:60:11)
-33 error     at handlePromise (C:\Users\26KhanR\Downloads\NitroJS\node_modules\execa\index.js:118:26)
-33 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
-33 error     at async Promise.all (index 0)
+35 error Error: Command failed with exit code 1: git commit -m v2.0.0-dev.1
+35 error On branch main
+35 error Your branch is up to date with 'origin/main'.
+35 error
+35 error nothing to commit, working tree clean
+35 error     at makeError (C:\Users\26KhanR\Downloads\NitroJS\node_modules\execa\lib\error.js:60:11)
+35 error     at handlePromise (C:\Users\26KhanR\Downloads\NitroJS\node_modules\execa\index.js:118:26)
+35 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
+35 error     at async Promise.all (index 0)
