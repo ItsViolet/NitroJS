@@ -3,7 +3,7 @@ import cliCursor from "cli-cursor";
 import Terminal from "../Terminal";
 import KeyPressMeta from "./KeyPressMeta";
 import TerminalPrompt from "./TerminalPrompt";
- 
+
 /**
  * Class containing methods for creating string prompts
  */

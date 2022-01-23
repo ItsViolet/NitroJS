@@ -23,7 +23,7 @@ export {
 	TerminalAnimationState,
 	TerminalPromptBoolean,
 	TerminalPromptSelect,
-	TerminalPromptString
+	TerminalPromptString,
 };
 
 /**
@@ -54,7 +54,7 @@ export default class Terminal {
 		this.logCustomTag(text, {
 			tagPrefix: "SUCCESS",
 			hexColor: "#40c283",
-		}); 
+		});
 	}
 
 	/**
@@ -98,7 +98,12 @@ export default class Terminal {
 	 * @param settings Settings for logging
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
-		if (TerminalPromptString.isRunning || TerminalPromptBoolean.isRunning || TerminalPromptSelect.isRunning || TerminalAnimation.isRunning) {
+		if (
+			TerminalPromptString.isRunning ||
+			TerminalPromptBoolean.isRunning ||
+			TerminalPromptSelect.isRunning ||
+			TerminalAnimation.isRunning
+		) {
 			return;
 		}
 

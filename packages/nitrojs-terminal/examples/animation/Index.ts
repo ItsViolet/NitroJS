@@ -3,12 +3,12 @@ import { TerminalAnimation, TerminalAnimationState } from "../../src/Terminal";
 TerminalAnimation.start([
 	{
 		label: "Starting core service",
-		name: "core"
+		name: "core",
 	},
 	{
 		label: "Starting dev server",
-		name: "dev"
-	}
+		name: "dev",
+	},
 ]);
 
 setTimeout(() => {

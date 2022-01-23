@@ -268,7 +268,7 @@ export default class InitHandle {
 											if (currentTravelCount > maxParentTravel) {
 												result.gitOriginUrl = undefined;
 												callback(result);
-												
+
 												return;
 											}
 

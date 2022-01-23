@@ -34,24 +34,28 @@ TerminalPromptSelect.prompt(
 				},
 			],
 			(prep) => {
-				TerminalPromptSelect.prompt("Select your favorite JavaScript processor", [
-					{
-						label: "None",
-						value: "None",
-					},
-					{
-						label: "TypeScript",
-						value: "TypeScript",
-					},
-					{
-						label: "CoffeeScript",
-						value: "CoffeeScript",
-					},
-                ], jsPrep => {
-                    Terminal.log("Favorite JS framework: " + answer);
-                    Terminal.log("Favorite HTML preprocessor: " + prep);
-                    Terminal.log("Favorite JS preprocessor: " + jsPrep);
-                });
+				TerminalPromptSelect.prompt(
+					"Select your favorite JavaScript processor",
+					[
+						{
+							label: "None",
+							value: "None",
+						},
+						{
+							label: "TypeScript",
+							value: "TypeScript",
+						},
+						{
+							label: "CoffeeScript",
+							value: "CoffeeScript",
+						},
+					],
+					(jsPrep) => {
+						Terminal.log("Favorite JS framework: " + answer);
+						Terminal.log("Favorite HTML preprocessor: " + prep);
+						Terminal.log("Favorite JS preprocessor: " + jsPrep);
+					}
+				);
 			}
 		);
 	},

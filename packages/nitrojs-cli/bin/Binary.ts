@@ -20,8 +20,8 @@ export class Binary {
 		program.version(pkg.version);
 		program.name("NitroJS");
 
-        new InitHandle();
-        new AddHandle();
+		new InitHandle();
+		new AddHandle();
 
 		program.parse();
 	}
@@ -44,5 +44,5 @@ export class Binary {
 new Binary();
 
 export function dirname(metaURL: string) {
-    return path.dirname(fileURLToPath(metaURL));
+	return path.dirname(fileURLToPath(metaURL));
 }

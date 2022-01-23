@@ -2,25 +2,25 @@
  * Animation display states
  */
 enum TerminalAnimationState {
-    /**
-     * Error state
-     */
-    error, 
+	/**
+	 * Error state
+	 */
+	error,
 
-    /**
-     * Warning state
-     */
-    warning,
+	/**
+	 * Warning state
+	 */
+	warning,
 
-    /**
-     * Success state
-     */
-    success,
+	/**
+	 * Success state
+	 */
+	success,
 
-    /**
-     * Info state
-     */
-    info
+	/**
+	 * Info state
+	 */
+	info,
 }
 
 export default TerminalAnimationState;

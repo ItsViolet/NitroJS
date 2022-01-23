@@ -34,7 +34,7 @@ export default class TerminalPrompt {
 		} else {
 			linesArray.push(lines);
 		}
- 
+
 		linesArray.forEach((line) => {
 			process.stdout.write(line + "\n");
 			let extraWrapLines = 0;

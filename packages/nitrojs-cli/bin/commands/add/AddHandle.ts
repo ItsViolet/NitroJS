@@ -150,32 +150,39 @@ export default class AddHandle {
 									TerminalPromptSelect.prompt(
 										"Release type",
 										promptOptions as any,
-                                        (releaseType) => {
-                                            Terminal.success(`Successfully fetched dependency info for "@skylixgh/nitrojs-${frameworkComponent}"`);
-                                            TerminalAnimation.start([
-                                                {
-                                                    label: "Writing package file",
-                                                    name: "write"
-                                                }
-                                            ]);
+										(releaseType) => {
+											Terminal.success(
+												`Successfully fetched dependency info for "@skylixgh/nitrojs-${frameworkComponent}"`
+											);
+											TerminalAnimation.start([
+												{
+													label: "Writing package file",
+													name: "write",
+												},
+											]);
 
 											appPackage.dependencies[`@skylixgh/nitrojs-${frameworkComponent}`] =
-                                                this.getLatestTagVersion(releaseType as any, packageInfo.versions);
-                                            
-                                            try {
-                                                fs.writeFileSync(
-                                                    path.join(
-                                                        process.cwd(),
-                                                        "package.json"
-                                                    ),
-                                                    JSON.stringify(appPackage, null, 4)
-                                                );
+												this.getLatestTagVersion(releaseType as any, packageInfo.versions);
 
-                                                TerminalAnimation.stopAll("write", TerminalAnimationState.success, "Successfully wrote to app package");
-                                            } catch (error) {
-                                                TerminalAnimation.stopAll("write", TerminalAnimationState.error, "Could not write package file");
-                                                Binary.renderErrorException(error);
-                                            }
+											try {
+												fs.writeFileSync(
+													path.join(process.cwd(), "package.json"),
+													JSON.stringify(appPackage, null, 4)
+												);
+
+												TerminalAnimation.stopAll(
+													"write",
+													TerminalAnimationState.success,
+													"Successfully wrote to app package"
+												);
+											} catch (error) {
+												TerminalAnimation.stopAll(
+													"write",
+													TerminalAnimationState.error,
+													"Could not write package file"
+												);
+												Binary.renderErrorException(error);
+											}
 										}
 									);
 								} catch (error) {

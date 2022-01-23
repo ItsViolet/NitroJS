@@ -64,7 +64,7 @@ export default class TerminalPromptSelect {
 		let currentIndex = 0;
 
 		cliCursor.hide();
- 
+
 		TerminalPrompt.addKeyListener((value, key) => {
 			if (key.name == "c" && key.ctrl) {
 				process.exit();

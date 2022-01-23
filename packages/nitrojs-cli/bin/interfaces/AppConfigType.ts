@@ -2,25 +2,25 @@
  * The application type
  */
 enum AppConfigType {
-    /**
-     * NodeJS app
-     */
-    node,
+	/**
+	 * NodeJS app
+	 */
+	node,
 
-    /**
-     * Desktop app
-     */
-    desktop,
+	/**
+	 * Desktop app
+	 */
+	desktop,
 
-    /**
-     * Mobile app
-     */
-    mobile,
+	/**
+	 * Mobile app
+	 */
+	mobile,
 
-    /**
-     * Web app
-     */
-    web
+	/**
+	 * Web app
+	 */
+	web,
 }
 
 export default AppConfigType;
