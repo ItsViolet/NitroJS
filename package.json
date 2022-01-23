@@ -13,5 +13,8 @@
 		"watch": "lerna exec --parallel -- \"tsc --watch\"",
 		"format": "prettier --write .",
 		"postinstall": "lerna bootstrap"
+	},
+	"dependencies": {
+		"@skylixgh/nitrojs-config-tools": "^1.0.0-dev.9"
 	}
 }
