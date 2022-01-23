@@ -4,7 +4,7 @@ import Terminal, {
 	TerminalPromptBoolean,
 	TerminalPromptSelect,
 	TerminalPromptString,
-} from "@skylixgh/nitrojs-terminal/src/Terminal";
+} from "@skylixgh/nitrojs-terminal";
 import InitAnswers from "./interfaces/InitAnswers";
 import semver from "semver";
 import AppConfigType from "../../interfaces/AppConfigType";

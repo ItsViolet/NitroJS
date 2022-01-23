@@ -1,3 +1,5 @@
+#!/usr/bin/env node --no-warnings --experimental-specifier-resolution=node
+
 import pkg from "../package.json";
 import { program } from "commander";
 import InitHandle from "./commands/init/InitHandle";

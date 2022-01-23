@@ -5,7 +5,10 @@
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
-	"main": "src/Terminal.js",
+	"main": "./build/src/Terminal.js",
+	"exports": {
+		"import": "./build/src/Terminal.js"
+	},
 	"type": "module",
 	"directories": {
 		"src": "src",
