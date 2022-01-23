@@ -156,7 +156,7 @@ export default class InitHandle {
 			},
 			files: ["src"],
 			publishConfig: {
-				access: "public",
+				access: "restricted",
 			},
 			repository: {
 				type: "git",
@@ -259,13 +259,16 @@ export default class InitHandle {
 									let rootPath = process.cwd();
 
 									if (detectGit) {
-										const maxParentTravel = 5;
+										const maxParentTravel = 20;
 										let currentTravelCount = 1;
 
 										const travel = (base = false) => {
 											currentTravelCount++;
 
 											if (currentTravelCount > maxParentTravel) {
+												result.gitOriginUrl = undefined;
+												callback(result);
+												
 												return;
 											}
 
