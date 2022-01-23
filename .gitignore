@@ -2,8 +2,3 @@ node_modules
 **/package-lock.json
 package-lock.json
 **/build
-*.js
-*.cjs
-*.mjs
-*.d.ts
-*.map
