@@ -18,7 +18,7 @@ if (!fs.existsSync(path.join(__dirname, "../Binary.js"))) {
 
 spawn(
     "node",
-    ["--experimental-specifier-resolution=node", path.join(__dirname, "../Binary.js")],
+    ["--no-warnings", "--experimental-specifier-resolution=node", path.join(__dirname, "../Binary.js")],
     {
         cwd: process.cwd(),
         stdio: [process.stdin, process.stdout, process.stderr],
