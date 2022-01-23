@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { dirname } from "../../Binary";
+import AppConfigType from "../../interfaces/AppConfigType";
+import InitAnswers from "./interfaces/InitAnswers";
+import gitignore from "./resources/gitignore";
 
 /**
  * Class used for generating project resources
@@ -16,10 +18,10 @@ export default class Generator {
 		fs.writeFileSync(filePath, JSON.stringify(packageObject, null, 2) + "\n");
 	}
 
-    /**
-     * Generate the directory for a file path
-     * @param filePath File path
-     */
+	/**
+	 * Generate the directory for a file path
+	 * @param filePath File path
+	 */
 	private static generateDir(filePath: string) {
 		if (!fs.existsSync(path.dirname(filePath))) {
 			fs.mkdirSync(path.dirname(filePath), {
@@ -36,26 +38,15 @@ export default class Generator {
 	 * Generate a gitignore file
 	 * @param filePath The file directory for the ignore list
 	 */
-    public static generateIgnoreList(filePath: string) {
-        this.generateDir(filePath);
-        fs.writeFileSync(
-            filePath,
-            this.getLocalResource(".gitignore.txt")
-        )
-    }
+	public static generateIgnoreList(filePath: string) {
+		this.generateDir(filePath);
+		fs.writeFileSync(filePath, gitignore);
+	}
 
-    /**
-     * Get a resource file as a string
-     * @param resourcePath Resource path relative to root of resources
-     * @returns Resource contents
-     */
-    private static getLocalResource(resourcePath: string) {
-        return fs.readFileSync(
-            path.join(
-                dirname(import.meta.url),
-                "./resources",
-                resourcePath
-            )
-        ).toString();
-    }
+	/**
+	 * Generate default source files for app
+	 * @param rootDir App root dir
+	 * @param initAnswers All init answers
+	 */
+	public static generateSourceFiles(rootDir: string, initAnswers: InitAnswers) {}
 }

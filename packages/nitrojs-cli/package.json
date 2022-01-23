@@ -33,10 +33,6 @@
 		"type": "git",
 		"url": "git+https://github.com/SkylixGH/NitroJS.git"
 	},
-	"scripts": {
-		"run-ts": "node --experimental-specifier-resolution=node --loader ts-node/esm.mjs",
-		"cli-service": "npm run run-ts bin/Binary.ts"
-	},
 	"bugs": {
 		"url": "https://github.com/SkylixGH/NitroJS/issues"
 	},
@@ -51,7 +47,6 @@
 		"commander": "^8.3.0",
 		"fs-extra": "^10.0.0",
 		"ini": "^2.0.0",
-		"semver": "^7.3.5",
-		"ts-node": "^10.4.0"
+		"semver": "^7.3.5"
 	}
 }

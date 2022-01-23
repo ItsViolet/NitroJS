@@ -71,6 +71,25 @@ export default class InitHandle {
 							TerminalAnimationState.success,
 							"Successfully generated ignore list"
 						);
+
+						try {
+							Generator.generateSourceFiles(generalBasePath, projectAnswers);
+							TerminalAnimation.stop(
+								ProcessingAnimationNames.generatingSourceFiles,
+								TerminalAnimationState.success,
+								"Successfully generated project files"
+							)
+
+							this.afterGeneration();
+						} catch (error) {
+							TerminalAnimation.stopAll(
+								ProcessingAnimationNames.generatingSourceFiles,
+								TerminalAnimationState.error,
+								"Failed to generate source files"
+							);
+
+							Binary.renderErrorException(error);
+						}
 					} catch (error) {
 						TerminalAnimation.stopAll(
 							ProcessingAnimationNames.generatingIgnoreList,
@@ -91,6 +110,17 @@ export default class InitHandle {
 				}
 			});
 		});
+	}
+
+	/**
+	 * After project has been generated
+	 */
+	private afterGeneration() {
+		Terminal.success("Your project was generated!");
+		Terminal.log("Now let's get started by running the following commands:");
+		Terminal.log(` -> Run "npm install" to install your dependencies`);
+		Terminal.log(` -> Run "npm run start" or "npx nitrojs dev" to start your application!`);
+		Terminal.log("Happy coding ;)");
 	}
 
 	/**
