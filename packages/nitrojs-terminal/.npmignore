@@ -1,5 +1,9 @@
 # ALl files
-!*
+!package-lock.json
+!*.ts
+!*.js
+!*.map
+!*.d.ts
 
 # Modules
 node_modules
