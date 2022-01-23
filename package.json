@@ -8,8 +8,9 @@
 		"typescript": "^4.6.0-dev.20220120"
 	},
 	"scripts": {
-		"build": "lerna exec \"npx tsc --build\"",
-		"clean": "lerna exec \"tsc --build --clean\"",
+		"build": "lerna exec --parallel -- \"npx tsc --build\"",
+		"clean": "lerna exec --parallel -- \"tsc --build --clean\"",
+		"watch": "lerna exec --parallel -- \"tsc --watch\"",
 		"format": "prettier --write .",
 		"postinstall": "lerna bootstrap"
 	}

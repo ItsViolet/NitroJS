@@ -7,6 +7,7 @@ import InitAnswers from "./interfaces/InitAnswers";
 import semver from "semver";
 import AppConfigType from "../../interfaces/AppConfigType";
 import fs from "fs-extra";
+import { program } from "commander";
 
 /**
  * Init command handler
@@ -16,8 +17,10 @@ export default class InitHandle {
 	 * Init command register
 	 */
 	public constructor() {
-		this.askAllInfo((projectAnswers) => {
-			this.generatePackageJSON(projectAnswers);
+		program.command("init [path]").action((initPath) => {
+			this.askAllInfo((projectAnswers) => {
+				this.generatePackageJSON(projectAnswers);
+			});
 		});
 	}
 
@@ -32,27 +35,27 @@ export default class InitHandle {
 			main: "",
 			type: "module",
 			directories: {
-				src: "src"
+				src: "src",
 			},
 			files: ["src"],
 			publishConfig: {
-				access: "public"
+				access: "public",
 			},
 			repository: {
 				type: "git",
-				url: "git+https://github.com/<YourProject>.git"
+				url: "git+https://github.com/<YourProject>.git",
 			},
 			scripts: {
 				start: "nitrojs dev",
-				build: "nitrojs build"
+				build: "nitrojs build",
 			},
 			bugs: {
-				url: "https://github.com/<YourProject>/issues"
+				url: "https://github.com/<YourProject>/issues",
 			},
 			depDependencies: {
-				"@skylixgh/nitrojs-cli-service": "1.0.0-dev.1"
+				"@skylixgh/nitrojs-cli-service": "1.0.0-dev.1",
 			} as any,
-			dependencies: {} as any
+			dependencies: {} as any,
 		};
 	}
 
@@ -137,7 +140,7 @@ export default class InitHandle {
 
 									TerminalPromptString.prompt("Project keywords", (keywords) => {
 										result.project.keywords = keywords.split(" ");
-										
+
 										TerminalPromptString.prompt("Project license", (license) => {
 											result.project.license = license;
 											askOtherInfo();
