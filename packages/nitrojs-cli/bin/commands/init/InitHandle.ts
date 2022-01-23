@@ -17,7 +17,8 @@ export default class InitHandle {
 	 * Init command register
 	 */
 	public constructor() {
-		program.command("init [path]").action((initPath) => {
+		program.command("init [path]").action((initPath, options) => {
+			console.log(options);
 			this.askAllInfo((projectAnswers) => {
 				this.generatePackageJSON(projectAnswers);
 			});

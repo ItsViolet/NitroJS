@@ -17,10 +17,15 @@ if (!fs.existsSync(path.join(__dirname, "../Binary.js"))) {
 }
 
 spawn(
-    "node",
-    ["--no-warnings", "--experimental-specifier-resolution=node", path.join(__dirname, "../Binary.js"), process.argv.splice(2)],
-    {
-        cwd: process.cwd(),
-        stdio: [process.stdin, process.stdout, process.stderr],
-    }
+	"node",
+	[
+		"--no-warnings",
+		"--experimental-specifier-resolution=node",
+		path.join(__dirname, "../Binary.js"),
+		...process.argv.splice(2),
+	],
+	{
+		cwd: process.cwd(),
+		stdio: [process.stdin, process.stdout, process.stderr],
+	}
 ).on("exit", (code) => process.exit(code));
