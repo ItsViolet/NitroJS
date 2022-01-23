@@ -1,5 +1,6 @@
 import Terminal, {
 	TerminalAnimation,
+	TerminalAnimationState,
 	TerminalPromptBoolean,
 	TerminalPromptSelect,
 	TerminalPromptString,
@@ -23,19 +24,23 @@ export default class InitHandle {
 	 */
 	public constructor() {
 		program.command("init [path]").action((initPath) => {
-			enum ProcessingAnimationNames {
-				generatingPackage
-			}
-
-			TerminalAnimation.start([
-				{
-					label: "Generating package file",
-					name: ProcessingAnimationNames.generatingPackage
-				},
-				
-			])
-
 			this.askAllInfo((projectAnswers) => {
+				enum ProcessingAnimationNames {
+					generatingPackage,
+					generatingIgnoreList,
+				}
+
+				TerminalAnimation.start([
+					{
+						label: "Generating package file",
+						name: ProcessingAnimationNames.generatingPackage,
+					},
+					{
+						label: "Generating ignore list",
+						name: ProcessingAnimationNames.generatingIgnoreList,
+					},
+				]);
+
 				const packageFile = this.generatePackageJSON(projectAnswers);
 
 				try {
@@ -45,8 +50,19 @@ export default class InitHandle {
 							? path.join(process.cwd(), initPath, projectAnswers.project.name, "package.json")
 							: path.join(process.cwd(), projectAnswers.project.name, "package.json")
 					);
+
+					TerminalAnimation.stop(
+						ProcessingAnimationNames.generatingPackage,
+						TerminalAnimationState.success,
+						"Successfully generated package file"
+					);
 				} catch (error: any) {
-					Terminal.error("Failed to generate package file");
+					TerminalAnimation.stop(
+						ProcessingAnimationNames.generatingPackage,
+						TerminalAnimationState.error,
+						"Failed to generate package file"
+					);
+
 					Binary.renderErrorException(error);
 				}
 			});

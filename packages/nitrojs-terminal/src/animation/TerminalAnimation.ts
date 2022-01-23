@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import cliCursor from "cli-cursor";
 import { TerminalAnimationState, TerminalPrompt, TerminalPromptBoolean, TerminalPromptSelect, TerminalPromptString } from "../Terminal";
 import AnimationItem from "./AnimationItem";
 import AnimationMeta from "./AnimationMeta";
@@ -49,6 +50,14 @@ export default class TerminalAnimation {
 		this._isRunning = true;
 		this.currentAnimationItems = [];
 		this.currentAnimationMeta = [];
+
+		cliCursor.hide();
+
+		TerminalPrompt.addKeyListener((value, key) => {
+			if (key.name == "c" && key.ctrl) {
+				process.exit();
+			}
+		});
 
 		if (Array.isArray(animations)) this.currentAnimationItems = animations;
 		else this.currentAnimationItems = [animations];
@@ -141,7 +150,7 @@ export default class TerminalAnimation {
 	 * @param name Animation name
 	 * @param newLabel New animation label
 	 */
-	public static stop(name: string, state: TerminalAnimationState, newLabel?: string) {
+	public static stop(name: string | number, state: TerminalAnimationState, newLabel?: string) {
 		let stoppedAnimation = 0;
 
 		this.currentAnimationMeta.forEach((metaItem) => {
@@ -161,6 +170,8 @@ export default class TerminalAnimation {
 
 		if (stoppedAnimation == this.currentAnimationMeta.length) {
 			this._isRunning = false;
+			TerminalPrompt.removeKeyListeners();
+			cliCursor.show();
 			clearInterval(this.loop);
 		}
 
@@ -173,7 +184,7 @@ export default class TerminalAnimation {
 	 * @param state Animation state
 	 * @param newLabel New animation label
 	 */
-	public static stopAll(name: string, state: TerminalAnimationState, newLabel?: string) {
+	public static stopAll(name: string | number, state: TerminalAnimationState, newLabel?: string) {
 		let stoppedAnimation = 0;
 		let newItems = [] as AnimationItem[];
 		let newMeta = [] as AnimationMeta[];
@@ -204,6 +215,8 @@ export default class TerminalAnimation {
 
 		if (stoppedAnimation == this.currentAnimationMeta.length) {
 			this._isRunning = false;
+			TerminalPrompt.removeKeyListeners();
+			cliCursor.show();
 			clearInterval(this.loop);
 		}
 
