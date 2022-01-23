@@ -27,8 +27,6 @@ export default class InitHandle {
 	}
 
 	private generatePackageJSON(projectData: InitAnswers) {
-		console.log(projectData);
-
 		const projectPkg = {
 			name: projectData.project.name,
 			version: projectData.project.version,
@@ -36,7 +34,7 @@ export default class InitHandle {
 			author: projectData.project.author,
 			homepage: "",
 			license: projectData.project.license,
-			main: "",
+			main: "" as string | undefined,
 			type: "module",
 			directories: {
 				src: "src",
@@ -61,6 +59,25 @@ export default class InitHandle {
 			} as any,
 			dependencies: {} as any,
 		};
+
+		if (projectData.gitOriginUrl) {
+			projectPkg.repository.url = projectData.gitOriginUrl;
+			projectPkg.bugs.url = projectData.gitOriginUrl.slice(0, -4) + "/issues";
+		}
+
+		if (projectData.typeScript && projectData.type != AppConfigType.node) {
+			projectPkg.dependencies["typescript"] = "4.4.5";
+		}
+
+		if (projectData.type == AppConfigType.desktop) {
+			projectPkg.main = "src/electron/Main";
+		} else if (projectData.type == AppConfigType.node) {
+			projectPkg.main = "src/Main";
+		} else {
+			delete projectPkg.main;
+		}
+
+		console.log(projectPkg);
 	}
 
 	/**
