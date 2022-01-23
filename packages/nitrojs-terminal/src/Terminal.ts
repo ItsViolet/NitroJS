@@ -2,10 +2,28 @@ import { PartialDeep } from "type-fest";
 import LogCustomTagSettings from "./LogCustomTagSettings";
 import chalk from "chalk";
 import { DateTime } from "luxon";
+import KeyPressMeta from "./prompt/KeyPressMeta";
+import AnimationItem from "./animation/AnimationItem";
+import TerminalAnimation from "./animation/TerminalAnimation";
+import AnimationMeta from "./animation/AnimationMeta";
+import TerminalAnimationState from "./animation/TerminalAnimationState";
 import TerminalPrompt from "./prompt/TerminalPrompt";
-import TerminalPromptType from "./TerminalPromptType";
+import TerminalPromptString from "./prompt/TerminalPromptString";
+import TerminalPromptBoolean from "./prompt/TerminalPromptBoolean";
+import TerminalPromptSelect from "./prompt/TerminalPromptSelect";
 
-export { TerminalPrompt, TerminalPromptType };
+export {
+	TerminalPrompt,
+	LogCustomTagSettings,
+	KeyPressMeta,
+	TerminalAnimation,
+	AnimationMeta,
+	AnimationItem,
+	TerminalAnimationState,
+	TerminalPromptBoolean,
+	TerminalPromptSelect,
+	TerminalPromptString
+};
 
 /**
  * NitroJS base terminal class
@@ -23,6 +41,7 @@ export default class Terminal {
 	public static log(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "INFO",
+			hexColor: "#999999",
 		});
 	}
 
@@ -33,7 +52,7 @@ export default class Terminal {
 	public static success(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "SUCCESS",
-			hexColor: "#50FFAB"
+			hexColor: "#40c283",
 		});
 	}
 
@@ -44,7 +63,7 @@ export default class Terminal {
 	public static warn(text: string) {
 		this.logCustomTag(text, {
 			tagPrefix: "WARN",
-			hexColor: "#FFAB00"
+			hexColor: "#FFAB00",
 		});
 	}
 
@@ -56,26 +75,44 @@ export default class Terminal {
 		this.logCustomTag(text, {
 			tagPrefix: "ERR",
 			useColorThroughout: true,
-			hexColor: "#FF7777"
+			hexColor: "#FF7777",
+		});
+	}
+
+	/**
+	 * Log a notice message into the terminal
+	 * @param text The text to log
+	 */
+	public static notice(text: string) {
+		this.logCustomTag(text, {
+			tagPrefix: "NOTICE",
+			useColorThroughout: true,
+			hexColor: "#FFAB00",
 		});
 	}
 
 	/**
 	 * Log a message into the terminal with custom parameters
 	 * @param The text to log
-	 * @param settings
+	 * @param settings Settings for logging
 	 */
 	public static logCustomTag(text: string, settings: PartialDeep<LogCustomTagSettings>) {
-		if (TerminalPrompt.isRunning) {
+		if (TerminalPromptString.isRunning || TerminalPromptBoolean.isRunning || TerminalPromptSelect.isRunning || TerminalAnimation.isRunning) {
 			return;
 		}
-		
+
 		const prefixes = [] as string[];
 
 		if (this.useTimeStamps) {
 			prefixes.push(
 				chalk.hex("#999999")("[ ") +
-					chalk.hex("#999999")(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
+					chalk.hex(
+						settings.useColorThroughout
+							? settings.hexColor
+								? settings.hexColor
+								: "#999999"
+							: "#999999"
+					)(DateTime.fromJSDate(new Date()).toFormat("hh:mm:ss a")) +
 					chalk.hex("#999999")(" ]")
 			);
 		}

@@ -5,14 +5,17 @@
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
-	"main": "src/Terminal",
+	"main": "src/Terminal.js",
+	"type": "module",
 	"directories": {
-		"lib": "lib",
+		"src": "src",
 		"docs": "docs",
 		"examples": "examples"
 	},
 	"files": [
-		"lib"
+		"src",
+		"docs",
+		"examples"
 	],
 	"publishConfig": {
 		"access": "public"
@@ -22,17 +25,22 @@
 		"url": "git+https://github.com/SkylixGH/NitroJS.git"
 	},
 	"scripts": {
-		"terminal:e:logging": "ts-node --transpile-only examples/logging/Index"
+		"run-ts": "node --experimental-specifier-resolution=node --loader ts-node/esm.mjs",
+		"terminal:e:logging": "npm run run-ts -- ./examples/logging/Index.ts",
+		"terminal:e:prompts": "npm run run-ts -- ./examples/prompts/Index.ts",
+		"terminal:e:animation": "npm run run-ts -- ./examples/animation/Index.ts"
 	},
 	"bugs": {
 		"url": "https://github.com/SkylixGH/NitroJS/issues"
 	},
 	"dependencies": {
 		"chalk": "4.1.2",
+		"cli-cursor": "^4.0.0",
 		"luxon": "^2.3.0",
-		"type-fest": "^2.9.0"
+		"strip-ansi": "^7.0.1"
 	},
 	"devDependencies": {
-		"@types/luxon": "^2.0.9"
+		"@types/luxon": "^2.0.9",
+		"type-fest": "^2.9.0"
 	}
 }

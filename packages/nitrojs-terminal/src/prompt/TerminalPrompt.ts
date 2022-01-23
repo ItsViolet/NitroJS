@@ -1,43 +1,77 @@
-import TerminalPromptType from "../TerminalPromptType";
-import PromptHandler from "./PromptHandler";
+import KeyPressMeta from "./KeyPressMeta";
+import readline from "readline";
+import stripAnsi from "strip-ansi";
 
 /**
  * Create interactive prompts in the terminal
  */
 export default class TerminalPrompt {
-    /**
-     * If a prompt is running
-     */
-    private static _isRunning = false;
+	/**
+	 * All key press listeners
+	 */
+	private static currentKeyPressListeners = [] as any[];
 
-    /**
-     * Use a yes or no boolean based prompt
-     * @param type The type of prompt
-     * @param question The prompt question
-     * @param callback The prompt answer callback
-     * @param defaultValue The default value
-     */
-    public static prompt(type: TerminalPromptType.boolean, question: string, callback: (answer: boolean) => void, defaultValue?: boolean): void;
+	/**
+	 * Clear all lines from and below the relative number
+	 * @param lineNumberRelative The line number relative to the current cursor position
+	 */
+	public static clearLinesFrom(lineNumberRelative: number) {
+		process.stdout.moveCursor(0, lineNumberRelative);
+		process.stdout.clearScreenDown();
+	}
 
-    /**
-     * Use a string based prompt
-     * @param type The type of prompt
-     * @param question The prompt question
-     * @param callback The prompt callback
-     * @param defaultValue The default value
-     */
-    public static prompt(type: TerminalPromptType.string, question: string, callback: (answer: string) => string, defaultValue?: boolean): void;
+	/**
+	 * Render a group or a single line
+	 * @param lines The line or lines as an array
+	 * @returns Number of lines rendered
+	 */
+	public static renderLines(lines: string | string[]) {
+		const linesArray = [];
+		let linesRendered = 0;
 
-    public static prompt(type: TerminalPromptType, question: string, callback: any, defaultValue = false) {
-        if (type == TerminalPromptType.boolean) {
-            PromptHandler.handleBooleanInput(question, callback, defaultValue);
-        }
-    }
+		if (Array.isArray(lines)) {
+			linesArray.push(...lines);
+		} else {
+			linesArray.push(lines);
+		}
 
-    /**
-     * If a prompt is running
-     */
-    public static get isRunning() {
-        return this._isRunning;
-    }
+		linesArray.forEach((line) => {
+			process.stdout.write(line + "\n");
+			let extraWrapLines = 0;
+
+			const mathResult = Math.ceil(stripAnsi(line).length / process.stdout.columns);
+			if (mathResult - 1 >= 1) {
+				extraWrapLines = mathResult - 1;
+			}
+
+			linesRendered += 1 + extraWrapLines;
+		});
+
+		return linesRendered;
+	}
+
+	/**
+	 * Add a key press listener to the STDIO
+	 * @param callback The event listener
+	 */
+	public static addKeyListener(callback: (value: string | undefined, key: KeyPressMeta) => void) {
+		process.stdin.resume();
+		process.stdin.setRawMode(true);
+
+		readline.emitKeypressEvents(process.stdin);
+
+		this.currentKeyPressListeners.push(callback);
+		process.stdin.addListener("keypress", callback);
+	}
+
+	/**
+	 * Remove all key listeners that were registered from this class
+	 */
+	public static removeKeyListeners() {
+		this.currentKeyPressListeners.forEach((callback) => {
+			process.stdin.removeListener("keypress", callback);
+		});
+
+		process.stdin.pause();
+	}
 }
