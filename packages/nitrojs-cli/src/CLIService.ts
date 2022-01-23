@@ -1,3 +1,4 @@
+import "source-map-support/register";
 import AppConfig from "../bin/interfaces/AppConfig";
 import AppConfigType from "../bin/interfaces/AppConfigType";
 import { PartialDeep } from "type-fest";
@@ -8,7 +9,7 @@ import { PartialDeep } from "type-fest";
  * @returns Your config
  */
 export function typeConfig(config: PartialDeep<AppConfig>): PartialDeep<AppConfig> {
-    return config;
+	return config;
 }
 
 export { AppConfig, AppConfigType };

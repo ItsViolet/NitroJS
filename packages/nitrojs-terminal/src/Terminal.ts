@@ -1,3 +1,4 @@
+import "source-map-support/register";
 import { PartialDeep } from "type-fest";
 import LogCustomTagSettings from "./LogCustomTagSettings";
 import chalk from "chalk";
