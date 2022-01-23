@@ -5,6 +5,7 @@ import InitAnswers from "./interfaces/InitAnswers";
 import gitignore from "./resources/gitignore";
 import MainScriptTS from "./resources/typescript/node/Main";
 import MainScriptJS from "./resources/javascript/node/Main";
+import TSConfig from "./resources/typescript/node/tsconfig";
 
 /**
  * Class used for generating project resources
@@ -55,7 +56,8 @@ export default class Generator {
 			this.generateDir(path.join(rootDir, "src/blank.txt"));
 
 			if (initAnswers.typeScript) {
-				fs.writeFileSync(path.join(rootDir, "src/Main.ts"), MainScriptTS);
+                fs.writeFileSync(path.join(rootDir, "src/Main.ts"), MainScriptTS);
+                fs.writeFileSync(path.join(rootDir, "./tsconfig.json"), TSConfig);
 			} else {
 				fs.writeFileSync(path.join(rootDir, "src/Main.js"), MainScriptJS);
 			}

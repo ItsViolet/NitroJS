@@ -1,0 +1,8 @@
+# ALl files
+!*.ts
+!*.js
+!*.map
+!*.d.ts
+
+# Modules
+node_modules

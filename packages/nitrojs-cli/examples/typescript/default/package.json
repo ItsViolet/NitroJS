@@ -4,7 +4,7 @@
     "description": "",
     "author": "",
     "homepage": "https://github.com/SkylixGH/NitroJS#readme",
-    "license": "",
+    "license": "ISC",
     "main": "src/Main",
     "type": "module",
     "directories": {
@@ -30,7 +30,5 @@
     "depDependencies": {
         "@skylixgh/nitrojs-cli-service": "1.0.0-dev.1"
     },
-    "dependencies": {
-        "@skylixgh/nitrojs-terminal": "2.0.0-dev.1"
-    }
+    "dependencies": {}
 }

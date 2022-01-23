@@ -1,13 +1,14 @@
 #!/usr/bin/env node --no-warnings --experimental-specifier-resolution=node
 
 import "source-map-support/register";
-import pkg from "../package.json";
 import { program } from "commander";
+import { fileURLToPath } from "url";
 import InitHandle from "./commands/init/InitHandle";
+import pkg from "../package.json";
 import Terminal from "@skylixgh/nitrojs-terminal";
 import path from "path";
-import { fileURLToPath } from "url";
 import AddHandle from "./commands/add/AddHandle";
+import DevHandle from "./commands/dev/DevHandle";
 
 /**
  * The CLI service entry point
@@ -21,7 +22,8 @@ export class Binary {
 		program.name("NitroJS");
 
 		new InitHandle();
-		new AddHandle();
+        new AddHandle();
+        new DevHandle();
 
 		program.parse();
 	}

@@ -26,6 +26,8 @@ export default class InitHandle {
 	 */
 	public constructor() {
 		program.command("init [path]").action((initPath) => {
+			Terminal.log("Initialize a new project");
+
 			this.askAllInfo((projectAnswers) => {
 				enum ProcessingAnimationNames {
 					generatingPackage,
@@ -344,7 +346,7 @@ export default class InitHandle {
 										TerminalPromptString.prompt("Project license", (license) => {
 											result.project.license = license;
 											askOtherInfo();
-										});
+										}, "ISC");
 									});
 								});
 							},
