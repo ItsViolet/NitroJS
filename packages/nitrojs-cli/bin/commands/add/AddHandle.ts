@@ -122,28 +122,28 @@ export default class AddHandle {
 									if (includesAlpha) {
 										promptOptions.push({
 											label: "Alpha",
-											name: "alpha",
+											value: "alpha",
 										});
 									}
 
 									if (includesBeta) {
 										promptOptions.push({
 											label: "Beta",
-											name: "beta",
+											value: "beta",
 										});
 									}
 
 									if (includesNightly) {
 										promptOptions.push({
 											label: "Nightly",
-											name: "nightly",
+											value: "nightly",
 										});
 									}
 
 									if (includesRelease) {
 										promptOptions.push({
 											label: "Latest",
-											name: "latest",
+											value: "latest",
 										});
 									}
 
