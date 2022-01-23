@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "fs-extra": "^10.0.0",
+    "ts-import": "^2.0.40",
     "ts-node": "^10.4.0"
   },
   "devDependencies": {

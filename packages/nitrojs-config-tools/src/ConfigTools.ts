@@ -1,5 +1,7 @@
 import fs from "fs-extra";
+import { tsImport } from "ts-import";
 import ConfigToolsReadError from "./ConfigToolsReadError";
+import path from "path";
 
 export { ConfigToolsReadError };
 
@@ -31,9 +33,33 @@ export default class ConfigTools {
 					.catch((error) => {
 						reject(error);
 					});
+			} else if (recursiveFilePath.endsWith(".ts")) {
+				this.processTSConfig(recursiveFilePath)
+					.then((config) => {
+						resolve(config as any);
+					})
+					.catch((error) => {
+						reject(error);
+					});
 			}
 		});
 	}
+
+
+    /**
+     * Parse a config based on TS
+     * @param filePath TS file path
+     * @returns Promise containing config
+     */
+    private static processTSConfig(filePath: string): Promise<Object> {
+        return new Promise((resolve, reject) => {
+            tsImport.compile(filePath, path.dirname(filePath)).then((module) => {
+                console.log(module);
+            }).catch(error => {
+                reject(new Error(`${ConfigToolsReadError.configContainsErrors} | ${error.message}\n${error.stack}`));
+            });
+        });      
+    }
 
 	/**
 	 * Read a JS based config
@@ -43,21 +69,38 @@ export default class ConfigTools {
 	private static processJSConfig(filePath: string): Promise<Object> {
 		return new Promise((resolve, reject) => {
 			import("file://" + filePath)
-                .then((module) => {
-                    if (typeof module != "object" || Array.isArray(module) || typeof module.default != "object" || Array.isArray(module.default)) {
-                        reject(new Error(`${ConfigToolsReadError.objectNotExported} | The data type exported was not a JSON object`));
-                        return;
-                    }
+				.then((module) => {
+					if (
+						typeof module != "object" ||
+						Array.isArray(module) ||
+						typeof module.default != "object" ||
+						Array.isArray(module.default)
+					) {
+						reject(
+							new Error(
+								`${ConfigToolsReadError.objectNotExported} | The data type exported was not a JSON object`
+							)
+						);
+						return;
+					}
 
-                    if (typeof module["default"] == "undefined") {
-                        reject(new Error(`${ConfigToolsReadError.noDefaultExport} | A default export was not provided`));
-                        return;
-                    }
+					if (typeof module["default"] == "undefined") {
+						reject(
+							new Error(
+								`${ConfigToolsReadError.noDefaultExport} | A default export was not provided`
+							)
+						);
+						return;
+					}
 
 					resolve(module.default);
 				})
 				.catch((error) => {
-					reject(new Error(`${ConfigToolsReadError.configContainsErrors} | ${error.message}\n${error.stack}`));
+					reject(
+						new Error(
+							`${ConfigToolsReadError.configContainsErrors} | ${error.message}\n${error.stack}`
+						)
+					);
 				});
 		});
 	}
