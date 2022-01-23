@@ -3,6 +3,8 @@ import path from "path";
 import AppConfigType from "../../interfaces/AppConfigType";
 import InitAnswers from "./interfaces/InitAnswers";
 import gitignore from "./resources/gitignore";
+import MainScriptTS from "./resources/typescript/node/Main";
+import MainScriptJS from "./resources/javascript/node/Main";
 
 /**
  * Class used for generating project resources
@@ -48,5 +50,18 @@ export default class Generator {
 	 * @param rootDir App root dir
 	 * @param initAnswers All init answers
 	 */
-	public static generateSourceFiles(rootDir: string, initAnswers: InitAnswers) {}
+    public static generateSourceFiles(rootDir: string, initAnswers: InitAnswers) {
+        if (initAnswers.type == AppConfigType.node) {
+            this.generateDir(path.join(rootDir, "src/blank.txt"));
+
+            if (initAnswers.typeScript) {
+                fs.writeFileSync(path.join(rootDir, "src/Main.ts"), MainScriptTS);
+            } else {
+                fs.writeFileSync(path.join(rootDir, "src/Main.js"), MainScriptJS);
+            }
+        } else {
+            // TODO: Ofc you know
+            throw new Error("Cannot generate source files for this app, this version of the CLI isn't ready for apps like this");
+        }
+    }
 }

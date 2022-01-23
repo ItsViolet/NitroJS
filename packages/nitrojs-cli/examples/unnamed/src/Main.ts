@@ -1,4 +1,4 @@
-const Main = `/**
+/**
  * Application main class
  */
 new class Main {
@@ -9,5 +9,3 @@ new class Main {
         console.log("Hello world!");
     }
 }
-`;
-export default Main;

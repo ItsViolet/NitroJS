@@ -14,6 +14,8 @@ import ini from "ini";
 import path from "path";
 import Generator from "./Generator";
 import { Binary } from "../../Binary";
+import chalk from "chalk";
+import { exec } from "child_process";
 
 /**
  * Init command handler
@@ -78,7 +80,7 @@ export default class InitHandle {
 								ProcessingAnimationNames.generatingSourceFiles,
 								TerminalAnimationState.success,
 								"Successfully generated project files"
-							)
+							);
 
 							this.afterGeneration();
 						} catch (error) {
@@ -117,10 +119,19 @@ export default class InitHandle {
 	 */
 	private afterGeneration() {
 		Terminal.success("Your project was generated!");
-		Terminal.log("Now let's get started by running the following commands:");
-		Terminal.log(` -> Run "npm install" to install your dependencies`);
-		Terminal.log(` -> Run "npm run start" or "npx nitrojs dev" to start your application!`);
-		Terminal.log("Happy coding ;)");
+
+		TerminalPromptBoolean.prompt(
+			`Would you like to star our repository on ${chalk.underline("GitHub")}?`,
+			(starOnGit) => {
+				if (starOnGit) exec("start https://github.com/SkylixGH/NitroJS");
+
+				Terminal.log("Now let's get started by running the following commands:");
+				Terminal.log(` -> Run "npm install" to install your dependencies`);
+				Terminal.log(` -> Run "npm run start" or "npx nitrojs dev" to start your application!`);
+				Terminal.log("Happy coding ;)");
+			},
+			true
+		);
 	}
 
 	/**
