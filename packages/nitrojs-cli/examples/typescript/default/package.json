@@ -29,8 +29,5 @@
     },
     "depDependencies": {
         "@skylixgh/nitrojs-cli-service": "1.0.0-dev.1"
-    },
-    "dependencies": {
-        "@skylixgh/nitrojs-terminal": "1.0.0-dev.9"
     }
 }
