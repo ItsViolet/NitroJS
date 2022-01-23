@@ -17,7 +17,7 @@ export default class Generator {
 	 */
 	public static generatePackageFile(packageObject: Object, filePath: string) {
 		this.generateDir(filePath);
-		fs.writeFileSync(filePath, JSON.stringify(packageObject, null, 2) + "\n");
+		fs.writeFileSync(filePath, JSON.stringify(packageObject, null, 4) + "\n");
 	}
 
 	/**

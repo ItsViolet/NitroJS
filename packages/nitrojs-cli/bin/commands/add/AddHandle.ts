@@ -1,4 +1,4 @@
-import {
+import Terminal, {
 	TerminalAnimation,
 	TerminalAnimationState,
 	TerminalPromptSelect,
@@ -150,11 +150,32 @@ export default class AddHandle {
 									TerminalPromptSelect.prompt(
 										"Release type",
 										promptOptions as any,
-										(releaseType) => {
+                                        (releaseType) => {
+                                            Terminal.success(`Successfully fetched dependency info for "@skylixgh/nitrojs-${frameworkComponent}"`);
+                                            TerminalAnimation.start([
+                                                {
+                                                    label: "Writing package file",
+                                                    name: "write"
+                                                }
+                                            ]);
+
 											appPackage.dependencies[`@skylixgh/nitrojs-${frameworkComponent}`] =
                                                 this.getLatestTagVersion(releaseType as any, packageInfo.versions);
                                             
-                                            console.log(appPackage);
+                                            try {
+                                                fs.writeFileSync(
+                                                    path.join(
+                                                        process.cwd(),
+                                                        "package.json"
+                                                    ),
+                                                    JSON.stringify(appPackage, null, 4)
+                                                );
+
+                                                TerminalAnimation.stopAll("write", TerminalAnimationState.success, "Successfully wrote to app package");
+                                            } catch (error) {
+                                                TerminalAnimation.stopAll("write", TerminalAnimationState.error, "Could not write package file");
+                                                Binary.renderErrorException(error);
+                                            }
 										}
 									);
 								} catch (error) {
