@@ -8,7 +8,7 @@
 	"main": "src/CLIService.js",
 	"type": "module",
 	"bin": {
-		"nitrojs": "./bin/loaders/NitroJS.js"
+		"nitrojs": "./bin/loaders/NitroJS.cjs"
 	},
 	"directories": {
 		"src": "src",
