@@ -1,6 +1,12 @@
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
-import { TerminalAnimationState, TerminalPrompt, TerminalPromptBoolean, TerminalPromptSelect, TerminalPromptString } from "../Terminal";
+import {
+	TerminalAnimationState,
+	TerminalPrompt,
+	TerminalPromptBoolean,
+	TerminalPromptSelect,
+	TerminalPromptString,
+} from "../Terminal";
 import AnimationItem from "./AnimationItem";
 import AnimationMeta from "./AnimationMeta";
 
@@ -72,7 +78,7 @@ export default class TerminalAnimation {
 				label: animationItem.label,
 				name: animationItem.name,
 				done: false,
-				state: TerminalAnimationState.success
+				state: TerminalAnimationState.success,
 			});
 		});
 
@@ -105,16 +111,16 @@ export default class TerminalAnimation {
 
 			const getHexFromState = (state: TerminalAnimationState) => {
 				let hex = "";
-	
+
 				switch (state) {
 					case TerminalAnimationState.success:
 						hex = "#50FFAB";
 						break;
-					
+
 					case TerminalAnimationState.warning:
 						hex = "#FFAB00";
 						break;
-					
+
 					case TerminalAnimationState.info:
 						hex = "#999999";
 						break;
@@ -125,11 +131,13 @@ export default class TerminalAnimation {
 				}
 
 				return hex;
-			}
+			};
 
 			this.currentAnimationMeta.forEach((metaItem) => {
 				const color = chalk.hex(getHexFromState(metaItem.state));
-				lines.push(`${metaItem.done ? color("•") : metaItem.frames[metaItem.frame]} ${metaItem.label}`);
+				lines.push(
+					`${metaItem.done ? color("•") : metaItem.frames[metaItem.frame]} ${metaItem.label}`
+				);
 			});
 
 			this.linesRendered = TerminalPrompt.renderLines(lines);
@@ -151,29 +159,19 @@ export default class TerminalAnimation {
 	 * @param newLabel New animation label
 	 */
 	public static stop(name: string | number, state: TerminalAnimationState, newLabel?: string) {
-		let stoppedAnimation = 0;
-
 		this.currentAnimationMeta.forEach((metaItem) => {
 			if (metaItem.name == name) {
 				if (newLabel) metaItem.label = newLabel;
-				
+
 				metaItem.state = state;
 				metaItem.done = true;
 			}
 		});
 
-		this.currentAnimationMeta.forEach((metaItem) => {
-			if (metaItem.done) {
-				stoppedAnimation++;
-			}
-		});
-
-		if (stoppedAnimation == this.currentAnimationMeta.length) {
-			this._isRunning = false;
-			TerminalPrompt.removeKeyListeners();
-			cliCursor.show();
-			clearInterval(this.loop);
-		}
+		this._isRunning = false;
+		TerminalPrompt.removeKeyListeners();
+		cliCursor.show();
+		clearInterval(this.loop);
 
 		this.renderLines();
 	}

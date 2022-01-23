@@ -28,7 +28,12 @@ export default class InitHandle {
 				enum ProcessingAnimationNames {
 					generatingPackage,
 					generatingIgnoreList,
+					generatingSourceFiles,
 				}
+
+				Terminal.log(
+					"Great! Now we will get to generating your project, please wait as this could take a while"
+				);
 
 				TerminalAnimation.start([
 					{
@@ -39,23 +44,42 @@ export default class InitHandle {
 						label: "Generating ignore list",
 						name: ProcessingAnimationNames.generatingIgnoreList,
 					},
+					{
+						label: "Generating source files",
+						name: ProcessingAnimationNames.generatingSourceFiles,
+					},
 				]);
 
 				const packageFile = this.generatePackageJSON(projectAnswers);
+				const generalBasePath = initPath
+					? path.join(process.cwd(), initPath, projectAnswers.project.name)
+					: path.join(process.cwd(), projectAnswers.project.name);
 
 				try {
-					Generator.generatePackageFile(
-						packageFile,
-						initPath
-							? path.join(process.cwd(), initPath, projectAnswers.project.name, "package.json")
-							: path.join(process.cwd(), projectAnswers.project.name, "package.json")
-					);
+					Generator.generatePackageFile(packageFile, path.join(generalBasePath, "package.json"));
 
 					TerminalAnimation.stop(
 						ProcessingAnimationNames.generatingPackage,
 						TerminalAnimationState.success,
 						"Successfully generated package file"
 					);
+
+					try {
+						Generator.generateIgnoreList(path.join(generalBasePath, ".gitignore"));
+						TerminalAnimation.stop(
+							ProcessingAnimationNames.generatingIgnoreList,
+							TerminalAnimationState.success,
+							"Successfully generated ignore list"
+						);
+					} catch (error) {
+						TerminalAnimation.stopAll(
+							ProcessingAnimationNames.generatingIgnoreList,
+							TerminalAnimationState.error,
+							"Failed to generate ignore list"
+						);
+
+						Binary.renderErrorException(error);
+					}
 				} catch (error: any) {
 					TerminalAnimation.stop(
 						ProcessingAnimationNames.generatingPackage,
