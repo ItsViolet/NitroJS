@@ -1,4 +1,4 @@
-import {
+import Terminal, {
 	TerminalPromptBoolean,
 	TerminalPromptSelect,
 	TerminalPromptString,
@@ -10,6 +10,7 @@ import fs from "fs-extra";
 import { program } from "commander";
 import ini from "ini";
 import path from "path";
+import Generator from "./Generator";
 
 /**
  * Init command handler
@@ -19,9 +20,19 @@ export default class InitHandle {
 	 * Init command register
 	 */
 	public constructor() {
-		program.command("init [path]").action((initPath, options) => {
+		program.command("init [path]").action((initPath) => {
 			this.askAllInfo((projectAnswers) => {
-				this.generatePackageJSON(projectAnswers);
+				const packageFile = this.generatePackageJSON(projectAnswers);
+				
+				try {
+					Generator.generatePackageFile(packageFile, path.join(process.cwd(), initPath, projectAnswers.project.name, "package.json") ?? path.join(process.cwd(), projectAnswers.project.name, "package.json"));
+				} catch (error: any) {
+					Terminal.error("Failed to generate package file");
+
+					error.message.split("\n").forEach((line: string) => {
+						Terminal.error("  " + line);
+					});
+				}
 			});
 		});
 	}
@@ -32,7 +43,7 @@ export default class InitHandle {
 			version: projectData.project.version,
 			description: projectData.project.description,
 			author: projectData.project.author,
-			homepage: "",
+			homepage: "" as any,
 			license: projectData.project.license,
 			main: "" as string | undefined,
 			type: "module",
@@ -46,14 +57,14 @@ export default class InitHandle {
 			repository: {
 				type: "git",
 				url: "git+https://github.com/<YourProject>.git",
-			},
+			} as any,
 			scripts: {
 				start: "nitrojs dev",
 				build: "nitrojs build",
 			},
 			bugs: {
 				url: "https://github.com/<YourProject>/issues",
-			},
+			} as any,
 			depDependencies: {
 				"@skylixgh/nitrojs-cli-service": "1.0.0-dev.1",
 			} as any,
@@ -63,6 +74,11 @@ export default class InitHandle {
 		if (projectData.gitOriginUrl) {
 			projectPkg.repository.url = projectData.gitOriginUrl;
 			projectPkg.bugs.url = projectData.gitOriginUrl.slice(0, -4) + "/issues";
+			projectPkg.homepage = projectData.gitOriginUrl.slice(0, -4) + "#readme";
+		} else {
+			delete projectPkg.repository;
+			delete projectPkg.homepage;
+			delete projectPkg.bugs;
 		}
 
 		if (projectData.typeScript && projectData.type != AppConfigType.node) {
@@ -77,7 +93,7 @@ export default class InitHandle {
 			delete projectPkg.main;
 		}
 
-		console.log(projectPkg);
+		return projectPkg;
 	}
 
 	/**
