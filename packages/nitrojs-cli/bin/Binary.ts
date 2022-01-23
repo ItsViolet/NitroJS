@@ -6,6 +6,7 @@ import InitHandle from "./commands/init/InitHandle";
 import Terminal from "@skylixgh/nitrojs-terminal";
 import path from "path";
 import { fileURLToPath } from "url";
+import AddHandle from "./commands/add/AddHandle";
 
 /**
  * The CLI service entry point
@@ -18,7 +19,8 @@ export class Binary {
 		program.version(pkg.version);
 		program.name("NitroJS");
 
-		new InitHandle();
+        new InitHandle();
+        new AddHandle();
 
 		program.parse();
 	}

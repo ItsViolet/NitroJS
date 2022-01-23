@@ -82,7 +82,7 @@ export default class InitHandle {
 								"Successfully generated project files"
 							);
 
-							this.afterGeneration();
+							this.afterGeneration(projectAnswers);
 						} catch (error) {
 							TerminalAnimation.stopAll(
 								ProcessingAnimationNames.generatingSourceFiles,
@@ -116,8 +116,9 @@ export default class InitHandle {
 
 	/**
 	 * After project has been generated
+	 * @param initAnswers Init prompt answers
 	 */
-	private afterGeneration() {
+	private afterGeneration(initAnswers: InitAnswers) {
 		Terminal.success("Your project was generated!");
 
 		TerminalPromptBoolean.prompt(
@@ -126,6 +127,7 @@ export default class InitHandle {
 				if (starOnGit) exec("start https://github.com/SkylixGH/NitroJS");
 
 				Terminal.log("Now let's get started by running the following commands:");
+				Terminal.log(` - Run "cd ${initAnswers.project.name}"`);
 				Terminal.log(` -> Run "npm install" to install your dependencies`);
 				Terminal.log(` -> Run "npm run start" or "npx nitrojs dev" to start your application!`);
 				Terminal.log("Happy coding ;)");
