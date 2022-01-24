@@ -16,10 +16,10 @@ export default class ConfigTools {
 	 */
 	public static read<ConfigurationType>(filePath: string): Promise<ConfigurationType> {
 		return new Promise((resolve, reject) => {
-			let recursiveFilePath: ReturnType<typeof this.getFileRecursive>;
+			let recursiveFilePath: ReturnType<typeof this.getJSFileRecursive>;
 
 			try {
-				recursiveFilePath = this.getFileRecursive(filePath);
+				recursiveFilePath = this.getJSFileRecursive(filePath);
 			} catch (error) {
 				reject(error);
 				return;
@@ -124,7 +124,7 @@ export default class ConfigTools {
 	 * Get the path to the config file, if it doesn't exist, it will try to find files with the same name but js/ts extension
 	 * @param filePath The path to the file with an optional file extension
 	 */
-	private static getFileRecursive(filePath: string): string {
+	private static getJSFileRecursive(filePath: string): string {
 		let endResult: string;
 
 		if (fs.existsSync(filePath) && (filePath.endsWith(".js") || filePath.endsWith(".ts"))) {

@@ -10,6 +10,7 @@ import https from "https";
 import fs from "fs";
 import path from "path";
 import semver from "semver";
+import CommandFlags from "./CommandFlags";
 
 /**
  * Command handler for the add command
@@ -19,7 +20,7 @@ export default class AddHandle {
 	 * Add command entry
 	 */
 	public constructor() {
-		program.command("add <frameworkComponent>").action((frameworkComponent) => {
+		program.command("add <frameworkComponent>").option("--dev", "If the module should be installed as a dev dependency", false).action((frameworkComponent, options: CommandFlags) => {
 			enum ProcessAnimationValues {
 				internet,
 				componentExists,
@@ -161,7 +162,7 @@ export default class AddHandle {
 												},
 											]);
 
-											appPackage.dependencies[`@skylixgh/nitrojs-${frameworkComponent}`] =
+											appPackage[options.dev ? "devDependencies" : "dependencies"][`@skylixgh/nitrojs-${frameworkComponent}`] =
 												this.getLatestTagVersion(releaseType as any, packageInfo.versions);
 
 											try {

@@ -172,7 +172,7 @@ export default class InitHandle {
 				url: "https://github.com/<YourProject>/issues",
 			} as any,
 			depDependencies: {
-				"@skylixgh/nitrojs-cli-service": "1.0.0-dev.1",
+				"@skylixgh/nitrojs-cli": "1.0.0-dev.1",
 			} as any,
 			dependencies: {} as any,
 		};
