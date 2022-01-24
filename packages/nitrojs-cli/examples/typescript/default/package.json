@@ -28,7 +28,6 @@
         "url": "https://github.com/SkylixGH/NitroJS/issues"
     },
     "devDependencies": {
-        "@skylixgh/nitrojs-cli": "2.0.0-dev.1"
-    },
-    "dependencies": {}
+        "@skylixgh/nitrojs-cli": "file:../../.."
+    }
 }

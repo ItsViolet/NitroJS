@@ -53,7 +53,7 @@ export default class ConfigTools {
 	private static processTSConfig(filePath: string): Promise<Object> {
 		return new Promise((resolve, reject) => {
 			tsImport
-				.compile(filePath, path.dirname(filePath))
+				.compile(filePath)
 				.then((module) => {
 					if (this.handleModuleConfig(module, reject)) {
 						return;
@@ -113,7 +113,7 @@ export default class ConfigTools {
 				.catch((error) => {
 					reject(
 						new Error(
-							`${ConfigToolsReadError.configContainsErrors} | ${error.message}\n${error.stack}`
+							`${ConfigToolsReadError.configContainsErrors} | ${error.stack}`
 						)
 					);
 				});
