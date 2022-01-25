@@ -18,7 +18,7 @@ export default class DevHandle {
 			.command("dev [projectRoot]")
 			.option("--config", "The configuration path", "nitrojs.config")
             .action((projectRoot, options: CommandFlags) => {
-				Utils.readConfig(path.join(process.cwd(), projectRoot ?? "./", options.config ?? "nitrojs.config"), (config) => {
+				Utils.readConfig(path.join(projectRoot ?? "./", options.config ?? "nitrojs.config"), (config) => {
 					if (config.type == AppConfigType.node) {
 						new Node(options, path.join(process.cwd(), projectRoot ?? "./"));
                     } else {

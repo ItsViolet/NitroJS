@@ -51,7 +51,7 @@ export default class Utils {
 				TerminalAnimation.stopAll(
 					"config-loading",
 					TerminalAnimationState.error,
-					`Failed to load the configuration, the "nitrojs.config" could not be found with ".ts" or ".js" extensions`
+					`Failed to load the configuration, the "${configPath}" could not be found with ".ts" or ".js" extensions`
 				);
 
 				process.exit(0);
