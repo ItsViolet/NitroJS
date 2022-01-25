@@ -1,6 +1,6 @@
 import CommandFlags from "../CommandFlags";
 import path from "path";
-import CacheStore from "../CacheStore";
+import CacheStore from "../../../utils/cacheStore/CacheStore";
 
 /**
  * Class for handling NodeJS based dev server applications

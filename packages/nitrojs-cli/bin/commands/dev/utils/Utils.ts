@@ -4,7 +4,7 @@ import { Binary } from "../../../Binary";
 import deepmerge from "deepmerge";
 import AppConfigType from "../../../interfaces/AppConfigType";
 import { PartialDeep } from "type-fest";
-import CacheStore from "../CacheStore";
+import CacheStore from "../../../utils/cacheStore/CacheStore";
 
 /**
  * Utility methods
