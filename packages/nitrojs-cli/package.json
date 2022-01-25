@@ -5,10 +5,10 @@
 	"author": "Skylix",
 	"homepage": "https://github.com/SkylixGH/NitroJS#readme",
 	"license": "MIT",
-	"main": "./build/src/CLIService.js",
+	"main": "./build/src/CLI.js",
 	"type": "module",
-	"types": "./types/src/CLIService.d.ts",
-	"exports": "./build/src/CLIService.js",
+	"types": "./types/src/CLI.d.ts",
+	"exports": "./build/src/CLI.js",
 	"bin": {
 		"nitrojs": "./build/bin/Binary.js"
 	},
@@ -42,7 +42,6 @@
 		"type-fest": "^2.10.0"
 	},
 	"dependencies": {
-		"@skylixgh/nitrojs-config-tools": "^2.0.0-dev.1",
 		"@skylixgh/nitrojs-terminal": "2.0.0-dev.1",
 		"@types/fs-extra": "^9.0.13",
 		"commander": "^8.3.0",

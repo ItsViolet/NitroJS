@@ -5,7 +5,6 @@
     "author": "",
     "homepage": "https://github.com/SkylixGH/NitroJS#readme",
     "license": "ISC",
-    "main": "src/Main",
     "type": "module",
     "directories": {
         "src": "src"

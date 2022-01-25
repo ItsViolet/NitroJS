@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
-import { Binary } from "../../../Binary";
+import { Binary } from "../../Binary";
 
 /**
  * The cache store for the NodeJS project
@@ -17,7 +17,10 @@ export default class CacheStore {
      */
     public static initialize(projectRoot: string) {
         try {
-            fs.mkdir(path.join(projectRoot, ".nitrojs"));
+            fs.mkdir(path.join(projectRoot, ".nitrojs"), {
+                recursive: true
+            });
+            
             this._location = path.join(projectRoot, ".nitrojs");
         } catch (error) {
             Binary.renderErrorException(error);
