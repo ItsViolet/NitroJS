@@ -3,7 +3,7 @@ import { program } from "commander";
 import path from "path";
 import AppConfigType from "../../interfaces/AppConfigType";
 import CommandFlags from "./CommandFlags";
-import Utils from "./utils/Utils";
+import Utils from "../../utils/Utils";
 import Node from "./node/Node";
 
 /**
