@@ -17,7 +17,7 @@ export default class CacheStore {
 	 */
 	public static initialize(projectRoot: string) {
 		try {
-			fs.mkdir(path.join(projectRoot, ".nitrojs"), {
+			fs.mkdirSync(path.join(projectRoot, ".nitrojs"), {
 				recursive: true,
 			});
 
@@ -47,17 +47,15 @@ export default class CacheStore {
 			fs.writeFileSync(pathRelativeToCacheRoot, dataContents, {});
 		};
 
-		if (!fs.existsSync(pathRelativeToCacheRoot)) {
-			if (path.dirname(pathRelativeToCacheRoot) != pathRelativeToCacheRoot) {
-				fs.mkdir(path.dirname(pathRelativeToCacheRoot), {
-					recursive: true,
-				});
-				afterDirReady();
-			} else {
-				fs.mkdir(pathRelativeToCacheRoot, {
-					recursive: true,
-				});
-			}
+		if (path.dirname(pathRelativeToCacheRoot) != pathRelativeToCacheRoot) {
+			fs.mkdir(path.dirname(pathRelativeToCacheRoot), {
+				recursive: true,
+			});
+			afterDirReady();
+		} else {
+			fs.mkdir(pathRelativeToCacheRoot, {
+				recursive: true,
+			});
 		}
 
 		return pathRelativeToCacheRoot;

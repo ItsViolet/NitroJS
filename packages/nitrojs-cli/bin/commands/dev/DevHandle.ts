@@ -5,6 +5,7 @@ import AppConfigType from "../../interfaces/AppConfigType";
 import CommandFlags from "./CommandFlags";
 import Utils from "../../utils/Utils";
 import Node from "./node/Node";
+import CacheStore from "../../utils/cacheStore/CacheStore";
 
 /**
  * Command handler for the universal dev server
@@ -18,6 +19,8 @@ export default class DevHandle {
 			.command("dev [projectRoot]")
 			.option("--config", "The configuration path", "nitrojs.config")
             .action((projectRoot, options: CommandFlags) => {
+				CacheStore.initialize(path.join(process.cwd(), projectRoot ?? "./"));
+				
 				Utils.readConfig(path.join(projectRoot ?? "./", options.config ?? "nitrojs.config"), (config) => {
 					if (config.type == AppConfigType.node) {
 						new Node(options, path.join(process.cwd(), projectRoot ?? "./"));

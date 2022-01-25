@@ -20,6 +20,6 @@ export default class Node {
      * @param projectRoot Project root
      */
     public startDevServer(projectRoot: string) {
-        CacheStore.initialize(path.join(process.cwd(), ));
+        CacheStore.initialize(path.join(process.cwd(), projectRoot));
     }
 }
