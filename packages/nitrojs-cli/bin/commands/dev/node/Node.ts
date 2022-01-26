@@ -118,33 +118,35 @@ export default class Node {
 		};
 
 		recursiveCompileDir();
-		
+
 		this.fileWatcher = chokidar.watch(projectRoot, {
 			ignoreInitial: true,
-			ignored: excludedDirs
+			ignored: excludedDirs,
 		});
 
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
 			try {
-				let compiledCode: string;
+				if (eventType == "add" || eventType == "change") {
+					let compiledCode: string;
 
-				if (filePath.endsWith(".ts")) {
-					compiledCode = this.compileTSC(filePath) ?? "";
-				} else {
-					compiledCode = fs.readFileSync(filePath).toString();
-                }
+					if (filePath.endsWith(".ts")) {
+						compiledCode = this.compileTSC(filePath) ?? "";
+					} else {
+						compiledCode = fs.readFileSync(filePath).toString();
+					}
 
-				CacheStore.writeStore(
-					path.join("compiled", path.relative(projectRoot, filePath)),
-					compiledCode
-				);
+					CacheStore.writeStore(
+						path.join("compiled", path.relative(projectRoot, filePath)),
+						compiledCode
+					);
 
-				Terminal.log(
-					`New file compiled from "${path.relative("./", filePath)}"`
-				);
-            } catch (error) {
-                Binary.renderErrorException(error);
-            }
+					Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
+				} else if (eventType == "unlink") {
+					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
+				}
+			} catch (error) {
+				Binary.renderErrorException(error);
+			}
 		});
 	}
 

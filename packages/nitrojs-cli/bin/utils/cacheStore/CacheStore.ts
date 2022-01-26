@@ -52,9 +52,19 @@ export default class CacheStore {
 		fs.mkdir(path.dirname(pathRelativeToCacheRoot), {
 			recursive: true,
 		});
-		
+
 		afterDirReady();
 
 		return pathRelativeToCacheRoot;
+	}
+
+	/**
+	 * Delete a cache record
+	 * @param record The record path relative to cache root
+	 */
+	public static deleteStore(record: string) {
+		try {
+			fs.unlinkSync(path.join(this._location, record));
+		} catch {}
 	}
 }
