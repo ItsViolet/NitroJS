@@ -99,9 +99,17 @@ export default class Node {
 								`New file compiled from "${path.relative(projectRoot, path.join(dir, dirItem))}"`
 							);
 
+							let compiledCode: string;
+
+							if (dirItem.endsWith(".ts")) {
+								this.compileTSC(path.join(projectRoot, dir, dirItem)) ?? "";
+							} else {
+								compiledCode = fs.readFileSync(path.join(projectRoot, dir, dirItem)).toString();
+							}
+
 							CacheStore.writeStore(
 								path.relative(projectRoot, path.join("compiled/", dir, dirItem)),
-								""
+								compiledCode!
 							);
 						} catch {}
 					}
@@ -110,11 +118,7 @@ export default class Node {
 		};
 
 		recursiveCompileDir();
-
-		const isDirEvent = (eventName: string): boolean => {
-			return eventName == "addDir" || eventName == "unlinkDir";
-		};
-
+		
 		this.fileWatcher = chokidar.watch(projectRoot, {
 			ignoreInitial: true,
 			ignored: excludedDirs
@@ -122,13 +126,21 @@ export default class Node {
 
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
 			try {
-				Terminal.log(
-					`New file compiled from "${path.join("compiled", path.relative(projectRoot, filePath))}"`
-				);
+				let compiledCode: string;
+
+				if (filePath.endsWith(".ts")) {
+					this.compileTSC(filePath) ?? "";
+				} else {
+					compiledCode = fs.readFileSync(filePath).toString();
+				}
 
 				CacheStore.writeStore(
 					path.join("compiled", path.relative(projectRoot, filePath)),
-					this.compileTSC(fs.readFileSync(filePath).toString()) ?? ""
+					compiledCode!
+				);
+
+				Terminal.log(
+					`New file compiled from "${path.relative(projectRoot, filePath)}"`
 				);
 			} catch {}
 
