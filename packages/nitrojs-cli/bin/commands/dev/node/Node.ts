@@ -84,7 +84,6 @@ export default class Node {
 		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null =
 			null;
 		let projectPackage: any = {};
-		let isTS = false;
 		let finalMainPath = "";
 		let exitListenerClosed = false;
 
@@ -154,9 +153,6 @@ export default class Node {
 			} catch {}
 		};
 
-		recursiveCompileDir();
-		bootEntry();
-
 		this.fileWatcher = chokidar.watch(projectRoot, {
 			ignoreInitial: true,
 			ignored: excludedDirs,
@@ -182,12 +178,10 @@ export default class Node {
 		}
 
 		if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
-			isTS = true;
 			finalMainPath = path.join(projectRoot, projectPackage.main);
 		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
 			finalMainPath = path.join(projectRoot, projectPackage.main);
 		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".ts")) {
-			isTS = true;
 			finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
 		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".js")) {
 			finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
@@ -199,6 +193,9 @@ export default class Node {
 			);
 			process.exit(0);
 		}
+
+		recursiveCompileDir();
+		bootEntry();
 
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
 			try {

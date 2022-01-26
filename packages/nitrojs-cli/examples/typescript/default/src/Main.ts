@@ -7,7 +7,8 @@ new class Main {
      */ 
     public constructor(args: string[] = []) { 
         console.log("This application was built with NitroJS ");
-        console.log("Hello world!");
+        console.log("  Hello world!");
+        console.log(`  ${process.argv.join(", ")}`);
     }
 }
-     
+      
