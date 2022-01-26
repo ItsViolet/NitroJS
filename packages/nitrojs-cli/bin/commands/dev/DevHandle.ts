@@ -1,4 +1,4 @@
-import Terminal, { TerminalAnimation } from "@skylixgh/nitrojs-terminal";
+import Terminal, { TerminalAnimation, TerminalPrompt } from "@skylixgh/nitrojs-terminal";
 import { program } from "commander";
 import path from "path";
 import AppConfigType from "../../interfaces/AppConfigType";
@@ -18,16 +18,21 @@ export default class DevHandle {
 		program
 			.command("dev [projectRoot]")
 			.option("--config", "The configuration path", "nitrojs.config")
-            .action((projectRoot, options: CommandFlags) => {
+			.action((projectRoot, options: CommandFlags) => {
 				CacheStore.initialize(path.join(process.cwd(), projectRoot ?? "./"));
-				
-				Utils.readConfig(path.join(projectRoot ?? "./", options.config ?? "nitrojs.config"), (config) => {
-					if (config.type == AppConfigType.node) {
-						new Node(options, path.join(process.cwd(), projectRoot ?? "./"), config);
-                    } else {
-                        Terminal.notice("This dev server cannot execute your app because this type of app isn't supported yet");
-                    }
-				});
+
+				Utils.readConfig(
+					path.join(projectRoot ?? "./", options.config ?? "nitrojs.config"),
+					(config) => {
+						if (config.type == AppConfigType.node) {
+							new Node(options, path.join(process.cwd(), projectRoot ?? "./"), config).registerExitListener();
+						} else {
+							Terminal.notice(
+								"This dev server cannot execute your app because this type of app isn't supported yet"
+							);
+						}
+					}
+				);
 			});
 	}
 }

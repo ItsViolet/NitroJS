@@ -115,9 +115,5 @@ export default class Utils {
 				renderJSError(error);
 			}
 		}
-
-		callback({
-			type: AppConfigType.node,
-		});
 	}
 }
