@@ -171,7 +171,7 @@ export default class InitHandle {
 			bugs: {
 				url: "https://github.com/<YourProject>/issues",
 			} as any,
-			depDependencies: {
+			devDependencies: {
 				"@skylixgh/nitrojs-cli": "1.0.0-dev.1",
 			} as any,
 			dependencies: {} as any,

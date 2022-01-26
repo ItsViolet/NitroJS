@@ -6,6 +6,7 @@ import fs from "fs-extra";
 import path from "path";
 import { TerminalAnimation, TerminalAnimationState } from "@skylixgh/nitrojs-terminal";
 import { minify } from "terser";
+import typeScript from "typescript";
 
 /**
  * Utility methods
@@ -35,9 +36,9 @@ export default class Utils {
 		} else if (fs.existsSync(path.join(process.cwd(), configPath + ".ts"))) {
 			configPathFinal = path.join(process.cwd(), configPath + ".ts");
 			isTS = true;
-		} else if (configPath.endsWith(".js")) { 
+		} else if (configPath.endsWith(".js")) {
 			configPathFinal = path.join(process.cwd(), configPath);
-		} else if (fs.existsSync(configPathFinal = path.join(process.cwd(), configPath + ".js"))) { 
+		} else if (fs.existsSync((configPathFinal = path.join(process.cwd(), configPath + ".js")))) {
 			configPathFinal = path.join(process.cwd(), configPath + ".js");
 		} else {
 			if (
@@ -63,18 +64,62 @@ export default class Utils {
 			})
 		);
 
-		function afterConfigFetch() {
-
-		}
+		function afterConfigFetch() {}
 
 		if (isTS) {
-			try {
-
-
-				// CacheStore.writeStore("config/build.js", transpiled);
-			} catch (error) {
-				TerminalAnimation.stopAll("config-loading", TerminalAnimationState.error, "Failed to load TypeScript based configuration");
+			const renderTSError = (error: any) => {
+				TerminalAnimation.stopAll(
+					"config-loading",
+					TerminalAnimationState.error,
+					"Failed to load TypeScript based configuration"
+				);
 				Binary.renderErrorException(error);
+			};
+
+			try {
+				const transpiled = typeScript.transpileModule(fs.readFileSync(configPathFinal).toString(), {
+					compilerOptions: {
+						target: typeScript.ScriptTarget.ESNext,
+						module: typeScript.ModuleKind.ESNext,
+					},
+				}).outputText;
+
+				minify(transpiled)
+					.then((minified) => {
+						CacheStore.writeStore("config/esm.js", minified.code ?? "");
+
+						import(`file://${path.join(CacheStore.location, "config/esm.js")}`)
+							.then((configAsModule) => {
+								if (Array.isArray(configAsModule.default)) {
+									renderTSError(
+										new Error("The default export is exporting an array but an object was expected")
+									);
+									process.exit(0);
+								}
+
+								if (typeof configAsModule.default != "object") {
+									renderTSError(
+										new Error(
+											"The default export does not export an object, only object can be exported"
+										)
+									);
+									process.exit(0);
+								}
+
+								TerminalAnimation.stopAll(
+									"config-loading",
+									TerminalAnimationState.success,
+									"Successfully loaded TypeScript based configuration"
+								);
+								callback(configAsModule.default);
+							})
+							.catch((error) => renderTSError(error));
+					})
+					.catch((error) => {
+						renderTSError(error);
+					});
+			} catch (error) {
+				renderTSError(error);
 			}
 		} else {
 			const renderJSError = (error: any) => {
@@ -84,33 +129,47 @@ export default class Utils {
 					"Failed to load JavaScript based configuration"
 				);
 				Binary.renderErrorException(error);
-			}
+			};
 
 			try {
 				const jsConfig = fs.readFileSync(configPathFinal).toString();
 
-				minify(jsConfig).then(minified => {
-					CacheStore.writeStore("config/esm.js", minified.code ?? "");
+				minify(jsConfig)
+					.then((minified) => {
+						CacheStore.writeStore("config/esm.js", minified.code ?? "");
 
-					import(`file://${configPathFinal}`).then(configAsModule => {
-						if (Array.isArray(configAsModule.default)) {
-							renderJSError(new Error("The default export is exporting an array but an object was expected"));
-							process.exit(0);
-						}
+						import(`file://${configPathFinal}`)
+							.then((configAsModule) => {
+								if (Array.isArray(configAsModule.default)) {
+									renderJSError(
+										new Error("The default export is exporting an array but an object was expected")
+									);
+									process.exit(0);
+								}
 
-						if (typeof configAsModule.default != "object") {
-							renderJSError(new Error("The default export does not export an object, only object can be exported"));
-							process.exit(0);
-						}
+								if (typeof configAsModule.default != "object") {
+									renderJSError(
+										new Error(
+											"The default export does not export an object, only object can be exported"
+										)
+									);
+									process.exit(0);
+								}
 
-						TerminalAnimation.stopAll("config-loading", TerminalAnimationState.success, "Successfully loaded JavaScript based configuration");
-						callback(configAsModule.default);
-					}).catch(error => {
+								TerminalAnimation.stopAll(
+									"config-loading",
+									TerminalAnimationState.success,
+									"Successfully loaded JavaScript based configuration"
+								);
+								callback(configAsModule.default);
+							})
+							.catch((error) => {
+								renderJSError(error);
+							});
+					})
+					.catch((error) => {
 						renderJSError(error);
 					});
-				}).catch((error) => {
-					renderJSError(error);
-				});
 			} catch (error) {
 				renderJSError(error);
 			}
