@@ -7,6 +7,8 @@ import path from "path";
 import { TerminalAnimation, TerminalAnimationState } from "@skylixgh/nitrojs-terminal";
 import { minify } from "terser";
 import typeScript from "typescript";
+import deepmerge from "deepmerge";
+import { PartialDeep } from "type-fest";
 
 /**
  * Utility methods
@@ -24,6 +26,17 @@ export default class Utils {
 				name: "config-loading",
 			},
 		]);
+
+		const defaultForConfig = (config: PartialDeep<AppConfig>) => {
+			return deepmerge({
+				type: AppConfigType.node,
+				node: {
+					program: {
+						args: []
+					}
+				}
+			}, config);
+		};
 
 		CacheStore.writeStore("config/meta.json", "{}");
 
@@ -111,7 +124,7 @@ export default class Utils {
 									TerminalAnimationState.success,
 									"Successfully loaded TypeScript based configuration"
 								);
-								callback(configAsModule.default);
+								callback(defaultForConfig(configAsModule.default));
 							})
 							.catch((error) => renderTSError(error));
 					})
@@ -161,7 +174,7 @@ export default class Utils {
 									TerminalAnimationState.success,
 									"Successfully loaded JavaScript based configuration"
 								);
-								callback(configAsModule.default);
+								callback(defaultForConfig(configAsModule.default));
 							})
 							.catch((error) => {
 								renderJSError(error);

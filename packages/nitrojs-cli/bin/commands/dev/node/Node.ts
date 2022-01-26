@@ -8,6 +8,7 @@ import Terminal, { TerminalPrompt } from "@skylixgh/nitrojs-terminal";
 import path from "path";
 import CacheStore from "../../../utils/cacheStore/CacheStore";
 import { Binary } from "../../../Binary";
+import ScriptVirtualMachine from "./ScriptVirtualMachine";
 
 /**
  * Class for handling NodeJS based dev server applications
@@ -127,7 +128,9 @@ export default class Node {
 		this.fileWatcher = chokidar.watch(projectRoot, {
 			ignoreInitial: true,
 			ignored: excludedDirs,
-		});
+        });
+        
+        let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null = null;
 
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
 			try {
@@ -155,7 +158,9 @@ export default class Node {
 					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
 				} else if (eventType == "addDir") {
 					CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
-				}
+                }
+                
+
 			} catch (error) {
 				Binary.renderErrorException(error);
 			}
