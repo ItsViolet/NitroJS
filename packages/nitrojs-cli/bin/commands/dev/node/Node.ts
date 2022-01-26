@@ -128,43 +128,84 @@ export default class Node {
 		this.fileWatcher = chokidar.watch(projectRoot, {
 			ignoreInitial: true,
 			ignored: excludedDirs,
-        });
-        
-        let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null = null;
-
-		this.fileWatcher.on("all", (eventType, filePath, stats) => {
-			try {
-				if (eventType == "add" || eventType == "change") {
-					let compiledCode: string;
-
-					if (filePath.endsWith(".ts")) {
-						compiledCode = this.compileTSC(filePath) ?? "";
-					} else {
-						compiledCode = fs.readFileSync(filePath).toString();
-					}
-
-					let finalFilePath = filePath;
-					if (finalFilePath.endsWith(".ts")) {
-						finalFilePath = finalFilePath.slice(0, -2) + "js";
-					}
-
-					CacheStore.writeStore(
-						path.join("compiled", path.relative(projectRoot, finalFilePath)),
-						compiledCode
-					);
-
-					Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
-				} else if (eventType == "unlink") {
-					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
-				} else if (eventType == "addDir") {
-					CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
-                }
-                
-
-			} catch (error) {
-				Binary.renderErrorException(error);
-			}
 		});
+
+		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null =
+			null;
+		let projectMainLocation = "";
+		let projectPackage: any = {};
+        let isTS = false;
+        let finalMainPath = "";
+
+		try {
+			projectPackage = JSON.parse(
+				fs.readFileSync(path.join(projectRoot, "package.json")).toString()
+			);
+		} catch (error) {
+			Binary.renderErrorException(error);
+			process.exit(0);
+		}
+
+		if (typeof projectPackage.main != "string") {
+			Binary.renderErrorException(
+				new Error(
+					"Failed to load main script because the main property in the package file does not exist or is not a string"
+				)
+			);
+			process.exit(0);
+		}
+
+		if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
+            isTS = true;
+            finalMainPath = path.join(projectRoot, projectPackage.main);
+        } else if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
+            finalMainPath = path.join(projectRoot, projectPackage.main);
+		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + "ts")) {
+            isTS = true;
+            finalMainPath = path.join(projectRoot, projectPackage.main) + "ts";
+        } else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + "js")) {
+            finalMainPath = path.join(projectRoot, projectPackage.main) + "js";
+        } else {
+            Binary.renderErrorException(new Error("The main file provided in the package file could not be found with the .js or .ts extensions"));
+            process.exit(0);
+        }
+
+			this.fileWatcher.on("all", (eventType, filePath, stats) => {
+				try {
+					if (eventType == "add" || eventType == "change") {
+						let compiledCode: string;
+
+						if (filePath.endsWith(".ts")) {
+							compiledCode = this.compileTSC(filePath) ?? "";
+						} else {
+							compiledCode = fs.readFileSync(filePath).toString();
+						}
+
+						let finalFilePath = filePath;
+						if (finalFilePath.endsWith(".ts")) {
+							finalFilePath = finalFilePath.slice(0, -2) + "js";
+						}
+
+						CacheStore.writeStore(
+							path.join("compiled", path.relative(projectRoot, finalFilePath)),
+							compiledCode
+						);
+
+						Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
+						currentScriptProcess = ScriptVirtualMachine.runProcessScript(
+							projectRoot,
+							projectMainLocation,
+							config.node.program.args
+						);
+					} else if (eventType == "unlink") {
+						CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
+					} else if (eventType == "addDir") {
+						CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
+					}
+				} catch (error) {
+					Binary.renderErrorException(error);
+				}
+			});
 	}
 
 	/**
