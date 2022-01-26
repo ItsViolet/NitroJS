@@ -3,8 +3,8 @@
  */
 new class Main {
     /**
-     * Application main entry
-     */
+     * Application main entry 
+     */ 
     public constructor() {
         console.log("Hello world!");
     }

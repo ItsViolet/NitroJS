@@ -4,7 +4,10 @@ import fs from "fs-extra";
 import AppConfig from "../../../interfaces/AppConfig";
 import chokidar, { FSWatcher } from "chokidar";
 import { ChildProcess } from "child_process";
-import { TerminalPrompt } from "@skylixgh/nitrojs-terminal";
+import Terminal, { TerminalPrompt } from "@skylixgh/nitrojs-terminal";
+import path from "path";
+import CacheStore from "../../../utils/cacheStore/CacheStore";
+import { Binary } from "../../../Binary";
 
 /**
  * Class for handling NodeJS based dev server applications
@@ -51,9 +54,64 @@ export default class Node {
 			ignoreInitial: true,
 		});
 
+		const excludedDirs = [
+			"./.nitrojs",
+			"./node_modules",
+			".git",
+			".vscode",
+			".vs",
+			".idea",
+			".atom",
+			"nitrojs.config.js",
+			"nitrojs.config.ts"
+		] as string[];
+
+		excludedDirs.forEach((excluded, index) => {
+			excludedDirs[index] = path.join(projectRoot, excluded);
+		});
+
+		const dirNotExcluded = (dirPath: string): boolean => {
+			return !excludedDirs.includes(dirPath);
+		};
+
+		const recursiveCompileDir = (dir: string) => {
+			const dirContents = fs.readdirSync(dir);
+
+			try {
+				dirContents.forEach((dirItem) => {
+					if (dirNotExcluded(path.join(dir, dirItem))) {
+						console.log(dirItem);
+						// if (fs.lstatSync(dirItem).isDirectory() && dirNotExcluded(dirItem)) {
+						// 	recursiveCompileDir(dirItem);
+						// 	return;
+						// }
+
+						console.log(path.relative(projectRoot, dirItem));
+						// CacheStore.writeStore(path.join("compiled", ))
+					}
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		recursiveCompileDir(projectRoot);
+
+		const isDirEvent = (eventName: string): boolean => {
+			return eventName == "addDir" || eventName == "unlinkDir";
+		};
+
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
+			if (isDirEvent(eventType)) return;
+
 			if (filePath.endsWith(".ts")) {
-				console.log(this.compileTSC(filePath));
+				const typeScriptCode = this.compileTSC(filePath);
+				console.log(typeScriptCode);
+			} else if (filePath.endsWith(".js")) {
+			}
+
+			if (eventType == "change") {
+				Terminal.log(`New file compiled from "${filePath}"`);
 			}
 		});
 	}
