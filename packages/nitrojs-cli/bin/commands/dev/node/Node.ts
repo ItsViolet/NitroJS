@@ -152,19 +152,25 @@ export default class Node {
 					"Failed to load main script because the main property in the package file does not exist or is not a string"
 				)
 			);
+
 			process.exit(0);
 		}
 
+		console.log(
+			fs.existsSync(path.join(projectRoot, projectPackage.main) + "ts"),
+			path.join(projectRoot, projectPackage.main)
+		);
+		
 		if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
             isTS = true;
             finalMainPath = path.join(projectRoot, projectPackage.main);
         } else if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
             finalMainPath = path.join(projectRoot, projectPackage.main);
-		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + "ts")) {
+		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".ts")) {
             isTS = true;
-            finalMainPath = path.join(projectRoot, projectPackage.main) + "ts";
-        } else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + "js")) {
-            finalMainPath = path.join(projectRoot, projectPackage.main) + "js";
+            finalMainPath = path.join(projectRoot, projectPackage.main) + ".ts";
+        } else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".js")) {
+            finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
         } else {
             Binary.renderErrorException(new Error("The main file provided in the package file could not be found with the .js or .ts extensions"));
             process.exit(0);
