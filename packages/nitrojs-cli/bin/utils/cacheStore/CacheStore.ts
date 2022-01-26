@@ -77,7 +77,9 @@ export default class CacheStore {
 	public static deleteStoreDir(dirPath: string) {
 		try {
 			fs.unlinkSync(path.join(this._location, dirPath));
-		} catch {}
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 	/**

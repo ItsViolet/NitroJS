@@ -5,7 +5,7 @@ new class Main {
     /**
      * Application main entry  
      */ 
-    public constructor() { 
+    public constructor(args: string[] = []) { 
         console.log("Hello world!");
     }
 }

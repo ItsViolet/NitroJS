@@ -107,8 +107,13 @@ export default class Node {
 								compiledCode = fs.readFileSync(path.join(projectRoot, dir, dirItem)).toString();
 							}
 
+							let finalDirItem = dirItem;
+							if (dirItem.endsWith(".ts")) {
+								finalDirItem = finalDirItem.slice(0, -2) + "js";
+							}
+
 							CacheStore.writeStore(
-								path.relative(projectRoot, path.join("compiled/", dir, dirItem)),
+								path.relative(projectRoot, path.join("compiled/", dir, finalDirItem)),
 								compiledCode
 							);
 						} catch {}
@@ -135,8 +140,13 @@ export default class Node {
 						compiledCode = fs.readFileSync(filePath).toString();
 					}
 
+					let finalFilePath = filePath;
+					if (finalFilePath.endsWith(".ts")) {
+						finalFilePath = finalFilePath.slice(0, -2) + "js";
+					}
+
 					CacheStore.writeStore(
-						path.join("compiled", path.relative(projectRoot, filePath)),
+						path.join("compiled", path.relative(projectRoot, finalFilePath)),
 						compiledCode
 					);
 
@@ -145,8 +155,6 @@ export default class Node {
 					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
 				} else if (eventType == "addDir") {
 					CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
-				} else if (eventType == "unlinkDir") {
-					CacheStore.deleteStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
 				}
 			} catch (error) {
 				Binary.renderErrorException(error);
