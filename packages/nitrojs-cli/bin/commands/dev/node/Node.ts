@@ -143,6 +143,10 @@ export default class Node {
 					Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
 				} else if (eventType == "unlink") {
 					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
+				} else if (eventType == "addDir") {
+					CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
+				} else if (eventType == "unlinkDir") {
+					CacheStore.deleteStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
 				}
 			} catch (error) {
 				Binary.renderErrorException(error);

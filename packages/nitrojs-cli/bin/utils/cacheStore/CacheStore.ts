@@ -59,6 +59,28 @@ export default class CacheStore {
 	}
 
 	/**
+	 * Create a new cache dir
+	 * @param dirPath The path to the directory relative to the cache root
+	 */
+	public static writeStoreDir(dirPath: string) {
+		try {
+			fs.mkdir(path.join(this._location, dirPath), {
+				recursive: true,
+			});
+		} catch {}
+	}
+
+	/**
+	 * Delete a cache dir
+	 * @param dirPath The path to the directory relative to the cache root
+	 */
+	public static deleteStoreDir(dirPath: string) {
+		try {
+			fs.unlinkSync(path.join(this._location, dirPath));
+		} catch {}
+	}
+
+	/**
 	 * Delete a cache record
 	 * @param record The record path relative to cache root
 	 */
