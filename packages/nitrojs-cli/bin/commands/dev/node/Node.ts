@@ -74,20 +74,28 @@ export default class Node {
 			return !excludedDirs.includes(dirPath);
 		};
 
-		const recursiveCompileDir = (dir: string) => {
+		const recursiveCompileDir = (dir = projectRoot) => {
 			const dirContents = fs.readdirSync(dir);
 
 			try {
 				dirContents.forEach((dirItem) => {
 					if (dirNotExcluded(path.join(dir, dirItem))) {
-						console.log(dirItem);
-						// if (fs.lstatSync(dirItem).isDirectory() && dirNotExcluded(dirItem)) {
-						// 	recursiveCompileDir(dirItem);
-						// 	return;
-						// }
+						if (fs.lstatSync(path.join(dir, dirItem)).isDirectory() && dirNotExcluded(dirItem)) {
+							recursiveCompileDir(dirItem);
+							return;
+						}
 
-						console.log(path.relative(projectRoot, dirItem));
-						// CacheStore.writeStore(path.join("compiled", ))
+						Terminal.log(
+							`New file compiled from "${path.relative(projectRoot, path.join(dir, dirItem))}"`
+						);
+
+						try {
+							CacheStore.writeStore(path.relative(projectRoot, "compiled/" + path.join(dir, dirItem)), "");
+
+							// Terminal.log(
+							// 	`New file compiled from "${path.relative(projectRoot, path.join(dir, dirItem))}"`
+							// );
+						} catch {}
 					}
 				});
 			} catch (error) {
@@ -95,7 +103,7 @@ export default class Node {
 			}
 		};
 
-		recursiveCompileDir(projectRoot);
+		recursiveCompileDir();
 
 		const isDirEvent = (eventName: string): boolean => {
 			return eventName == "addDir" || eventName == "unlinkDir";
