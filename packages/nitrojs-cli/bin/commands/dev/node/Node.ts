@@ -79,7 +79,7 @@ export default class Node {
 
 			try {
 				dirContents.forEach((dirItem) => {
-					if (dirNotExcluded(path.join(dir, dirItem))) {
+					if (dirNotExcluded(path.join(projectRoot, dir, dirItem))) {
 						if (fs.lstatSync(path.join(dir, dirItem)).isDirectory() && dirNotExcluded(dirItem)) {
 							recursiveCompileDir(dirItem);
 							return;
@@ -109,10 +109,21 @@ export default class Node {
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
 			if (isDirEvent(eventType)) return;
 
-			if (filePath.endsWith(".ts")) {
-				const typeScriptCode = this.compileTSC(filePath);
-				console.log(typeScriptCode);
-			} else if (filePath.endsWith(".js")) {
+			console.log(filePath);
+			if (dirNotExcluded(filePath)) {
+				try {
+					Terminal.log(
+						`New file compiled from "${path.join(
+							"compiled",
+							path.relative(projectRoot, filePath)
+						)}"`
+					);
+
+					CacheStore.writeStore(
+						path.join("compiled", path.relative(projectRoot, filePath)),
+						""
+					);
+				} catch {}
 			}
 
 			if (eventType == "change") {
