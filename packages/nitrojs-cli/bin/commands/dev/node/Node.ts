@@ -81,6 +81,38 @@ export default class Node {
 			return result;
 		};
 
+		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null =
+			null;
+		let projectMainLocation = "";
+		let projectPackage: any = {};
+		let isTS = false;
+		let finalMainPath = "";
+		let exitListenerClosed = false;
+
+		const bootEntry = () => {
+			currentScriptProcess = ScriptVirtualMachine.runProcessScript(
+				projectRoot,
+				path.join(projectRoot, ".nitrojs/compiled", path.relative(projectRoot, finalMainPath)),
+				config.node.program.args
+			);
+
+			currentScriptProcess.stdin?.pipe(process.stdin);
+
+			currentScriptProcess.stdout?.pipe(process.stdout);
+			currentScriptProcess.stderr?.pipe(process.stderr);
+
+			if (exitListenerClosed) this.registerExitListener();
+		};
+
+		const killEntry = () => {
+			if (exitListenerClosed) this.registerExitListener();
+
+			if (currentScriptProcess) {
+				currentScriptProcess.kill();
+				currentScriptProcess = null;
+			}
+		};
+
 		const recursiveCompileDir = (dir = "./") => {
 			const dirContents = fs.readdirSync(dir);
 
@@ -124,18 +156,12 @@ export default class Node {
 		};
 
 		recursiveCompileDir();
+		bootEntry();
 
 		this.fileWatcher = chokidar.watch(projectRoot, {
 			ignoreInitial: true,
 			ignored: excludedDirs,
 		});
-
-		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null =
-			null;
-		let projectMainLocation = "";
-		let projectPackage: any = {};
-        let isTS = false;
-        let finalMainPath = "";
 
 		try {
 			projectPackage = JSON.parse(
@@ -156,62 +182,64 @@ export default class Node {
 			process.exit(0);
 		}
 
-		console.log(
-			fs.existsSync(path.join(projectRoot, projectPackage.main) + "ts"),
-			path.join(projectRoot, projectPackage.main)
-		);
-		
 		if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
-            isTS = true;
-            finalMainPath = path.join(projectRoot, projectPackage.main);
-        } else if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
-            finalMainPath = path.join(projectRoot, projectPackage.main);
+			isTS = true;
+			finalMainPath = path.join(projectRoot, projectPackage.main);
+		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main))) {
+			finalMainPath = path.join(projectRoot, projectPackage.main);
 		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".ts")) {
-            isTS = true;
-            finalMainPath = path.join(projectRoot, projectPackage.main) + ".ts";
-        } else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".js")) {
-            finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
-        } else {
-            Binary.renderErrorException(new Error("The main file provided in the package file could not be found with the .js or .ts extensions"));
-            process.exit(0);
-        }
+			isTS = true;
+			finalMainPath = path.join(projectRoot, projectPackage.main) + ".ts";
+		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".js")) {
+			finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
+		} else {
+			Binary.renderErrorException(
+				new Error(
+					"The main file provided in the package file could not be found with the .js or .ts extensions"
+				)
+			);
+			process.exit(0);
+		}
 
-			this.fileWatcher.on("all", (eventType, filePath, stats) => {
-				try {
-					if (eventType == "add" || eventType == "change") {
-						let compiledCode: string;
+		this.fileWatcher.on("all", (eventType, filePath, stats) => {
+			try {
+				if (eventType == "add" || eventType == "change") {
+					let compiledCode: string;
 
-						if (filePath.endsWith(".ts")) {
-							compiledCode = this.compileTSC(filePath) ?? "";
-						} else {
-							compiledCode = fs.readFileSync(filePath).toString();
-						}
-
-						let finalFilePath = filePath;
-						if (finalFilePath.endsWith(".ts")) {
-							finalFilePath = finalFilePath.slice(0, -2) + "js";
-						}
-
-						CacheStore.writeStore(
-							path.join("compiled", path.relative(projectRoot, finalFilePath)),
-							compiledCode
-						);
-
-						Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
-						currentScriptProcess = ScriptVirtualMachine.runProcessScript(
-							projectRoot,
-							projectMainLocation,
-							config.node.program.args
-						);
-					} else if (eventType == "unlink") {
-						CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
-					} else if (eventType == "addDir") {
-						CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
+					if (filePath.endsWith(".ts")) {
+						compiledCode = this.compileTSC(filePath) ?? "";
+					} else {
+						compiledCode = fs.readFileSync(filePath).toString();
 					}
-				} catch (error) {
-					Binary.renderErrorException(error);
+
+					let finalFilePath = filePath;
+					if (finalFilePath.endsWith(".ts")) {
+						finalFilePath = finalFilePath.slice(0, -2) + "js";
+					}
+
+					CacheStore.writeStore(
+						path.join("compiled", path.relative(projectRoot, finalFilePath)),
+						compiledCode
+					);
+
+					Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
+					currentScriptProcess = ScriptVirtualMachine.runProcessScript(
+						projectRoot,
+						projectMainLocation,
+						config.node.program.args
+					);
+				} else if (eventType == "unlink") {
+					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
+				} else if (eventType == "addDir") {
+					CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
 				}
-			});
+			} catch (error) {
+				Binary.renderErrorException(error);
+			}
+
+			killEntry();
+			bootEntry();
+		});
 	}
 
 	/**

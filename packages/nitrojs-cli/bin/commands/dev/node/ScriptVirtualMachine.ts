@@ -11,8 +11,7 @@ export default class ScriptVirtualMachine {
      * @param programArguments All program arguments
 	 */
 	public static runProcessScript(cwd: string, filePath: string, programArguments: string[]): ChildProcess {
-		let cps = spawn("node", ["--no-warnings --experimental-specifier-resolution=node", ]);
-
+		let cps = spawn("node", ["--no-warnings", "--experimental-specifier-resolution=node", filePath, ...programArguments]);
 		return cps;
 	}
 }
