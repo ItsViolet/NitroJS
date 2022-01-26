@@ -9,4 +9,3 @@ new class Main {
         console.log("Hello world!");
     }
 }
- 

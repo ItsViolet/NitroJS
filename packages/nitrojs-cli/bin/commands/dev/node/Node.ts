@@ -50,28 +50,34 @@ export default class Node {
 	 * @param config App config
 	 */
 	private startDevServer(projectRoot: string, config: AppConfig) {
-		this.fileWatcher = chokidar.watch(projectRoot, {
-			ignoreInitial: true,
-		});
+		const joinToRoot = (pathName: string) => {
+			return path.join(projectRoot, pathName);
+		};
 
 		const excludedDirs = [
-			"./.nitrojs",
-			"./node_modules",
-			".git",
-			".vscode",
-			".vs",
-			".idea",
-			".atom",
-			"nitrojs.config.js",
-			"nitrojs.config.ts",
+			joinToRoot("./.nitrojs"),
+			joinToRoot("./node_modules"),
+			joinToRoot(".git"),
+			joinToRoot(".vscode"),
+			joinToRoot(".vs"),
+			joinToRoot(".idea"),
+			joinToRoot(".atom"),
+			joinToRoot("nitrojs.config.js"),
+			joinToRoot("nitrojs.config.ts"),
+			joinToRoot("package-lock.json"),
+			joinToRoot("yarn.lock"),
 		] as string[];
 
-		excludedDirs.forEach((excluded, index) => {
-			excludedDirs[index] = path.join(projectRoot, excluded);
-		});
-
 		const dirNotExcluded = (dirPath: string): boolean => {
-			return !excludedDirs.includes(dirPath);
+			let result = true;
+
+			excludedDirs.forEach((excluded) => {
+				if (path.join(dirPath).startsWith(path.join(excluded))) {
+					result = false;
+				}
+			});
+
+			return result;
 		};
 
 		const recursiveCompileDir = (dir = "./") => {
@@ -80,8 +86,11 @@ export default class Node {
 			try {
 				dirContents.forEach((dirItem) => {
 					if (dirNotExcluded(path.join(projectRoot, dir, dirItem))) {
-						if (fs.lstatSync(path.join(dir, dirItem)).isDirectory() && dirNotExcluded(dirItem)) {
-							recursiveCompileDir(dirItem);
+						if (
+							fs.lstatSync(path.join(projectRoot, dir, dirItem)).isDirectory() &&
+							dirNotExcluded(path.join(projectRoot, dir, dirItem))
+						) {
+							recursiveCompileDir(path.join(dir, dirItem));
 							return;
 						}
 
@@ -106,25 +115,22 @@ export default class Node {
 			return eventName == "addDir" || eventName == "unlinkDir";
 		};
 
+		this.fileWatcher = chokidar.watch(projectRoot, {
+			ignoreInitial: true,
+			ignored: excludedDirs
+		});
+
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
-			if (isDirEvent(eventType)) return;
+			try {
+				Terminal.log(
+					`New file compiled from "${path.join("compiled", path.relative(projectRoot, filePath))}"`
+				);
 
-			console.log(filePath);
-			if (dirNotExcluded(filePath)) {
-				try {
-					Terminal.log(
-						`New file compiled from "${path.join(
-							"compiled",
-							path.relative(projectRoot, filePath)
-						)}"`
-					);
-
-					CacheStore.writeStore(
-						path.join("compiled", path.relative(projectRoot, filePath)),
-						""
-					);
-				} catch {}
-			}
+				CacheStore.writeStore(
+					path.join("compiled", path.relative(projectRoot, filePath)),
+					this.compileTSC(fs.readFileSync(filePath).toString()) ?? ""
+				);
+			} catch {}
 
 			if (eventType == "change") {
 				Terminal.log(`New file compiled from "${filePath}"`);
