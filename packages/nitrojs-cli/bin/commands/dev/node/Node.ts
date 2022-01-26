@@ -63,7 +63,7 @@ export default class Node {
 			".idea",
 			".atom",
 			"nitrojs.config.js",
-			"nitrojs.config.ts"
+			"nitrojs.config.ts",
 		] as string[];
 
 		excludedDirs.forEach((excluded, index) => {
@@ -74,7 +74,7 @@ export default class Node {
 			return !excludedDirs.includes(dirPath);
 		};
 
-		const recursiveCompileDir = (dir = projectRoot) => {
+		const recursiveCompileDir = (dir = "./") => {
 			const dirContents = fs.readdirSync(dir);
 
 			try {
@@ -85,22 +85,19 @@ export default class Node {
 							return;
 						}
 
-						Terminal.log(
-							`New file compiled from "${path.relative(projectRoot, path.join(dir, dirItem))}"`
-						);
-
 						try {
-							CacheStore.writeStore(path.relative(projectRoot, "compiled/" + path.join(dir, dirItem)), "");
+							Terminal.log(
+								`New file compiled from "${path.relative(projectRoot, path.join(dir, dirItem))}"`
+							);
 
-							// Terminal.log(
-							// 	`New file compiled from "${path.relative(projectRoot, path.join(dir, dirItem))}"`
-							// );
+							CacheStore.writeStore(
+								path.relative(projectRoot, path.join("compiled/", dir, dirItem)),
+								""
+							);
 						} catch {}
 					}
 				});
-			} catch (error) {
-				console.log(error);
-			}
+			} catch {}
 		};
 
 		recursiveCompileDir();
