@@ -1,4 +1,4 @@
-import { AppConfigType, typeConfig } from "../../../build/src/CLI";
+import { AppConfigType, typeConfig } from "@skylixgh/nitrojs-cli";
 
 export default typeConfig({
     type: AppConfigType.node
