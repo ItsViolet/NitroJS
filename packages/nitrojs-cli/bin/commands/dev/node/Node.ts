@@ -102,14 +102,14 @@ export default class Node {
 							let compiledCode: string;
 
 							if (dirItem.endsWith(".ts")) {
-								this.compileTSC(path.join(projectRoot, dir, dirItem)) ?? "";
+								compiledCode = this.compileTSC(path.join(projectRoot, dir, dirItem)) ?? "";
 							} else {
 								compiledCode = fs.readFileSync(path.join(projectRoot, dir, dirItem)).toString();
 							}
 
 							CacheStore.writeStore(
 								path.relative(projectRoot, path.join("compiled/", dir, dirItem)),
-								compiledCode!
+								compiledCode
 							);
 						} catch {}
 					}
@@ -129,24 +129,22 @@ export default class Node {
 				let compiledCode: string;
 
 				if (filePath.endsWith(".ts")) {
-					this.compileTSC(filePath) ?? "";
+					compiledCode = this.compileTSC(filePath) ?? "";
 				} else {
 					compiledCode = fs.readFileSync(filePath).toString();
-				}
+                }
 
 				CacheStore.writeStore(
 					path.join("compiled", path.relative(projectRoot, filePath)),
-					compiledCode!
+					compiledCode
 				);
 
 				Terminal.log(
-					`New file compiled from "${path.relative(projectRoot, filePath)}"`
+					`New file compiled from "${path.relative("./", filePath)}"`
 				);
-			} catch {}
-
-			if (eventType == "change") {
-				Terminal.log(`New file compiled from "${filePath}"`);
-			}
+            } catch (error) {
+                Binary.renderErrorException(error);
+            }
 		});
 	}
 

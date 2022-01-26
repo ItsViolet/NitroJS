@@ -5,8 +5,8 @@ new class Main {
     /**
      * Application main entry  
      */ 
-    public constructor() {
+    public constructor() { 
         console.log("Hello world!");
     }
 }
-  
+     
