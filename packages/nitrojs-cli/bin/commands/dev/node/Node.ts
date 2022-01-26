@@ -83,7 +83,6 @@ export default class Node {
 
 		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null =
 			null;
-		let projectMainLocation = "";
 		let projectPackage: any = {};
 		let isTS = false;
 		let finalMainPath = "";
@@ -146,7 +145,7 @@ export default class Node {
 							}
 
 							CacheStore.writeStore(
-								path.relative(projectRoot, path.join("compiled/", dir, finalDirItem)),
+								path.join("compiled", path.relative(projectRoot, path.join(dir, finalDirItem))),
 								compiledCode
 							);
 						} catch {}
@@ -189,7 +188,7 @@ export default class Node {
 			finalMainPath = path.join(projectRoot, projectPackage.main);
 		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".ts")) {
 			isTS = true;
-			finalMainPath = path.join(projectRoot, projectPackage.main) + ".ts";
+			finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
 		} else if (fs.existsSync(path.join(projectRoot, projectPackage.main) + ".js")) {
 			finalMainPath = path.join(projectRoot, projectPackage.main) + ".js";
 		} else {
@@ -225,7 +224,7 @@ export default class Node {
 					Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
 					currentScriptProcess = ScriptVirtualMachine.runProcessScript(
 						projectRoot,
-						projectMainLocation,
+						finalMainPath,
 						config.node.program.args
 					);
 				} else if (eventType == "unlink") {
