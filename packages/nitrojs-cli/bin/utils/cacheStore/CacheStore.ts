@@ -17,9 +17,11 @@ export default class CacheStore {
 	 */
 	public static initialize(projectRoot: string) {
 		try {
-			fs.mkdirSync(path.join(projectRoot, ".nitrojs"), {
-				recursive: true,
-			});
+			if (!fs.existsSync(path.join(projectRoot, ".nitrojs")) {
+				fs.mkdirSync(path.join(projectRoot, ".nitrojs"), {
+					recursive: true,
+				});
+			}
 
 			this._location = path.join(projectRoot, ".nitrojs");
 		} catch (error) {

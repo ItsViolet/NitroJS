@@ -98,7 +98,7 @@ export default class Utils {
 							process.exit(0);
 						}
 
-						if (typeof configAsModule.default == "object") {
+						if (typeof configAsModule.default != "object") {
 							renderJSError(new Error("The default export does not export an object, only object can be exported"));
 							process.exit(0);
 						}
