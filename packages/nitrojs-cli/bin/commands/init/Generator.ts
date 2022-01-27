@@ -6,6 +6,8 @@ import gitignore from "./resources/gitignore";
 import MainScriptTS from "./resources/typescript/node/Main";
 import MainScriptJS from "./resources/javascript/node/Main";
 import TSConfig from "./resources/typescript/node/tsconfig";
+import nitroJSConfigJS from "./resources/javascript/node/nitrojs.config.ts";
+import nitroJSConfigTS from "./resources/typescript/node/nitrojs.config";
 
 /**
  * Class used for generating project resources
@@ -57,9 +59,11 @@ export default class Generator {
 
 			if (initAnswers.typeScript) {
                 fs.writeFileSync(path.join(rootDir, "src/Main.ts"), MainScriptTS);
-                fs.writeFileSync(path.join(rootDir, "./tsconfig.json"), TSConfig);
+				fs.writeFileSync(path.join(rootDir, "./tsconfig.json"), TSConfig);
+				fs.writeFileSync(path.join(rootDir, "./nitrojs.config.ts"), nitroJSConfigTS);
 			} else {
 				fs.writeFileSync(path.join(rootDir, "src/Main.js"), MainScriptJS);
+				fs.writeFileSync(path.join(rootDir, "./nitrojs.config.js"), nitroJSConfigJS);
 			}
 		} else {
 			// TODO: Ofc you know

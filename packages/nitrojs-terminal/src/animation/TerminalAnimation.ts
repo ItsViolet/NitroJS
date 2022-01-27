@@ -115,7 +115,7 @@ export default class TerminalAnimation {
 
 				switch (state) {
 					case TerminalAnimationState.success:
-						hex = "#50FFAB";
+						hex = "#40c283";
 						break;
 
 					case TerminalAnimationState.warning:

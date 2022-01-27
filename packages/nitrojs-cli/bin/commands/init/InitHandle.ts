@@ -16,6 +16,7 @@ import Generator from "./Generator";
 import { Binary } from "../../Binary";
 import chalk from "chalk";
 import { exec } from "child_process";
+import pkg from "../../../package.json";
 
 /**
  * Init command handler
@@ -129,7 +130,7 @@ export default class InitHandle {
 				if (starOnGit) exec("start https://github.com/SkylixGH/NitroJS");
 
 				Terminal.log("Now let's get started by running the following commands:");
-				Terminal.log(` - Run "cd ${initAnswers.project.name}"`);
+				Terminal.log(` -> Run "cd ${initAnswers.project.name}"`);
 				Terminal.log(` -> Run "npm install" to install your dependencies`);
 				Terminal.log(` -> Run "npm run start" or "npx nitrojs dev" to start your application!`);
 				Terminal.log("Happy coding ;)");
@@ -172,7 +173,7 @@ export default class InitHandle {
 				url: "https://github.com/<YourProject>/issues",
 			} as any,
 			devDependencies: {
-				"@skylixgh/nitrojs-cli": "1.0.0-dev.1",
+				"@skylixgh/nitrojs-cli": pkg.version,
 			} as any,
 			dependencies: {} as any,
 		};

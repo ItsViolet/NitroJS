@@ -1,0 +1,26 @@
+{
+    "name": "node",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "MIT",
+    "main": "src/Main",
+    "type": "module",
+    "directories": {
+        "src": "src"
+    },
+    "files": [
+        "src"
+    ],
+    "publishConfig": {
+        "access": "restricted"
+    },
+    "scripts": {
+        "start": "nitrojs dev",
+        "build": "nitrojs build"
+    },
+    "devDependencies": {
+        "@skylixgh/nitrojs-cli": "2.0.0-dev.3"
+    },
+    "dependencies": {}
+}
