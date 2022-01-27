@@ -5,7 +5,7 @@ import Terminal, {
 } from "@skylixgh/nitrojs-terminal";
 
 TerminalPromptString.prompt(
-	"Please enter a number to see if its even or odd",
+	"Please enter a number to see if its even/odd",
 	(answer) => {
 		if (+answer % 2 == 0) {
 			Terminal.success("The number is even");

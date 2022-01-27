@@ -187,7 +187,6 @@ export default class Node {
 	 */
 	private runDevServer(projectRoot: string, programArgs: string[], appPackage: any) {
 		ScriptVirtualMachine.haltVMServer();
-		Terminal.log("The app will now execute");
 
 		ScriptVirtualMachine.runProcessScript(
 			projectRoot,

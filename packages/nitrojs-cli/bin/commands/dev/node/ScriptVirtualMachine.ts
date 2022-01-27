@@ -60,6 +60,10 @@ export default class ScriptVirtualMachine {
 	 */
 	public static haltVMServer() {
 		this.machine?.kill();
+		this.machine?.kill("SIGINT");
+		this.machine?.kill("SIGTERM");
+		this.machine?.kill("SIGABRT");
+		
 		this.machine = undefined;
 	}
 }
