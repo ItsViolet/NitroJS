@@ -39,6 +39,10 @@ export default class Node {
 			"./.vs",
 			"./.idea",
 			"./package-lock.json",
+			"./tsconfig.json",
+			"./.gitignore",
+			"./nitrojs.config.js",
+			"./nitrojs.config.ts"
 		];
 
 		excludedDirs.push(...appConfig.node.excludes);
@@ -184,7 +188,7 @@ export default class Node {
 	private runDevServer(projectRoot: string, programArgs: string[], appPackage: any) {
 		ScriptVirtualMachine.haltVMServer();
 		Terminal.log("The app will now execute");
-		
+
 		ScriptVirtualMachine.runProcessScript(
 			projectRoot,
 			path.relative(projectRoot, appPackage.main),
