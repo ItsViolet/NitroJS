@@ -2,38 +2,34 @@ import net from "net";
 
 /**
  * Application main class
- */ 
+ */
 new (class Main {
-	/**  
+	/**
 	 * Application main entry
-	 */ 
+	 */
 	public constructor(args: string[] = []) {
-        console.log("This will be a TCP server"); 
-        let ind = 0;
-        setInterval(() => {  
-            console.log(ind++); 
-        }, 300);     
-                     
-        return;              
-  
 		const tcpServer = net.createServer((socket) => {
 			socket.on("data", (bufferData) => {
 				console.log(bufferData.toString());
-			});  
+            });
+            
+            socket.on("end", () => {
+                console.log("Connection closed");
+            });
 		});
 
 		tcpServer.on("listening", () => {
 			console.log("TCP > Ready");
 
-			const client = net.createConnection({
-				port: process.env.PORT as unknown as number,
-            }, () => {
+			const client = new net.Socket();
 
-            });
-            
-            client.connect({path: "/"});
+			client.connect(9099, () => {
+				console.log("CLient > Connected");
+                client.write("Hello bois");
+                client.destroy();
+			});
 		});
 
-		tcpServer.listen(process.env.PORT);
+		tcpServer.listen(9099);
 	}
 })();

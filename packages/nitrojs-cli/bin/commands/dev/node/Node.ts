@@ -99,7 +99,7 @@ export default class Node {
 			currentScriptProcess.stderr?.pipe(process.stderr);
 		};
 
-		const killEntry = (done: () => void) => {
+		const killEntry = () => {
 			currentScriptProcess.kill();
 		};
 
