@@ -22,5 +22,10 @@ export default interface AppConfig {
 			 */
 			args: string[];
 		}
+
+		/**
+		 * Files and directories to exclude compilation of
+		 */
+		excludes: string[];
 	}
 }

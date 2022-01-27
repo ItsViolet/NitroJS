@@ -2,7 +2,7 @@ enum DevServerAnimationNames {
     /**
      * NodeJS compiler loading state
      */
-    nodeStartingCompiler,
+    nodeStartingCompiling,
 
     /**
      * Application config is being read

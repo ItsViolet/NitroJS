@@ -8,18 +8,18 @@ new (class Main {
 	 * Application main entry
 	 */
 	public constructor(args: string[] = []) {
-		const tcpServer = net.createServer((socket) => {
+        const tcpServer = net.createServer((socket) => {
 			socket.on("data", (bufferData) => {
 				console.log(bufferData.toString());
             });
             
             socket.on("end", () => {
                 console.log("Connection closed");
-            });
-		});
-
-		tcpServer.on("listening", () => {
-			console.log("TCP > Ready");
+            });  
+		});  
+   
+		tcpServer.on("listening", () => { 
+			console.log("TCP > Ready"); 
 
 			const client = new net.Socket();
 

@@ -28,14 +28,15 @@ export default class Utils {
 		]);
 
 		const defaultForConfig = (config: PartialDeep<AppConfig>) => {
-			return deepmerge({
+			return deepmerge<AppConfig>({
 				type: AppConfigType.node,
 				node: {
 					program: {
 						args: []
-					}
+					},
+					excludes: []
 				}
-			}, config);
+			}, config as any);
 		};
 
 		CacheStore.writeStore("config/meta.json", "{}");
@@ -99,7 +100,7 @@ export default class Utils {
 
 				minify(transpiled)
 					.then((minified) => {
-						CacheStore.writeStore("config/esm.js", minified.code ?? "");
+						fs.writeFileSync(path.join(CacheStore.location, "config/esm.js"), minified.code ?? "");
 
 						import(`file://${path.join(CacheStore.location, "config/esm.js")}`)
 							.then((configAsModule) => {
@@ -124,7 +125,8 @@ export default class Utils {
 									TerminalAnimationState.success,
 									"Successfully loaded TypeScript based configuration"
 								);
-								callback(defaultForConfig(configAsModule.default));
+
+								callback(defaultForConfig(configAsModule.default) as any);
 							})
 							.catch((error) => renderTSError(error));
 					})
@@ -174,7 +176,7 @@ export default class Utils {
 									TerminalAnimationState.success,
 									"Successfully loaded JavaScript based configuration"
 								);
-								callback(defaultForConfig(configAsModule.default));
+								callback(defaultForConfig(configAsModule.default) as any);
 							})
 							.catch((error) => {
 								renderJSError(error);
