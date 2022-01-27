@@ -3,7 +3,11 @@ import CommandFlags from "../CommandFlags";
 import chokidar from "chokidar";
 import path from "path";
 import readline from "readline";
-import { KeyPressMeta, TerminalAnimation, TerminalAnimationState } from "@skylixgh/nitrojs-terminal";
+import {
+	KeyPressMeta,
+	TerminalAnimation,
+	TerminalAnimationState,
+} from "@skylixgh/nitrojs-terminal";
 import fs from "fs-extra";
 import DevServerAnimationNames from "../DevServerAnimationNames";
 
@@ -23,17 +27,23 @@ export default class Node {
 	 * @param appConfig App config
 	 */
 	public constructor(options: CommandFlags, projectRoot: string, appConfig: AppConfig) {
-		const projectWatcher = chokidar.watch(projectRoot, { ignoreInitial: true });
-		const excludedDirs = [
-			".nitrojs",
-			"node_modules",
-			".vscode",
-			".vs",
-			".idea",
-			"package-lock.json",
+		const relativeToRoot = (shortName: string) => path.join(projectRoot, shortName);
+
+		let excludedDirs = [
+			"./.nitrojs",
+			"./node_modules",
+			"./.vscode",
+			"./.vs",
+			"./.idea",
+			"./package-lock.json",
 		];
 
 		excludedDirs.push(...appConfig.node.excludes);
+		excludedDirs = excludedDirs.map(relativeToRoot);
+
+		const projectWatcher = chokidar.watch(projectRoot, {
+			ignored: excludedDirs
+		});
 
 		this.keyPressListener = (value, key) => {
 			if (key.ctrl && key.name == "c") {
@@ -43,10 +53,33 @@ export default class Node {
 
 		this.setupKeyPressListener();
 
-		this.recursivelyCopyAllFiles(projectRoot, "./", excludedDirs);
+		const startCompiling = () => {
+			TerminalAnimation.start([
+				{
+					label: "Compiling project files, please wait",
+					name: DevServerAnimationNames.nodeStartingCompiling,
+				},
+			]);
+
+			this.setupKeyPressListener();
+		};
+
+		const doneCompiling = () => {
+			TerminalAnimation.stopAll(
+				DevServerAnimationNames.nodeStartingCompiling,
+				TerminalAnimationState.success,
+				"Successfully compiled project files"
+			);
+
+			this.setupKeyPressListener();
+		};
 
 		projectWatcher.on("all", (eventType, filePath, stats) => {
+			console.log(`[ ${eventType.toUpperCase()} ] ${filePath}`);
+
+			startCompiling();
 			this.recursivelyCopyAllFiles(projectRoot, "./", excludedDirs, filePath);
+			doneCompiling();
 		});
 	}
 
@@ -55,9 +88,6 @@ export default class Node {
 	 */
 	private setupKeyPressListener() {
 		process.stdin.removeListener("keypress", this.keyPressListener);
-
-		readline.emitKeypressEvents(process.stdin);
-		process.stdin.setRawMode(true);
 		process.stdin.resume();
 		process.stdin.on("keypress", this.keyPressListener);
 	}
@@ -72,27 +102,9 @@ export default class Node {
 			return;
 		}
 
-		TerminalAnimation.start([
-			{
-				label: "Compiling project files, please wait",
-				name: DevServerAnimationNames.nodeStartingCompiling,
-			},
-		]);
-
-		const doneCompiling = () => {
-			TerminalAnimation.stopAll(
-				DevServerAnimationNames.nodeStartingCompiling,
-				TerminalAnimationState.success,
-				"Successfully compiled project files"
-			);
-
-			this.setupKeyPressListener();
-		};
-
 		this.setupKeyPressListener();
 
 		if (eventFile) {
-			doneCompiling();
 			return;
 		}
 
@@ -101,12 +113,10 @@ export default class Node {
 				projectRoot,
 				path.relative(projectRoot, path.join(startingPath, dirItemPath))
 			);
-			
+
 			if (this.checkIfExcluded(excludedDirs, projectRoot, filePath)) {
 				return;
 			}
-
-			console.log(filePath)
 
 			try {
 				if (fs.lstatSync(filePath).isDirectory()) {
