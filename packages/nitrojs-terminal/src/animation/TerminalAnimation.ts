@@ -136,8 +136,28 @@ export default class TerminalAnimation {
 
 			this.currentAnimationMeta.forEach((metaItem) => {
 				const color = chalk.hex(getHexFromState(metaItem.state));
+				let prefix = "";
+
+				switch (metaItem.state) {
+					case TerminalAnimationState.success:
+						prefix = `${chalk.hex("#999999")(`[ ${color("SUCCESS")} ]`)}`;
+						break;
+
+					case TerminalAnimationState.warning:
+						prefix = `${chalk.hex("#999999")(`[ ${color("WARN")} ]`)}`;
+						break;
+
+					case TerminalAnimationState.error:
+						prefix = `${chalk.hex("#999999")(`[ ${color("ERR")} ]`)}`;
+						break;
+
+					case TerminalAnimationState.info:
+						prefix = `${chalk.hex("#999999")(`[ ${color("INFO")} ]`)}`;
+						break;
+				}
+
 				lines.push(
-					`${metaItem.done ? color("•") : metaItem.frames[metaItem.frame]} ${metaItem.label}`
+					`${metaItem.done ? prefix : metaItem.frames[metaItem.frame]} ${metaItem.label}`
 				);
 			});
 
