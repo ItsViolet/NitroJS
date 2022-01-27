@@ -7,11 +7,10 @@ import Terminal, {
 TerminalPromptString.prompt(
 	"Please enter a number to see if its even or odd",
 	(answer) => {
-		console.log(answer);
 		if (+answer % 2 == 0) {
-			Terminal.log("The number is even");
+			Terminal.success("The number is even");
 		} else {
-			Terminal.log("The number is odd");
+			Terminal.success("The number is odd");
 		}
 	},
 	"1",

@@ -41,7 +41,7 @@ export default class Terminal {
 	 */
 	public static log(text: string) {
 		this.logCustomTag(text, {
-			tagPrefix: "INFO",
+			tagPrefix: "@",
 			hexColor: "#999999",
 		});
 	}
@@ -52,7 +52,7 @@ export default class Terminal {
 	 */
 	public static success(text: string) {
 		this.logCustomTag(text, {
-			tagPrefix: "SUCCESS",
+			tagPrefix: "✓",
 			hexColor: "#40c283",
 		});
 	}
@@ -63,7 +63,7 @@ export default class Terminal {
 	 */
 	public static warn(text: string) {
 		this.logCustomTag(text, {
-			tagPrefix: "WARN",
+			tagPrefix: "△",
 			hexColor: "#FFAB00",
 		});
 	}
@@ -74,7 +74,7 @@ export default class Terminal {
 	 */
 	public static error(text: string) {
 		this.logCustomTag(text, {
-			tagPrefix: "ERR",
+			tagPrefix: "×",
 			useColorThroughout: true,
 			hexColor: "#FF7777",
 		});
@@ -86,7 +86,7 @@ export default class Terminal {
 	 */
 	public static notice(text: string) {
 		this.logCustomTag(text, {
-			tagPrefix: "NOTICE",
+			tagPrefix: "!",
 			useColorThroughout: true,
 			hexColor: "#FFAB00",
 		});

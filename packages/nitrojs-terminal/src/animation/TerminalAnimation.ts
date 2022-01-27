@@ -140,19 +140,19 @@ export default class TerminalAnimation {
 
 				switch (metaItem.state) {
 					case TerminalAnimationState.success:
-						prefix = `${chalk.hex("#999999")(`[ ${color("SUCCESS")} ]`)}`;
+						prefix = `${chalk.hex("#999999")(`[ ${color("✓")} ]`)}`;
 						break;
 
 					case TerminalAnimationState.warning:
-						prefix = `${chalk.hex("#999999")(`[ ${color("WARN")} ]`)}`;
+						prefix = `${chalk.hex("#999999")(`[ ${color("△")} ]`)}`;
 						break;
 
 					case TerminalAnimationState.error:
-						prefix = `${chalk.hex("#999999")(`[ ${color("ERR")} ]`)}`;
+						prefix = `${chalk.hex("#999999")(`[ ${color("×")} ]`)}`;
 						break;
 
 					case TerminalAnimationState.info:
-						prefix = `${chalk.hex("#999999")(`[ ${color("INFO")} ]`)}`;
+						prefix = `${chalk.hex("#999999")(`[ ${color("@")} ]`)}`;
 						break;
 				}
 
