@@ -28,10 +28,17 @@ export default class ScriptVirtualMachine {
 	) {
 		if (filePathRelative.endsWith(".ts")) filePathRelative = filePathRelative.slice(0, -2) + "js";
 
-		this.machine = childProcess.fork(path.join(CacheStore.location, "compiled", filePathRelative), programArguments, {
-			stdio: "inherit",
-			cwd
-		});
+		this.machine = childProcess.fork(
+			path.join(CacheStore.location, "compiled", filePathRelative),
+			programArguments,
+			{
+				stdio: "inherit",
+				cwd,
+				env: {
+					FORCE_COLOR: true
+				} as any,
+			}
+		);
 
 		this.machine.on("exit", (code) => {
 			Terminal.notice(`The app has exited with code ${code ?? 0}`);
