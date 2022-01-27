@@ -1,3 +1,4 @@
+import Terminal from "@skylixgh/nitrojs-terminal";
 import childProcess, { ChildProcess } from "child_process";
 import path from "path";
 
@@ -35,6 +36,10 @@ export default class ScriptVirtualMachine {
 				cwd,
 			}
 		);
+
+		this.machine.on("exit", (code) => {
+			Terminal.notice(`The app has exited with code ${code ?? 0}`);
+		});
 
 		this.machine.stdout?.pipe(process.stdout);
 		this.machine.stderr?.pipe(process.stderr);
