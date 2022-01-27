@@ -192,7 +192,11 @@ export default class Node {
 		ScriptVirtualMachine.runProcessScript(
 			projectRoot,
 			path.relative(projectRoot, appPackage.main),
-			programArgs
+			programArgs,
+			() => {
+				this.setupKeyPressListener();
+				process.stdout.write("\n");
+			}
 		);
 	}
 }

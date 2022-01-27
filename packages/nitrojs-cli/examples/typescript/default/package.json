@@ -29,5 +29,8 @@
     },
     "devDependencies": {
         "@skylixgh/nitrojs-cli": "file:../../.."
+    },
+    "dependencies": {
+        "@skylixgh/nitrojs-terminal": "file:../../../../nitrojs-terminal"
     }
 }

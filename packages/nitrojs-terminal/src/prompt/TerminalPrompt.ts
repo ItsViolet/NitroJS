@@ -56,7 +56,10 @@ export default class TerminalPrompt {
 	 */
 	public static addKeyListener(callback: (value: string | undefined, key: KeyPressMeta) => void) {
 		process.stdin.resume();
-		process.stdin.setRawMode(true);
+		
+		if (process.stdin.setRawMode) {
+			process.stdin.setRawMode(true);
+		}
 
 		readline.emitKeypressEvents(process.stdin);
 
