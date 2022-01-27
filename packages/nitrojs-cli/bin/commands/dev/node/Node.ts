@@ -3,7 +3,7 @@ import CommandFlags from "../CommandFlags";
 import chokidar from "chokidar";
 import path from "path";
 import typeScript from "typescript";
-import {
+import Terminal, {
 	KeyPressMeta,
 	TerminalAnimation,
 	TerminalAnimationState,
@@ -12,6 +12,7 @@ import fs from "fs-extra";
 import DevServerAnimationNames from "../DevServerAnimationNames";
 import CacheStore from "../../../utils/cacheStore/CacheStore";
 import { Binary } from "../../../Binary";
+import ScriptVirtualMachine from "./ScriptVirtualMachine";
 
 /**
  * Class for handling NodeJS based dev server applications
@@ -80,9 +81,41 @@ export default class Node {
 			this.setupKeyPressListener();
 		};
 
+		let appPackage = {} as any;
+
+		if (!fs.existsSync(path.join(projectRoot, "package.json"))) {
+			Terminal.error("The package file does not exist");
+			process.exit(0);
+		}
+
+		let appPackageRaw = fs.readFileSync(path.join(projectRoot, "package.json"));
+		appPackage = JSON.parse(appPackageRaw.toString());
+
+		if (typeof appPackage.main != "string") {
+			Terminal.error("The main entry in the package file does not exist or is not a string");
+			process.exit(0);
+		}
+
+		let finalMainLocation = "";
+
+		if (fs.existsSync(appPackage.main) && appPackage.main.endsWith(".ts")) {
+			finalMainLocation = path.join(projectRoot, appPackage.main);
+		} else if (fs.existsSync(appPackage.main) && appPackage.main.endsWith(".js")) {
+			finalMainLocation = path.join(projectRoot, appPackage.main);
+		} else if (fs.existsSync(appPackage.main + ".ts")) {
+			finalMainLocation = path.join(projectRoot, appPackage.main.slice(0, -2) + ".ts");
+		} else if (fs.existsSync(appPackage.main + ".js")) {
+			finalMainLocation = path.join(projectRoot, appPackage.main.slice(0, -2) + ".js");
+		} else {
+			Terminal.error("Failed to locate the main entry script defined in the package file with JS or TS extensions");
+			process.exit(0);
+		}
+
+		appPackage.main = finalMainLocation;
+
 		projectWatcher.on("all", (eventType, filePath, stats) => {
 			startCompiling(filePath);
-			this.storeCacheRecord(projectRoot, filePath);
+			this.storeCacheRecord(projectRoot, filePath, appConfig, appPackage);
 			doneCompiling(filePath);
 		});
 	}
@@ -96,7 +129,12 @@ export default class Node {
 		process.stdin.on("keypress", this.keyPressListener);
 	}
 
-	private storeCacheRecord(projectRoot: string, eventFile: string) {
+	private storeCacheRecord(
+		projectRoot: string,
+		eventFile: string,
+		appConfig: AppConfig,
+		appPackage: any
+	) {
 		this.setupKeyPressListener();
 
 		try {
@@ -129,6 +167,8 @@ export default class Node {
 			} else {
 				CacheStore.writeStore(path.join("compiled", filePathRelative), cacheCode);
 			}
+
+			this.runDevServer(projectRoot, appConfig.node.program.args, appPackage);
 		} catch (error) {
 			Binary.renderErrorException(error);
 			this.setupKeyPressListener();
@@ -137,6 +177,18 @@ export default class Node {
 
 	/**
 	 * Start the development server with VM
+	 * @param projectRoot Project root dir
+	 * @param programArgs Program execution args
+	 * @param appPackage The application package file
 	 */
-	private startDevServer() {}
+	private runDevServer(projectRoot: string, programArgs: string[], appPackage: any) {
+		ScriptVirtualMachine.haltVMServer();
+		let finalMainLocation = "";
+
+		ScriptVirtualMachine.runProcessScript(
+			projectRoot,
+			path.join("compiled", finalMainLocation),
+			programArgs
+		);
+	}
 }
