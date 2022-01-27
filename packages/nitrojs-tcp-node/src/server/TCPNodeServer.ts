@@ -6,6 +6,7 @@ import { EventEmitter } from "events";
 import TCPNodeServerSocket from "./TCPNodeServerSocket";
 import deepmerge from "deepmerge";
 import TCPNodeServerStartErrors from "./TCPNodeServerStartErrors";
+import uuid from "uuid";
 
 declare interface TCPNodeServer {
 	/**
@@ -70,6 +71,11 @@ class TCPNodeServer extends EventEmitter {
 	private _settings: TCPNodeServerSettings;
 
 	/**
+	 * Total number of living connections
+	 */
+	private _totalAlive = 0;
+
+	/**
 	 * Create a new TCP node server
 	 * @param settings Settings for the server
 	 */
@@ -87,26 +93,80 @@ class TCPNodeServer extends EventEmitter {
 		);
 
 		const connectionListener = (socket: Socket) => {
-			const connection = new TCPNodeServerSocket(socket);
+			const connection = new TCPNodeServerSocket(socket, this.generateUniqueID());
+			this._totalAlive = this.aliveConnections.length;
 
-			socket.on("data", (chunk) => {
-				console.log(chunk.toString());
-				socket.write(Buffer.from("Your message received " + chunk.toString()));
+			connection.on("close", () => {
+				const newAliveConnections = [] as TCPNodeServerSocket[];
+
+				this.aliveConnections.forEach(possiblyAliveConnection => {
+					if (possiblyAliveConnection.alive) {
+						newAliveConnections.push(possiblyAliveConnection);
+					}
+				});
+
+				this.aliveConnections = newAliveConnections;
+				this._totalAlive = this.aliveConnections.length;
 			});
 
 			this.aliveConnections.push(connection);
 		};
 
 		if (this._settings.ssl) {
-			this.server = tls.createServer({
-				cert: this._settings.ssl.certificate ?? "",
-				key: this._settings.ssl.key ?? ""
-			}, connectionListener);
+			this.server = tls.createServer(
+				{
+					cert: this._settings.ssl.certificate ?? "",
+					key: this._settings.ssl.key ?? "",
+				},
+				connectionListener
+			);
 
 			return;
 		}
 
 		this.server = net.createServer(connectionListener);
+	}
+
+	/**
+	 * Total number of living connections
+	 */
+	public get totalAlive() {
+		return this._totalAlive;
+	}
+
+	/**
+	 * Generate a new unique connection ID
+	 * @returns The unique ID
+	 */
+	private generateUniqueID() {
+		let resultID = "";
+
+		const checkIDExists = (checkID: string) => {
+			let exists = false;
+
+			this.aliveConnections.forEach((conn) => {
+				if (conn.id == checkID) {
+					exists = true;
+				}
+			});
+
+			return exists;
+		};
+
+		const recurse = () => {
+			const id = uuid.v4();
+
+			if (checkIDExists(id)) {
+				recurse();
+				return;
+			}
+
+			resultID = id;
+		};
+
+		recurse();
+
+		return resultID;
 	}
 
 	/**
