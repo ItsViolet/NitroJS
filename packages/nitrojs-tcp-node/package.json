@@ -33,6 +33,7 @@
     "url": "https://github.com/SkylixGH/NitroJS/issues"
   },
   "dependencies": {
+    "deepmerge": "^4.2.2",
     "type-fest": "^2.11.0"
   }
 }

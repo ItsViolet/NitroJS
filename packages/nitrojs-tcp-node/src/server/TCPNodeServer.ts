@@ -1,8 +1,11 @@
 import TCPNodeServerSettings from "./TCPNodeServerSettings";
 import { PartialDeep } from "type-fest";
-import net, { Server } from "net";
+import net, { Server as NetServer, Socket } from "net";
+import tls, { Server as TLSServer } from "tls";
 import { EventEmitter } from "events";
 import TCPNodeServerSocket from "./TCPNodeServerSocket";
+import deepmerge from "deepmerge";
+import TCPNodeServerStartErrors from "./TCPNodeServerStartErrors";
 
 declare interface TCPNodeServer {
 	/**
@@ -49,7 +52,7 @@ class TCPNodeServer extends EventEmitter {
 	/**
 	 * The socket server
 	 */
-	private server: Server;
+	private server: NetServer | TLSServer;
 
 	/**
 	 * All currently alive connections
@@ -72,21 +75,38 @@ class TCPNodeServer extends EventEmitter {
 	 */
 	public constructor(settings: PartialDeep<TCPNodeServerSettings>) {
 		super();
-		// ! Install deep merge and merge configs
-		this._settings = {
-			...{
+
+		this._settings = deepmerge<TCPNodeServerSettings, PartialDeep<TCPNodeServerSettings>>(
+			{
 				port: 41258,
 				host: "localhost",
 				ssl: false,
+				backlog: 100000,
 			},
-			...settings,
-		};
+			settings
+		);
 
-		this.server = net.createServer((socket) => {
+		const connectionListener = (socket: Socket) => {
 			const connection = new TCPNodeServerSocket(socket);
 
+			socket.on("data", (chunk) => {
+				console.log(chunk.toString());
+				socket.write(Buffer.from("Your message received " + chunk.toString()));
+			});
+
 			this.aliveConnections.push(connection);
-		});
+		};
+
+		if (this._settings.ssl) {
+			this.server = tls.createServer({
+				cert: this._settings.ssl.certificate ?? "",
+				key: this._settings.ssl.key ?? ""
+			}, connectionListener);
+
+			return;
+		}
+
+		this.server = net.createServer(connectionListener);
 	}
 
 	/**
@@ -95,19 +115,30 @@ class TCPNodeServer extends EventEmitter {
 	public start(): Promise<string> {
 		return new Promise((resolve, reject) => {
 			if (this.listenerState == ListenerState.listening) {
-				// ! TODO: Error code
-				reject(new Error("The server is already listening"));
+				reject(
+					new Error(
+						`${TCPNodeServerStartErrors.currentlyListening} | The server is already listening`
+					)
+				);
 				return;
 			}
 
 			if (this.listenerState == ListenerState.booting) {
-				reject(new Error("The server is already starting"));
+				reject(
+					new Error(`${TCPNodeServerStartErrors.currentlyBooting} | The server is already starting`)
+				);
 				return;
-            }
-            
-            this.listenerState = ListenerState.booting;
+			}
 
+			this.listenerState = ListenerState.booting;
 			let listeningAddress = this.getListeningAddress();
+
+			// TODO: Error listener
+
+			this.server.listen(this._settings.port, this._settings.host, this._settings.backlog, () => {
+				resolve(listeningAddress);
+				this.emit("ready", listeningAddress);
+			});
 		});
 	}
 

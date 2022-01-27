@@ -13,6 +13,11 @@ export default interface TCPNodeServerSettings {
     host: string;
 
     /**
+     * Max number of connections
+     */
+    backlog: number;
+
+    /**
      * The SSL information for TLS
      */
     ssl: false | {
