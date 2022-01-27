@@ -32,7 +32,12 @@ class TCPNodeServerSocket extends EventEmitter {
 	/**
 	 * If the connection is alive
 	 */
-	private _alive = true;
+    private _alive = true;
+    
+    /**
+     * The socket client
+     */
+    private socket: Socket;
 
 	/**
 	 * Create and initialize a new net/TLS socket for a higher level API
@@ -40,7 +45,8 @@ class TCPNodeServerSocket extends EventEmitter {
 	 * @param identifier The connection unique identifier
 	 */
 	public constructor(netSocket: Socket, identifier: string) {
-		super();
+        super();
+        this.socket = netSocket;
 
 		netSocket.on("close", () => {
             this._alive = false;
@@ -70,6 +76,13 @@ class TCPNodeServerSocket extends EventEmitter {
      */
     public internalForceCloseEmit() {
         this.emit("close");
+    }
+
+    /**
+     * The remote IP address
+     */
+    public get remoteIPAddress() {
+        return this.socket.remoteAddress;
     }
 }
 

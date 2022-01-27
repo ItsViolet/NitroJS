@@ -11,10 +11,12 @@ const server = new TCPNodeServer({
 });
 
 server.on("open", (conn) => {
-    console.log(`TCP/TLS > New connection | CurrentlyConnected = ${server.totalAlive}`);
+    console.log(`TCP/TLS > New connection | CurrentlyConnected = ${server.totalAlive} SocketIP = ${conn.remoteIPAddress}`);
 
     conn.on("close", () => {
-        console.log(`TCP/TLS > Lost connection | CurrentlyConnected = ${server.totalAlive}`);
+        console.log(
+					`TCP/TLS > Lost connection | CurrentlyConnected = ${server.totalAlive} SocketIP = ${conn.remoteIPAddress}`
+				);
     });
 });
 
