@@ -10,11 +10,14 @@
   "types": "./types/src/TCPNode.d.ts",
   "type": "module",
   "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+    "src": "src",
+    "examples": "examples",
+    "docs": "docs"
   },
   "files": [
-    "lib"
+    "src",
+    "docs",
+    "examples"
   ],
   "publishConfig": {
     "access": "public"
@@ -28,5 +31,8 @@
   },
   "bugs": {
     "url": "https://github.com/SkylixGH/NitroJS/issues"
+  },
+  "dependencies": {
+    "type-fest": "^2.11.0"
   }
 }
