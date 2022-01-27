@@ -2,7 +2,7 @@ import AppConfig from "../../../interfaces/AppConfig";
 import CommandFlags from "../CommandFlags";
 import chokidar from "chokidar";
 import path from "path";
-import readline from "readline";
+import typeScript from "typescript";
 import {
 	KeyPressMeta,
 	TerminalAnimation,
@@ -10,6 +10,8 @@ import {
 } from "@skylixgh/nitrojs-terminal";
 import fs from "fs-extra";
 import DevServerAnimationNames from "../DevServerAnimationNames";
+import CacheStore from "../../../utils/cacheStore/CacheStore";
+import { Binary } from "../../../Binary";
 
 /**
  * Class for handling NodeJS based dev server applications
@@ -42,7 +44,7 @@ export default class Node {
 		excludedDirs = excludedDirs.map(relativeToRoot);
 
 		const projectWatcher = chokidar.watch(projectRoot, {
-			ignored: excludedDirs
+			ignored: excludedDirs,
 		});
 
 		this.keyPressListener = (value, key) => {
@@ -53,10 +55,12 @@ export default class Node {
 
 		this.setupKeyPressListener();
 
-		const startCompiling = () => {
+		const startCompiling = (filePath: string) => {
+			if (path.relative(projectRoot, filePath).length == 0) return;
+
 			TerminalAnimation.start([
 				{
-					label: "Compiling project files, please wait",
+					label: `Compiling project file from "${path.relative(projectRoot, filePath)}"`,
 					name: DevServerAnimationNames.nodeStartingCompiling,
 				},
 			]);
@@ -64,22 +68,22 @@ export default class Node {
 			this.setupKeyPressListener();
 		};
 
-		const doneCompiling = () => {
+		const doneCompiling = (filePath: string) => {
+			if (path.relative(projectRoot, filePath).length == 0) return;
+
 			TerminalAnimation.stopAll(
 				DevServerAnimationNames.nodeStartingCompiling,
 				TerminalAnimationState.success,
-				"Successfully compiled project files"
+				`Finished compiling project file from "${path.relative(projectRoot, filePath)}"`
 			);
 
 			this.setupKeyPressListener();
 		};
 
 		projectWatcher.on("all", (eventType, filePath, stats) => {
-			console.log(`[ ${eventType.toUpperCase()} ] ${filePath}`);
-
-			startCompiling();
-			this.recursivelyCopyAllFiles(projectRoot, "./", excludedDirs, filePath);
-			doneCompiling();
+			startCompiling(filePath);
+			this.storeCacheRecord(projectRoot, filePath);
+			doneCompiling(filePath);
 		});
 	}
 
@@ -92,62 +96,43 @@ export default class Node {
 		process.stdin.on("keypress", this.keyPressListener);
 	}
 
-	private recursivelyCopyAllFiles(
-		projectRoot: string,
-		startingPath: string,
-		excludedDirs: string[],
-		eventFile?: string
-	) {
-		if (eventFile && this.checkIfExcluded(excludedDirs, projectRoot, eventFile)) {
-			return;
-		}
-
+	private storeCacheRecord(projectRoot: string, eventFile: string) {
 		this.setupKeyPressListener();
 
-		if (eventFile) {
-			return;
-		}
-
-		fs.readdirSync(path.join(projectRoot, startingPath)).forEach((dirItemPath: string) => {
-			const filePath = path.join(
-				projectRoot,
-				path.relative(projectRoot, path.join(startingPath, dirItemPath))
-			);
-
-			if (this.checkIfExcluded(excludedDirs, projectRoot, filePath)) {
+		try {
+			if (fs.lstatSync(eventFile).isDirectory()) {
+				// TODO: Something for dirs
 				return;
 			}
 
-			try {
-				if (fs.lstatSync(filePath).isDirectory()) {
-					this.recursivelyCopyAllFiles(projectRoot, path.join(startingPath, dirItemPath), []);
-					return;
-				}
-			} catch {
-				this.setupKeyPressListener();
+			let isTS = eventFile.endsWith(".ts");
+			let cacheCode = "";
+
+			if (isTS) {
+				cacheCode = typeScript.transpileModule(fs.readFileSync(eventFile).toString(), {
+					compilerOptions: {
+						module: typeScript.ModuleKind.ESNext,
+						target: typeScript.ScriptTarget.ESNext,
+					},
+				}).outputText;
+			} else {
+				cacheCode = fs.readFileSync(eventFile).toString();
 			}
-		});
-	}
 
-	/**
-	 * Check if a path is excluded
-	 * @param excluded The excluded directories
-	 * @param projectRoot The project's root dir
-	 * @param eventFile The file path that was change, added, unlinked, etc...
-	 * @returns If the directory is excluded
-	 */
-	private checkIfExcluded(excluded: string[], projectRoot: string, eventFile: string) {
-		let result = false;
+			const filePathRelative = path.relative(projectRoot, eventFile);
 
-		excluded.forEach((excludedDir) => {
-			const excludedDirProjectRoot = path.join(projectRoot, excludedDir);
-
-			if (path.join(eventFile).startsWith(excludedDirProjectRoot)) {
-				result = true;
+			if (eventFile.endsWith(".ts")) {
+				CacheStore.writeStore(
+					path.join("compiled", filePathRelative).slice(0, -2) + "js",
+					cacheCode
+				);
+			} else {
+				CacheStore.writeStore(path.join("compiled", filePathRelative), cacheCode);
 			}
-		});
-
-		return result;
+		} catch (error) {
+			Binary.renderErrorException(error);
+			this.setupKeyPressListener();
+		}
 	}
 
 	/**

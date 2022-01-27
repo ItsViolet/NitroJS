@@ -25,6 +25,7 @@ export default class DevHandle {
 					path.join(projectRoot ?? "./", options.config ?? "nitrojs.config"),
 					(config) => {
 						if (config.type == AppConfigType.node) {
+							Terminal.log("NitroJS NodeJS development server");
 							new Node(options, path.join(process.cwd(), projectRoot ?? "./"), config);
 						} else {
 							Terminal.notice(
