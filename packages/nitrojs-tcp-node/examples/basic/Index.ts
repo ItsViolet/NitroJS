@@ -10,6 +10,14 @@ const server = new TCPNodeServer({
 	},
 });
 
+server.on("open", (conn) => {
+    console.log(`TCP/TLS > New connection | CurrentlyConnected = ${server.totalAlive}`);
+
+    conn.on("close", () => {
+        console.log(`TCP/TLS > Lost connection | CurrentlyConnected = ${server.totalAlive}`);
+    });
+});
+
 server.on("ready", (addr) => {
     console.log(`Server running at ${addr}`);
 });

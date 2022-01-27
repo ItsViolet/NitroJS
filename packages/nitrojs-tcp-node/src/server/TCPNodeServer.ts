@@ -6,7 +6,7 @@ import { EventEmitter } from "events";
 import TCPNodeServerSocket from "./TCPNodeServerSocket";
 import deepmerge from "deepmerge";
 import TCPNodeServerStartErrors from "./TCPNodeServerStartErrors";
-import uuid from "uuid";
+import * as uuid from "uuid";
 
 declare interface TCPNodeServer {
 	/**
@@ -93,23 +93,40 @@ class TCPNodeServer extends EventEmitter {
 		);
 
 		const connectionListener = (socket: Socket) => {
-			const connection = new TCPNodeServerSocket(socket, this.generateUniqueID());
-			this._totalAlive = this.aliveConnections.length;
+			var connection = {
+				canBeDeleted: new TCPNodeServerSocket(socket, this.generateUniqueID()),
+			} as undefined | { canBeDeleted: TCPNodeServerSocket | undefined };
 
-			connection.on("close", () => {
+			connection?.canBeDeleted?.on("close-pre-handled", () => {
 				const newAliveConnections = [] as TCPNodeServerSocket[];
 
-				this.aliveConnections.forEach(possiblyAliveConnection => {
-					if (possiblyAliveConnection.alive) {
+				this.aliveConnections.forEach((possiblyAliveConnection) => {
+					if (
+						possiblyAliveConnection.alive ||
+						connection?.canBeDeleted?.alive ||
+						possiblyAliveConnection.id != connection?.canBeDeleted?.id
+					) {
 						newAliveConnections.push(possiblyAliveConnection);
+						return;
 					}
+
+					this._totalAlive--;
+					possiblyAliveConnection.internalForceCloseEmit();
+
+					if (connection) delete connection.canBeDeleted;
+					connection = undefined;
 				});
 
 				this.aliveConnections = newAliveConnections;
 				this._totalAlive = this.aliveConnections.length;
 			});
 
-			this.aliveConnections.push(connection);
+			if (connection?.canBeDeleted?.alive) {
+				this.aliveConnections.push(connection?.canBeDeleted);
+				this._totalAlive = this.aliveConnections.length;
+				
+				this.emit("open", connection.canBeDeleted);
+			}
 		};
 
 		if (this._settings.ssl) {

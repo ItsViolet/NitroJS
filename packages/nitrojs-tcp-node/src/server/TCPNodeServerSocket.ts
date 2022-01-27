@@ -3,11 +3,19 @@ import { EventEmitter } from "events";
 
 declare interface TCPNodeServerSocket {
 	/**
-	 * Listen for when the socket disconnects
+	 * Listen for when the socket disconnects before the server even gets to process the data
 	 * @param event Event name
 	 * @param listener Event listener
+     * @internal
 	 */
-	on(event: "close", listener: () => void): this;
+    on(event: "close-pre-handled", listener: () => void): this;
+    
+    /**
+     * Listen for when the socket is closed
+     * @param event Event name
+     * @param listener Event listener
+     */
+    on(event: "close", listener: () => void): this;
 
 	on(event: string, listener: () => void): this;
 }
@@ -35,7 +43,8 @@ class TCPNodeServerSocket extends EventEmitter {
 		super();
 
 		netSocket.on("close", () => {
-			this._alive = false;
+            this._alive = false;
+            this.emit("close-pre-handled");
 		});
 
 		this._id = identifier;
@@ -53,7 +62,15 @@ class TCPNodeServerSocket extends EventEmitter {
 	 */
 	public get alive() {
 		return this._alive;
-	}
+    }
+    
+    /**
+     * Force emit close
+     * @internal
+     */
+    public internalForceCloseEmit() {
+        this.emit("close");
+    }
 }
 
 export default TCPNodeServerSocket;
