@@ -9,6 +9,8 @@ import path from "path";
 import CacheStore from "../../../utils/cacheStore/CacheStore";
 import { Binary } from "../../../Binary";
 import ScriptVirtualMachine from "./ScriptVirtualMachine";
+import readline from "readline";
+import { spawn } from "child_process";
 
 /**
  * Class for handling NodeJS based dev server applications
@@ -32,17 +34,6 @@ export default class Node {
 	 */
 	public constructor(flags: CommandFlags, projectRoot: string, config: AppConfig) {
 		this.startDevServer(projectRoot, config);
-	}
-
-	/**
-	 * Register listener for CTRL + C to exit app since that key register is gone by default
-	 */
-	public registerExitListener() {
-		TerminalPrompt.addKeyListener((value, key) => {
-			if (key.ctrl && key.name == "c") {
-				process.exit(0);
-			}
-		});
 	}
 
 	/**
@@ -81,11 +72,21 @@ export default class Node {
 			return result;
 		};
 
-		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript> | null =
-			null;
+		let currentScriptProcess: ReturnType<typeof ScriptVirtualMachine.runProcessScript>;
 		let projectPackage: any = {};
 		let finalMainPath = "";
-		let exitListenerClosed = false;
+
+		process.stdin.resume();
+		process.stdin.setRawMode(true);
+		readline.emitKeypressEvents(process.stdin);
+
+		process.stdin.on("keypress", (value, key) => {
+			if (key.ctrl && key.name == "c") {
+				process.exit(0);
+			}
+
+			currentScriptProcess.stdin?.write(key.sequence);
+		});
 
 		const bootEntry = () => {
 			currentScriptProcess = ScriptVirtualMachine.runProcessScript(
@@ -94,21 +95,12 @@ export default class Node {
 				config.node.program.args
 			);
 
-			currentScriptProcess.stdin?.pipe(process.stdin);
-
 			currentScriptProcess.stdout?.pipe(process.stdout);
 			currentScriptProcess.stderr?.pipe(process.stderr);
-
-			if (exitListenerClosed) this.registerExitListener();
 		};
 
-		const killEntry = () => {
-			if (exitListenerClosed) this.registerExitListener();
-
-			if (currentScriptProcess) {
-				currentScriptProcess.kill();
-				currentScriptProcess = null;
-			}
+		const killEntry = (done: () => void) => {
+			currentScriptProcess.kill();
 		};
 
 		const recursiveCompileDir = (dir = "./") => {
@@ -153,11 +145,6 @@ export default class Node {
 			} catch {}
 		};
 
-		this.fileWatcher = chokidar.watch(projectRoot, {
-			ignoreInitial: true,
-			ignored: excludedDirs,
-		});
-
 		try {
 			projectPackage = JSON.parse(
 				fs.readFileSync(path.join(projectRoot, "package.json")).toString()
@@ -195,10 +182,20 @@ export default class Node {
 		}
 
 		recursiveCompileDir();
-		bootEntry();
+
+		new Promise(() => {
+			bootEntry();
+		});
+
+		this.fileWatcher = chokidar.watch(projectRoot, {
+			ignoreInitial: true,
+			ignored: excludedDirs,
+		});
 
 		this.fileWatcher.on("all", (eventType, filePath, stats) => {
 			try {
+				killEntry();
+
 				if (eventType == "add" || eventType == "change") {
 					let compiledCode: string;
 
@@ -219,22 +216,16 @@ export default class Node {
 					);
 
 					Terminal.log(`New file compiled from "${path.relative("./", filePath)}"`);
-					currentScriptProcess = ScriptVirtualMachine.runProcessScript(
-						projectRoot,
-						finalMainPath,
-						config.node.program.args
-					);
 				} else if (eventType == "unlink") {
 					CacheStore.deleteStore(path.join("compiled", path.relative(projectRoot, filePath)));
 				} else if (eventType == "addDir") {
 					CacheStore.writeStoreDir(path.join("compiled", path.relative(projectRoot, filePath)));
 				}
+
+				bootEntry();
 			} catch (error) {
 				Binary.renderErrorException(error);
 			}
-
-			killEntry();
-			bootEntry();
 		});
 	}
 

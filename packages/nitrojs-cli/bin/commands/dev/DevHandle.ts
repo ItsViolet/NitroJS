@@ -25,7 +25,7 @@ export default class DevHandle {
 					path.join(projectRoot ?? "./", options.config ?? "nitrojs.config"),
 					(config) => {
 						if (config.type == AppConfigType.node) {
-							new Node(options, path.join(process.cwd(), projectRoot ?? "./"), config).registerExitListener();
+							new Node(options, path.join(process.cwd(), projectRoot ?? "./"), config);
 						} else {
 							Terminal.notice(
 								"This dev server cannot execute your app because this type of app isn't supported yet"

@@ -1,4 +1,7 @@
-import { ChildProcess, spawn } from "child_process";
+import { ChildProcess, fork } from "child_process";
+import path from "path";
+import { dirname } from "../../../Binary";
+import kill from "tree-kill"; // TODO: UNINSTALL
 
 /**
  * The NitroJS virtual machine for executing scripts
@@ -11,7 +14,10 @@ export default class ScriptVirtualMachine {
      * @param programArguments All program arguments
 	 */
 	public static runProcessScript(cwd: string, filePath: string, programArguments: string[]): ChildProcess {
-		let cps = spawn("node", ["--no-warnings", "--experimental-specifier-resolution=node", filePath, ...programArguments]);
+		let cps = fork(filePath, programArguments, {
+			cwd
+		});
+		
 		return cps;
 	}
 }
