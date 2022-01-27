@@ -103,9 +103,9 @@ export default class Node {
 		} else if (fs.existsSync(appPackage.main) && appPackage.main.endsWith(".js")) {
 			finalMainLocation = path.join(projectRoot, appPackage.main);
 		} else if (fs.existsSync(appPackage.main + ".ts")) {
-			finalMainLocation = path.join(projectRoot, appPackage.main.slice(0, -2) + ".ts");
+			finalMainLocation = path.join(projectRoot, appPackage.main + ".ts");
 		} else if (fs.existsSync(appPackage.main + ".js")) {
-			finalMainLocation = path.join(projectRoot, appPackage.main.slice(0, -2) + ".js");
+			finalMainLocation = path.join(projectRoot, appPackage.main + ".js");
 		} else {
 			Terminal.error("Failed to locate the main entry script defined in the package file with JS or TS extensions");
 			process.exit(0);
@@ -183,11 +183,10 @@ export default class Node {
 	 */
 	private runDevServer(projectRoot: string, programArgs: string[], appPackage: any) {
 		ScriptVirtualMachine.haltVMServer();
-		let finalMainLocation = "";
 
 		ScriptVirtualMachine.runProcessScript(
 			projectRoot,
-			path.join("compiled", finalMainLocation),
+			path.relative(projectRoot, appPackage.main),
 			programArgs
 		);
 	}

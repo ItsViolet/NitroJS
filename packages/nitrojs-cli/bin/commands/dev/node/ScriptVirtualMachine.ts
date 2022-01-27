@@ -1,5 +1,5 @@
 import childProcess, { ChildProcess } from "child_process";
-import kill from "tree-kill"; // TODO: UNINSTALL
+import path from "path";
 
 /**
  * The NitroJS virtual machine for executing scripts
@@ -21,12 +21,14 @@ export default class ScriptVirtualMachine {
 		filePathRelative: string,
 		programArguments: string[]
 	) {
+		if (filePathRelative.endsWith(".ts")) filePathRelative = filePathRelative.slice(0, -2) + "js";
+
 		this.machine = childProcess.spawn(
 			"node",
 			[
 				"--no-warnings",
 				"--experimental-specifier-resolution=node",
-				filePathRelative,
+				path.join(".nitrojs/compiled", filePathRelative),
 				...programArguments,
 			],
 			{
