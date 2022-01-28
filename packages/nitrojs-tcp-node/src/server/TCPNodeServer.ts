@@ -124,7 +124,7 @@ class TCPNodeServer extends EventEmitter {
 			if (connection?.canBeDeleted?.alive) {
 				this.aliveConnections.push(connection?.canBeDeleted);
 				this._totalAlive = this.aliveConnections.length;
-				
+
 				this.emit("open", connection.canBeDeleted);
 			}
 		};
@@ -149,6 +149,22 @@ class TCPNodeServer extends EventEmitter {
 	 */
 	public get totalAlive() {
 		return this._totalAlive;
+	}
+
+	/**
+	 * Send a request message to all currently connected client sockets
+	 * @param channel Channel to send the message in
+	 * @param defaultObjectValues The default request message object propertues
+	 * @param request The request message
+	 */
+	public send<RequestObjectType = {}>(
+		channel: string,
+		defaultObjectValues: RequestObjectType = {} as any,
+		request: PartialDeep<RequestObjectType>
+	) {
+		this.aliveConnections.forEach((connection) => {
+			connection.send(channel, defaultObjectValues, request);
+		});
 	}
 
 	/**
