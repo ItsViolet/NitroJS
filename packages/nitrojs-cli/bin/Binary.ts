@@ -9,6 +9,7 @@ import Terminal from "@skylixgh/nitrojs-terminal";
 import path from "path";
 import AddHandle from "./commands/add/AddHandle";
 import DevHandle from "./commands/dev/DevHandle";
+import skylixLogo from "./SkylixLogo";
 
 /**
  * The CLI service entry point
@@ -18,6 +19,7 @@ export class Binary {
 	 * Application main method
 	 */
 	public constructor() {
+		console.log(skylixLogo);
 		program.version(pkg.version);
 		program.name("NitroJS");
 
