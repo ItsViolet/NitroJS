@@ -51,7 +51,9 @@ class TCPNodeServerSocket extends EventEmitter {
 		netSocket.on("close", () => {
             this._alive = false;
             this.emit("close-pre-handled");
-		});
+        });
+        
+        netSocket.on("error", () => void 0);
 
 		this._id = identifier;
 	}
