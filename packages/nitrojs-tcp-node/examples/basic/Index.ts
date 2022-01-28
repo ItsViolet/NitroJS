@@ -11,17 +11,23 @@ const server = new TCPNodeServer({
 });
 
 server.on("open", (conn) => {
-    console.log(`TCP/TLS > New connection | CurrentlyConnected = ${server.totalAlive} SocketIP = ${conn.remoteIPAddress}`);
+	console.log(
+		`TCP/TLS > New connection | CurrentlyConnected = ${server.totalAlive} SocketIP = ${conn.remoteIPAddress}`
+	);
 
-    conn.on("close", () => {
-        console.log(
-					`TCP/TLS > Lost connection | CurrentlyConnected = ${server.totalAlive} SocketIP = ${conn.remoteIPAddress}`
-				);
+    conn.request("main", undefined, (msg) => {
+        console.log(msg);
     });
+
+	conn.on("close", () => {
+		console.log(
+			`TCP/TLS > Lost connection | CurrentlyConnected = ${server.totalAlive} SocketIP = ${conn.remoteIPAddress}`
+		);
+	});
 });
 
 server.on("ready", (addr) => {
-    console.log(`Server running at ${addr}`);
+	console.log(`Server running at ${addr}`);
 });
 
 server.start();
