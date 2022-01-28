@@ -100,13 +100,32 @@ class TCPNodeServerSocket extends EventEmitter {
 		this.socket.end();
 	}
 
+    /**
+     * Send a request message to the client socket
+     * @param channel The channel to send the request it
+     * @param defaultObjectValues The default request message property values
+     * @param request The request message
+     */
+	public send<RequestObjectType = any>(
+		channel: string,
+		defaultObjectValues: RequestObjectType = {} as any,
+		request: PartialDeep<RequestObjectType>
+    ) {
+        if (!this.alive) return;
+
+        this.socket.write(JSON.stringify({
+            channel,
+            body: deepmerge(defaultObjectValues, request as any)
+        }));
+    }
+
 	/**
 	 * Listen for message requests from the client
 	 * @param channel Request message channel
 	 * @param defaultObjectValues Request object properties for the request object
 	 * @param listener The request listener
 	 */
-	public request<RequestObjectType>(
+	public request<RequestObjectType = any>(
 		channel: string,
 		defaultObjectValues: PartialDeep<RequestObjectType> = {} as any,
 		listener: (requestData: RequestObjectType) => void

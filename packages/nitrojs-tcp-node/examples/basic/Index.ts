@@ -16,7 +16,12 @@ server.on("open", (conn) => {
 	);
 
     conn.request("main", undefined, (msg) => {
-        console.log(msg);
+        console.log("TCP/TLS > " + JSON.stringify(msg));
+
+        conn.send("main:socket", undefined, {
+            action: "received",
+            contents: msg
+        });
     });
 
 	conn.on("close", () => {
