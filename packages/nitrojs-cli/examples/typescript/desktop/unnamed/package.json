@@ -1,0 +1,36 @@
+{
+    "name": "unnamed",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "homepage": "https://github.com/SkylixGH/NitroJS#readme",
+    "license": "ISC",
+    "main": "src/electron/Main",
+    "type": "module",
+    "directories": {
+        "src": "src"
+    },
+    "files": [
+        "src"
+    ],
+    "publishConfig": {
+        "access": "restricted"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SkylixGH/NitroJS.git"
+    },
+    "scripts": {
+        "start": "nitrojs dev",
+        "build": "nitrojs build"
+    },
+    "bugs": {
+        "url": "https://github.com/SkylixGH/NitroJS/issues"
+    },
+    "devDependencies": {
+        "@skylixgh/nitrojs-cli": "2.0.0-dev.3"
+    },
+    "dependencies": {
+        "typescript": "4.4.5"
+    }
+}

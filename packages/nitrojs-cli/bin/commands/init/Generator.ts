@@ -8,6 +8,8 @@ import MainScriptJS from "./resources/javascript/node/Main";
 import TSConfig from "./resources/typescript/node/tsconfig";
 import nitroJSConfigJS from "./resources/javascript/node/nitrojs.config.ts";
 import nitroJSConfigTS from "./resources/typescript/node/nitrojs.config";
+import nitroJSConfigTSElectron from "./resources/typescript/electron/nitrojs.config";
+import nitroJSConfigJSElectron from "./resources/javascript/electron/nitrojs.config";
 
 /**
  * Class used for generating project resources
@@ -58,12 +60,18 @@ export default class Generator {
 			this.generateDir(path.join(rootDir, "src/blank.txt"));
 
 			if (initAnswers.typeScript) {
-                fs.writeFileSync(path.join(rootDir, "src/Main.ts"), MainScriptTS);
+				fs.writeFileSync(path.join(rootDir, "src/Main.ts"), MainScriptTS);
 				fs.writeFileSync(path.join(rootDir, "./tsconfig.json"), TSConfig);
 				fs.writeFileSync(path.join(rootDir, "./nitrojs.config.ts"), nitroJSConfigTS);
 			} else {
 				fs.writeFileSync(path.join(rootDir, "src/Main.js"), MainScriptJS);
 				fs.writeFileSync(path.join(rootDir, "./nitrojs.config.js"), nitroJSConfigJS);
+			}
+		} else if (initAnswers.type == AppConfigType.desktop) { 
+			if (initAnswers.typeScript) {
+				fs.writeFileSync(path.join(rootDir, "./nitrojs.config.ts"), nitroJSConfigTSElectron);
+			} else {
+				fs.writeFileSync(path.join(rootDir, "./nitrojs.config.js"), nitroJSConfigJSElectron);
 			}
 		} else {
 			// TODO: Ofc you know

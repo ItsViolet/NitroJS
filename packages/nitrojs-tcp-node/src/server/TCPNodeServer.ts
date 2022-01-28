@@ -154,7 +154,7 @@ class TCPNodeServer extends EventEmitter {
 	/**
 	 * Send a request message to all currently connected client sockets
 	 * @param channel Channel to send the message in
-	 * @param defaultObjectValues The default request message object propertues
+	 * @param defaultObjectValues The default request message object properties
 	 * @param request The request message
 	 */
 	public send<RequestObjectType = {}>(
